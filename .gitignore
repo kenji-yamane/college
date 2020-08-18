@@ -1,0 +1,14 @@
+# python residual directories
+**/__pycache__
+
+# PDF
+*.pdf
+
+# Images
+*.png
+*.jpeg
+*.jpg
+*.xcf
+
+# IDE auxiliary directories
+*.idea
