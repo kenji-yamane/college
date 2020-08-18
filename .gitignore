@@ -17,3 +17,8 @@
 
 # stray swap vim files
 *.swp
+
+# Executables
+*.o
+*.out
+*.exe
