@@ -1,5 +1,6 @@
-# python residual directories
+# python residue
 **/__pycache__
+*.pyc
 
 # PDF
 *.pdf
@@ -9,6 +10,10 @@
 *.jpeg
 *.jpg
 *.xcf
+*.eps
 
 # IDE auxiliary directories
 *.idea
+
+# stray swap vim files
+*.swp

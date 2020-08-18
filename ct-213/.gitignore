@@ -1,0 +1,8 @@
+# Compressed files
+*.zip
+*.gz
+
+# Heavy files
+*.h5
+*.json
+*.hdf5
