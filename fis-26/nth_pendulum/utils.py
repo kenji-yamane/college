@@ -48,9 +48,11 @@ def runge_kutta(angle, velocity):
     """
 
     k1_angle, k1_velocity = pendulum_function(angle, velocity)
-    k2_angle, k2_velocity = pendulum_function(angle + k1_angle*STEP, velocity + k1_velocity*STEP)
+    k2_angle, k2_velocity = pendulum_function(angle + k1_angle*STEP/2, velocity + k1_velocity*STEP/2)
+    k3_angle, k3_velocity = pendulum_function(angle + k2_angle*STEP/2, velocity + k2_velocity*STEP/2)
+    k4_angle, k4_velocity = pendulum_function(angle + k3_angle*STEP, velocity + k3_velocity*STEP)
 
-    next_angle = angle + (k1_angle + k2_angle)*STEP/2
-    next_velocity = velocity + (k1_velocity + k2_velocity)*STEP/2
+    next_angle = angle + (k1_angle + 2*k2_angle + 2*k3_angle + k4_angle)*STEP/6
+    next_velocity = velocity + (k1_velocity + 2*k2_velocity + 2*k3_velocity + k4_velocity)*STEP/6
 
     return next_angle, next_velocity

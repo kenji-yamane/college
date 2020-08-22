@@ -13,21 +13,14 @@ clock = pygame.time.Clock()
 
 starting_point = ((SCREEN_WIDTH/2, SCREEN_HEIGHT/4))
 
-# One bar
-# angle = np.array([pi/3])
-# velocity = np.zeros(1)
+# num_bars defines the number of bars to be simulated. Works well to up to 17 bars
+num_bars = 6
 
-# Two bars
-# angle = np.array([pi/2, pi/2 - 0.1])
-# velocity = np.zeros(2)
-
-# Six bars
-angle = np.array([pi/2, pi/2 - 0.1, pi/2 - 0.2, pi/2 - 0.3, pi/2 - 0.4, pi/2 - 0.5])
-velocity = np.zeros(6)
-
-# Eight bars
-# angle = np.array([pi/2, pi/2 - 0.1, pi/2 - 0.2, pi/2 - 0.3, pi/2 - 0.4, pi/2 - 0.5, pi/2 - 0.6, pi/2 - 0.7])
-# velocity = np.zeros(8)
+angle = []
+for i in range(num_bars):
+    angle.append(pi/2 - 0.1*i)
+angle = np.array(angle)
+velocity = np.zeros(num_bars)
 
 bar_set = BarSet(starting_point, angle)
 running = True
