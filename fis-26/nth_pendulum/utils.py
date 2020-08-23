@@ -18,18 +18,17 @@ def pendulum_function(angle, velocity):
 
     for k in range(n):
         row = []
-        element = (1 + 2*k - 2*n)*sin(angle[k])*GRAVITY/(2*PHYSICAL_BAR_LENGTH*20)
+        element = (1 + 2*k - 2*n)*sin(angle[k])*GRAVITY/(2*PHYSICAL_BAR_LENGTH)
         for i in range(n):
             if i < k:
                 row.append((2*n - 2*k - 1)*cos(angle[i] - angle[k])/2)
-                element += (2*n - 2*k - 1)*(velocity[i]**2)*sin(angle[i] - angle[k])/40
+                element += (2*n - 2*k - 1)*(velocity[i]**2)*sin(angle[i] - angle[k])/2
             elif i == k:
                 row.append((3*n - 3*k - 2)/3)
             else:
                 row.append((2*n - 2*i - 1)*cos(angle[i] - angle[k])/2)
-                element += (2*n - 2*i - 1)*(velocity[i]**2)*sin(angle[i] - angle[k])/40
+                element += (2*n - 2*i - 1)*(velocity[i]**2)*sin(angle[i] - angle[k])/2
         
-        row = np.divide(row, 20)
         A.append(row)
         b.append(element)
 
