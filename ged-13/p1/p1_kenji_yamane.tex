@@ -1,0 +1,514 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{float}
+
+\title{RESOLUÇÃO DE PROVA: GED-13}
+\author{Kenji Yamane}
+
+\begin{document}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=10cm]{ita_logo.png}
+	\end{figure}
+	\begin{center}
+		\textbf{\normalsize{INSTITUTO TECNOLÓGICO DE AERONÁUTICA}}\\
+		\vspace{2.5cm}
+		\large{Kenji de Souza Yamane}\\
+		\vspace{4.7cm}
+		\textbf{RESOLUÇÃO DA PROVA}\\
+		\large{GED 13 - PROBABILIDADE E ESTATÍSTICA}\\
+		\vspace{4.7cm}
+		\small{São José dos Campos – SP\\2020}
+	\end{center}
+	\newpage
+	\tableofcontents
+	\newpage
+	\section{Introdução}
+	O presente trabalho contém a solução da Prova I da matéria GED 13 - Probabilidade e
+	Estatística do segundo ano do fundamental do ano de 2020.
+
+	As resoluções foram efetuadas, em sua maioria, a partir da linguagem de programação R, tendo
+	como plataforma o \textit{Linux}, sobre linha de comando.
+
+	As linhas de código foram diretamente copiadas da linha de comando do sistema operacional
+	e inseridas em um código de \LaTeX, em ambiente \textit{verbatim}, sem nenhuma alteração.
+	O código em \LaTeX, gerou então este arquivo.
+	
+	Como foram diretamente retirados da interface do \textit{Linux}, \textgreater, é indicativo
+	de comando, e + é indicativo de comando sequenciado.
+	\newpage
+	\section{Regra de \textit{Bayes}}
+	A fibrose cística, uma doença pulmonar fatal, é uma das doenças autossômicas recessivas mais
+	comuns. Isso é verdade em parte porque existem mais de 1500 formas mutacionais do gene
+	regulador da transmembrana da fibrose cística (CFTR) (Ratbi et al.
+	2007)\footnote{http://humrep.oxfordjournals.org/cgi/content/full/22/5/1285.}. Com os métodos
+	de diagnóstico atuais, a taxa de verdadeiro positivo (isto é, sensibilidade) para detectar
+	mutações CFTR é de aproximadamente 0,99; portanto, a taxa de falso negativo é 0,01.
+	A taxa de verdadeiro negativo (ou seja, especificidade) deste teste é geralmente assumida
+	como 100\%, mas ignora o erro humano. Como resultado, vamos deixar essa probabilidade ser
+	0,998 e deixar a probabilidade de falso negativo ser 0,002. Esses dados estão resumidos na
+	Tabela \ref{tab:diagnostic} mostrada abaixo.\\
+	Taxa de verdadeiro-positivo = P(POS $|$ CF+) = 0,99\\
+	Taxa de falso-positivo = P(POS $|$ CF-) = 0,002\\
+	Taxa de verdadeiro-negativo = P(NEG $|$ CF-) = 0,998\\
+	Taxa de falso-negativo = P(NEG $|$ CF+) = 0,01\\
+	Uma questão de grande interesse é “qual a probabilidade de uma pessoa ser portadora de alguma
+	variedade  mutacional  de  CFTR,  mas  não  saber  disso  porque  seu  teste  foi negativo?”.
+	Ou  seja,  "qual  o  valor  da P(CF+  $|$  NEG)  ?".  Não  sabemos  isso,  embora tenhamos uma
+	estimativa para a probabilidade do resultado condicional, P(NEG $|$ CF+) = 0,01. Haverá dois
+	estados possíveis da natureza resultando nas \textit{a priori}\footnote{Pelo que consultei,
+	a locução latina a priori fica invariável quando colocada no plural.}: P(CF+) e P(CF-).
+	Como resultado, configuramos nosso problema específico da seguinte maneira:
+	\begin{equation}
+		P(CF+|NEG) = \frac{P(CF+)P(NEG|CF+)}{\sum_{k=1}^{2}P(CF+_{k})P(NEG|CF+_{k})}
+	\end{equation}
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{ccc}
+			\hline
+			Diagnóstico & CF+ & CF-\\
+			\hline
+			POS & 0.99 & 0.002\\
+			NEG & 0.01 & 0.998\\
+			\hline
+		\end{tabular}
+		\caption{Detecção de mutações CFTR.}
+		\label{tab:diagnostic}
+	\end{table}
+	Nossas a priori referem-se as probabilidades de presença / ausência de mutações CFTR na
+	população em geral. Essas probabilidades, por sua vez, dependem da etnia
+	(Tabela-\ref{tab:priori}).
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{cc}
+			\hline
+			Etnia & Probabilidade de ser portador\\
+			\hline
+			Caucasiano Não Hispânico & 0.040\\
+			Hispano-americano & 0.017\\
+			Afro-americano & 0.016\\
+			Judeu Ashkenazi & 0.042\\
+			Asiático-americano & 0.011\\
+			\hline
+		\end{tabular}
+		\caption{Risco de ser portador de FC para cinco grupos étnicos.}
+		\label{tab:priori}
+	\end{table}
+	Determine os itens a seguir.\\
+	Criou-se a seguinte função em R:
+	\begin{verbatim}
+		> calculate <- function(p_cf_mais) {
+		+     p_neg_cf_mais <- 0.01
+		+     p_neg_cf_menos <- 0.998
+		+     p_cf_menos <- 1 - p_cf_mais
+		+     p_neg_inter_cf_mais <- p_cf_mais*p_neg_cf_mais
+		+     p_neg <- p_cf_mais*p_neg_cf_mais + p_cf_menos*p_neg_cf_menos
+		+     return (p_neg_inter_cf_mais/p_neg)
+		+ }
+	\end{verbatim}
+	\subsection{a}
+	A  probabilidade  P(CF+  $|$  NEG)  para  Caucasianos  Não  Hispânicos.  Esse  resultado
+	representa aproximadamente quantos indivíduos por milhão de habitantes?
+	\begin{verbatim}
+		> calculate(0.040)
+		[1] 0.0004173274
+		> calculate(0.040)*1e6
+		[1] 417.3274
+	\end{verbatim}
+	Resposta: P(CF+ $|$ NEG) para Caucasianos  Não  Hispânicos vale 0.00042. Ou seja,
+	417 indivíduos por milhão de habitantes.
+	\subsection{b}
+	A  probabilidade  P(CF+  $|$  NEG)  para  hispano-americanos. Esse  resultado
+	representa aproximadamente quantos indivíduos por milhão de habitantes?
+	\begin{verbatim}
+		> calculate(0.017)
+		[1] 0.0001732565
+		> calculate(0.017)*1e6
+		[1] 173.2565
+	\end{verbatim}
+	Resposta: P(CF+ $|$ NEG) para hispano-americanos vale 0.00017. Ou seja,
+	173 indivíduos por milhão de habitantes.
+	\subsection{c}
+	A  probabilidade  P(CF+  $|$  NEG)  para  Afro-americanos. Esse  resultado
+	representa aproximadamente quantos indivíduos por milhão de habitantes?
+	\begin{verbatim}
+		> calculate(0.016)
+		[1] 0.0001629009
+		> calculate(0.016)*1e6
+		[1] 162.9009
+	\end{verbatim}
+	Resposta: P(CF+ $|$ NEG) para Afro-americanos vale 0.00016. Ou seja,
+	163 indivíduos por milhão de habitantes.
+	\subsection{d}
+	A  probabilidade  P(CF+  $|$  NEG)  para  Judeus Asquenazes. Esse  resultado
+	representa aproximadamente quantos indivíduos por milhão de habitantes?
+	\begin{verbatim}
+		> calculate(0.042)
+		[1] 0.0004390991
+		> calculate(0.042)*1e6
+		[1] 439.0991
+	\end{verbatim}
+	Resposta: P(CF+ $|$ NEG) para Judeus Asquenazes vale 0.00043. Ou seja,
+	439 indivíduos por milhão de habitantes.
+	\subsection{e}
+	A  probabilidade  P(CF+  $|$  NEG)  para  Asiático-americanos. Esse  resultado
+	representa aproximadamente quantos indivíduos por milhão de habitantes?
+	\begin{verbatim}
+		> calculate(0.011)
+		[1] 0.0001114339
+		> calculate(0.011)*1e6
+		[1] 111.4339
+	\end{verbatim}
+	Resposta: P(CF+ $|$ NEG) para Asiático-americanos vale 0.00011. Ou seja,
+	111 indivíduos por milhão de habitantes.
+	\section{Estatísticas Descritivas}
+	Utilize os dados históricos da empresa Azul Linhas Aéreas Brasileiras S.A que foram obtidos
+	a partir do site da ANAC [Agência Nacional de Aviação Civil] para responder aos itens
+	solicitados.\\
+	Os dados para resolver essa questão estão disponíveis em dois arquivos:\\
+	i. ANAC\_\_\_AZUL\_\_\_4\_A\_7\_\_\_2019;\\
+	ii. ANAC\_\_\_AZUL\_\_\_4\_A\_7\_\_\_2020\\
+	Os dados históricos correspondem ao número de
+	passageiros pagos do grupo de voo regular para os meses de Abril até Julho dos anos 2019 e
+	2020, respectivamente.
+	Determine:
+	\subsection{a}
+	Os números totais de Passageiros Pagos para cada um dos meses 4, 5, 6 e 7 de 2019
+	e 2020. Apresente os dados na forma de uma tabela.
+	\begin{verbatim}
+		> df.2019 <- read.csv('ANAC___AZUL___4_A_7___2019.csv', sep=';')
+		> df.2020 <- read.csv('ANAC___AZUL___4_A_7___2020.csv', sep=';')
+		> summary(df.2019)
+		 EMPRESA..SIGLA.    EMPRESA..NOME.     EMPRESA..NACIONALIDADE.      ANO      
+		 Length:2126        Length:2126        Length:2126             Min.   :2019  
+		 Class :character   Class :character   Class :character        1st Qu.:2019  
+		 Mode  :character   Mode  :character   Mode  :character        Median :2019  
+		                                                               Mean   :2019  
+		                                                               3rd Qu.:2019  
+		                                                               Max.   :2019  
+		      MES        GRUPO.DE.VOO       PASSAGEIROS.PAGOS
+		 Min.   :4.000   Length:2126        Min.   :    0    
+		 1st Qu.:5.000   Class :character   1st Qu.:  464    
+		 Median :6.000   Mode  :character   Median : 2082    
+		 Mean   :5.497                      Mean   : 3977    
+		 3rd Qu.:6.000                      3rd Qu.: 5294    
+		 Max.   :7.000                      Max.   :30132    
+		> summary(df.2020)
+		 EMPRESA..SIGLA.    EMPRESA..NOME.     EMPRESA..NACIONALIDADE.      ANO      
+		 Length:546         Length:546         Length:546              Min.   :2020  
+		 Class :character   Class :character   Class :character        1st Qu.:2020  
+		 Mode  :character   Mode  :character   Mode  :character        Median :2020  
+		                                                               Mean   :2020  
+		                                                               3rd Qu.:2020  
+		                                                               Max.   :2020  
+		                                                               NA's   :1     
+		      MES        GRUPO.DE.VOO       PASSAGEIROS.PAGOS
+		 Min.   :4.000   Length:546         Min.   :      0  
+		 1st Qu.:5.000   Class :character   1st Qu.:    536  
+		 Median :6.000   Mode  :character   Median :   1360  
+		 Mean   :5.789                      Mean   :   5008  
+		 3rd Qu.:7.000                      3rd Qu.:   3186  
+		 Max.   :7.000                      Max.   :1367221  
+		 NA's   :1
+
+		> tot.2019 <- rep(0, 4)
+		> tot.2020 <- rep(0, 4)
+		> for (i in 4:7) {
+		+     tot.2019[i - 3] <- sum(df.2019$PASSAGEIROS.PAGOS[which(df.2019$MES == i)])
+		+     tot.2020[i - 3] <- sum(df.2020$PASSAGEIROS.PAGOS[which(df.2020$MES == i)])
+		+ }
+		> rbind(tot.2019, tot.2020)
+		            [,1]    [,2]    [,3]    [,4]
+		tot.2019 2059597 2128650 2018427 2247927
+		tot.2020  163752  260970  368806  573693
+	\end{verbatim}
+	Dessa forma, tem-se a tabela \ref{tab:2a}.
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{ccc}
+			\hline
+			Mês & Total em 2019 & Total em 2020\\
+			\hline
+			Abril & 2059597 & 163752\\
+			Maio & 2128650 & 260970\\
+			Junho & 2018427 & 368806\\
+			Julho & 2247927 & 573693\\
+			\hline
+		\end{tabular}
+		\caption{Resposta para a 2a}
+		\label{tab:2a}
+	\end{table}
+	\subsection{b}
+	A média de Passageiros Pagos por mês, considerando todo o período analisado. Para
+	isso, some todos os passageiros dos meses 4, 5, 6 e 7 e divida por quatro para os anos
+	de 2019 e 2020, respectivamente. Compare.
+	\begin{verbatim}
+		> sum(df.2019$PASSAGEIROS.PAGOS)/4
+		[1] 2113650
+		> sum(df.2020$PASSAGEIROS.PAGOS[which(!is.na(df.2020$MES))])/4
+		[1] 341805.2
+	\end{verbatim}
+	Resposta: Para 2019, 2113650. Para 2020, 341805,2. Houve uma queda significativa de 2019 para
+	2020 de passageiros pagos, possivelmente em virtude da pandemia.
+	\subsection{c}
+	A moda de Passageiros Pagos, considerando todo o período entre os meses 4, 5, 6 e 7
+	para os anos de 2019 e 2020, respectivamente. Desconsidere os casos em que
+	Passageiros Pagos é igual a zero.
+	Resposta: Para 2019, 465. Para 2020: 1041.
+	\begin{verbatim}
+		> modal <- function(vet) {
+		+     vet_no_zero <- vet[which(vet != 0)]
+		+     uniq <- unique(vet_no_zero)
+		+     return (uniq[which.max(tabulate(match(vet_no_zero, uniq)))])
+		+ }
+		> modal(df.2019$PASSAGEIROS.PAGOS)
+		[1] 465
+		> modal(df.2020$PASSAGEIROS.PAGOS)
+		[1] 1041
+	\end{verbatim}
+	\subsection{d}
+	A mediana de Passageiros Pagos, considerando todo o período entre os meses 4, 5, 6 e
+	7 para os anos de 2019 e 2020, respectivamente. Compare.
+	\begin{verbatim}
+		> median(df.2019$PASSAGEIROS.PAGOS)
+		[1] 2081.5
+		> median(df.2020$PASSAGEIROS.PAGOS)
+		[1] 1359.5
+	\end{verbatim}
+	Resposta: Para 2019, 2081,5. Para 2020, 1359,5. A mediana, sendo metade abaixo menor
+	e metade abaixo maior, representa de forma semelhante os efeitos da pandemia, como no quesito
+	b.
+	\subsection{e}
+	O histograma de Passageiros Pagos para o Mês 4 [Abril] para os anos de 2019 e 2020,
+	respectivamente. Compare. [O ideal aqui é fazer um histograma do tipo back-to-back].
+	\begin{verbatim}
+		> library(Hmisc)
+		> vet.2019.abril <- df.2019$PASSAGEIROS.PAGOS[which(df.2019$MES == 4)]
+		> vet.2020.abril <- df.2020$PASSAGEIROS.PAGOS[which(df.2020$MES == 4)]
+		> jpeg('hist_plot.jpg')
+		> histbackback(vet.2019.abril, vet.2020.abril, probability=TRUE, main='2.e')
+		> dev.off()
+	\end{verbatim}
+	Resposta: Obteve-se a figura \ref{fig:backtoback}.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=7cm]{hist_plot.jpg}
+		\caption{Histograma \textit{back-to-back} dos dados referentes a abril}
+		\label{fig:backtoback}
+	\end{figure}
+	Ela indica como os valores de total de passageiros para 2020 diminuem quando comparados
+	com 2019, coerente com o que se tem analisado dos outros dados.
+	\subsection{f}
+	O boxplot de Passageiros Pagos para o Mês 4 [Abril] para os anos de 2019 e 2020,
+	respectivamente. Compare. [Apresente os boxplots em uma mesma figura].
+	\begin{verbatim}
+		> jpeg('box_plots.jpg')
+		> boxplot(vet.2019.abril, vet.2020.abril, col='skyblue3', names=c('2019', '2020'))
+		> dev.off()
+	\end{verbatim}
+	Resposta: Obteve-se a figura \ref{fig:boxplots}.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=7cm]{box_plots.jpg}
+		\caption{\textit{Box plots} dos dados referentes a abril}
+		\label{fig:boxplots}
+	\end{figure}
+	Verificam-se muitos \textit{outliers} em ambos os conjuntos de dados. Ademais, aqui se verifica
+	ainda mais fortemente como os dados de 2019 superam os de 2020, com todos os quartis de 2019
+	elevados quando comparados com 2020.
+	\subsection{g}
+	O gráfico de barras do total de Passageiros Pagos para os meses 4, 5, 6 e 7 para os anos
+	de 2019 e 2020, respectivamente. Compare. [Faça os gráficos em uma mesma figura].
+	\begin{verbatim}
+		> jpeg('bar_plots.jpg')
+		> barplot(rbind(tot.2019, tot.2020),
+		+ xlab='Mês',
+		+ col=c('red', 'green'),
+		+ beside=TRUE
+		+ )
+		> legend('topleft',
+		+ c('2019', '2020'),
+		+ fill=c('red', 'green')
+		+ )
+		> dev.off()
+	\end{verbatim}
+	Resposta: Obteve-se a figura \ref{fig:barplots}.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=7cm]{bar_plots.jpg}
+		\caption{\textit{Bar plots} para os dados mensais}
+		\label{fig:barplots}
+	\end{figure}
+	Aqui se observa os aspectos discrepantes de forma mais evidente, comparando-se lado a lado
+	os dados mensais de 2019 e 2020, respectivamente, pondo em cena fortemente a ideia de como a
+	pandemia afetou as viagens para a companhia.
+	\section{Combinatória}
+	\subsection{a}
+	Mostre passo a passo, usando álgebra, que a identidade abaixo é verdadeira.
+	\begin{equation}
+		\left(\begin{array}{c}
+			n + 1\\k + 1
+		\end{array}\right)
+		=
+		\left(\begin{array}{c}
+			n\\k
+		\end{array}\right)
+		+
+		\left(\begin{array}{c}
+			n\\k + 1
+		\end{array}\right)
+	\end{equation}
+	Demonstração:
+	\begin{equation}
+		\left(\begin{array}{c}
+			n + 1 \\ k + 1
+		\end{array}\right)
+		= \frac{(n + 1)!}{(k + 1)!(n - k)!}
+		= \frac{(n + 1)n!}{(n - k)(k + 1)!(n - k - 1)!)} \Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		\left(\begin{array}{c}
+			n + 1 \\ k + 1
+		\end{array}\right)
+		= \frac{((n - k) + (k + 1))n!}{(n - k)(k + 1)!(n - k - 1)!} \Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		\left(\begin{array}{c}
+			n + 1 \\ k + 1
+		\end{array}\right)
+		= \frac{n!}{(k + 1)!(n - k - 1)!} + \frac{n!}{k!(n - k)!} \Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		\left(\begin{array}{c}
+			n + 1 \\ k + 1
+		\end{array}\right)
+		=
+		\left(\begin{array}{c}
+			n\\k + 1
+		\end{array}\right)
+		+
+		\left(\begin{array}{c}
+			n\\k
+		\end{array}\right)
+	\end{equation}
+	\subsection{b}
+	Mostre passo a passo, usando álgebra, que a identidade abaixo é verdadeira.
+	\begin{equation}
+		\left(\begin{array}{c}
+			2n \\ n
+		\end{array}\right)
+		+
+		\left(\begin{array}{c}
+			2n \\ n - 1
+		\end{array}\right)
+		=
+		\frac{1}{2}\left(\begin{array}{c}
+			2n + 2 \\ n + 1
+		\end{array}\right)
+	\end{equation}
+	Demonstração:
+	\begin{equation}
+		\left(\begin{array}{c}
+			2n \\ n
+		\end{array}\right)
+		+
+		\left(\begin{array}{c}
+			2n \\ n - 1
+		\end{array}\right)
+		=
+		\frac{(2n)!}{n!n!} + \frac{(2n)!}{(n - 1)!(n + 1)!} \Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		\left(\begin{array}{c}
+			2n \\ n
+		\end{array}\right)
+		+
+		\left(\begin{array}{c}
+			2n \\ n - 1
+		\end{array}\right)
+		= \frac{(n + 1)(n + 1)(2n)!}{(n + 1)!(n + 1)!}
+		+ \frac{(n + 1)n(2n)!}{(n + 1)!(n + 1)!} \Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		\left(\begin{array}{c}
+			2n \\ n
+		\end{array}\right)
+		+
+		\left(\begin{array}{c}
+			2n \\ n - 1
+		\end{array}\right)
+		= \frac{(2n + 1)(n + 1)(2n)!}{(n + 1)!(n + 1)!} \Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		\left(\begin{array}{c}
+			2n \\ n
+		\end{array}\right)
+		+
+		\left(\begin{array}{c}
+			2n \\ n - 1
+		\end{array}\right)
+		= \frac{1}{2}\frac{(2n + 2)(2n + 1)(2n)!}{(n + 1)!(n + 1)!}
+		=
+		\frac{1}{2}\left(\begin{array}{c}
+			2n + 2 \\ n + 1
+		\end{array}\right)
+	\end{equation}
+	\section{Combinatória e Probabilidade}
+	\subsection{1}
+	Nove linhas paralelas em um plano cruzam um conjunto de n linhas paralelas que vão
+	em outra direção. As linhas formam um total de 360 paralelogramos, muitos dos quais se
+	sobrepõem.
+	\subsubsection{a}
+	Encontre n [algebricamente].\\
+	Solução:
+	\begin{equation}
+		\left(\begin{array}{c}
+			9\\2
+		\end{array}\right)
+		\left(\begin{array}{c}
+		    n\\2
+		\end{array}\right)
+		= 360 \Rightarrow
+		\frac{n!}{(n - 2)!2!} = 10 \Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		n(n - 1) = 20 \Rightarrow
+		n^{2} - n - 20 = 0\Rightarrow
+		n = \frac{1 \pm \sqrt{1 + 80}}{2}\Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		n \in \{5, -4\} \Rightarrow
+		n = 5
+	\end{equation}
+	\subsection{2}
+	Um departamento de uma empresa consiste de 25 engenheiros, 15 analistas e 35
+	assistentes. Um grupo de 6 desses profissionais é selecionado aleatoriamente desse
+	departamento.
+	\subsubsection{a}
+	Encontre a probabilidade de que todos os membros do grupo sejam assistentes.
+	\begin{verbatim}
+		> espaco.amostral <- choose(25 + 15 + 35, 6)
+		> evento <- choose(35, 6)
+		> paste('p = ', evento/espaco.amostral)
+		[1] "p =  0.00806100331471738"
+	\end{verbatim}
+	\subsubsection{b}
+	\begin{verbatim}
+		> evento <- choose(25, 2)*choose(15, 3)*choose(35, 1)
+		> paste('p = ', evento/espaco.amostral)
+		[1] "p =  0.0237262151211601"
+	\end{verbatim}
+\end{document}
