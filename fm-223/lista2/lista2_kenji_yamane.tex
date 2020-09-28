@@ -1,0 +1,151 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Lista 2}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\newpage
+	\section{Mapa de Hénon: mapa de convergência}
+	Utilizou-se o seguinte procedimento em \textit{Python} para se gerar as imagens correspondentes
+	ao quadrado de convergência.
+	\begin{verbatim}
+	def convergence_plot(func):
+    	x_space = np.linspace(-2.5, 2.5, 700)
+    	y_space = np.linspace(-2.5, 2.5, 700)
+    	horizontal = []
+    	vertical = []
+    
+        	for x in x_space:
+            	for y in y_space:
+                	input1 = x
+                	input2 = y
+        
+            	for i in range(20):
+                	input1, input2 = func(input1, input2)
+    
+                	if input1**2 + input2**2 > 100:
+                    	horizontal.append(x)
+                    	vertical.append(y)
+                    	break
+    	
+    	fig, ax = plt.subplots()
+    	plt.xticks([-2.5, 2.5])
+    	plt.yticks([-2.5, 2.5])
+    
+    	ax.plot(horizontal, vertical, ',')
+    	plt.show()
+	\end{verbatim}
+	Obteve-se assim, o conjunto de imagens \ref{fig:convergence}.
+	\begin{figure}[H]
+		\centering
+		\begin{subfigure} {
+			\includegraphics[width=5.5cm]{heron_convergence1.jpg}
+		} \end{subfigure}
+		\begin{subfigure} {
+			\includegraphics[width=5.5cm]{heron_convergence2.jpg}
+		} \end{subfigure}
+		\caption{Figuras obtidas a partir do procedimento}
+		\label{fig:convergence}
+	\end{figure}
+	\section{Bifurcação para o teorema de Heron}
+	Aproveitou-se o procedimento criado na lista anterior para se gerar a figura requisitada.
+	O resultado aparece na figura \ref{fig:bifurcation}.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=5.5cm]{bifurcation_diagram.jpg}
+		\caption{Diagrama de bifurcação para o mapa de Heron}
+		\label{fig:bifurcation}
+	\end{figure}
+	\section{Órbitas períodicas para o mapa de Heron}
+	Criou-se a seguinte função para se gerar todas as figuras requisitadas, representativas
+	de diversas órbitas periódicas para o mapa de Heron.
+	\begin{verbatim}
+	def plot_period(func, point_symbol, density):
+    	convergence = False
+    	global plot_iteration
+    
+    	while not convergence:
+        	convergence = True
+        	x = np.random.uniform(0, 1)
+        	y = np.random.uniform(0, 1)
+        	horizontal = []
+        	vertical = []
+        		
+        	for i in range(100):
+            	x, y = func(x, y)
+            	if x**2 + y**2 > 100:
+                	convergence = False
+                	break
+        
+        	if convergence:
+            	for i in range(density):
+                	horizontal += [x]
+                	vertical += [y]
+                	x, y = func(x, y)
+    	
+    	fig, ax = plt.subplots()
+    	ax.plot(horizontal, vertical, point_symbol)
+    	plt.savefig('period' + str(plot_iteration) + '.jpg')
+    	plot_iteration += 1
+	\end{verbatim}
+	Dessa forma, obteve-se o conjunto de imagens \ref{fig:periods}.
+	\begin{figure}[H]
+		\centering
+		\begin{subfigure} {
+			\includegraphics[width=5.4cm]{period1.jpg}
+		} \end{subfigure}
+		\begin{subfigure} {
+			\includegraphics[width=5.4cm]{period2.jpg}
+		} \end{subfigure}
+		\begin{subfigure} {
+			\includegraphics[width=5.4cm]{period3.jpg}
+		} \end{subfigure}
+		\begin{subfigure} {
+			\includegraphics[width=5.4cm]{period4.jpg}
+		} \end{subfigure}
+		\begin{subfigure} {
+			\includegraphics[width=5.4cm]{period5.jpg}
+		} \end{subfigure}
+		\begin{subfigure} {
+			\includegraphics[width=5.4cm]{period6.jpg}
+		} \end{subfigure}
+		\caption{As órbitas periódicas para o mapa de heron}
+		\label{fig:periods}
+	\end{figure}
+	\section{Órbita no pêndulo amortecido forçado}
+	Implementando-se o algoritmo conhecido de runge-kutta para se resolver a EDO, pode-se gerar a figura requisitada:
+	\begin{verbatim}
+	angle = np.random.uniform(-pi, pi)
+	velocity = np.random.uniform(-3, 4)
+	time = 0
+	horizontal = []
+	vertical = []
+	
+	for i in range(500000):
+    	horizontal += [angle%(2*pi) - pi]
+    	vertical += [velocity]
+    	for j in range(60):
+        	angle, velocity = runge_kutta(angle, velocity, time, pi/30)
+        	time += pi/30
+	
+	plt.plot(horizontal, vertical, ',')
+	plt.savefig('pendulum_orbit.jpg')
+	\end{verbatim}
+	Com o procedimento, obteve-se a figura \ref{fig:chaos_pendulum}.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=5.5cm]{pendulum_orbit.jpg}
+		\caption{Órbita obtida}
+		\label{fig:chaos_pendulum}
+	\end{figure}
+\end{document}
