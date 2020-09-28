@@ -1,0 +1,223 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Lista 1}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\newpage
+	\section{\textit{Cobweb Plots}}
+	Utilizou-se a linguagem \textit{Python} para se gerar as figuras requeridas. O seguinte
+	procedimento foi escrito para se gerar os dados:
+	\begin{verbatim}
+	def cobweb(starting_point, num_iterations, func):
+    	"""
+        	Creates necessary data to make a cobweb plot in matplotlib
+        	:param starting_point: point in x axis to start the cobweb plot
+        	:type starting_point: float
+        	:param num_iterations: number of iterations, i.e. segments in cobweb plot
+        	:type num_iterations: float
+        	:param func: function whose cobweb plot data will be constructed
+        	:type func: function
+    	"""
+    
+    	horizontal = [starting_point]
+    	vertical = [0]
+    	start_point = [starting_point, 0]
+    
+    	for i in range(0, num_iterations):
+        	if i%2 == 0:
+            	end_point = [start_point[0], func(start_point[0])]
+        	else:
+            	end_point = [start_point[1], start_point[1]]
+    
+    	horizontal += [end_point[0]]
+    	vertical += [end_point[1]]
+    	start_point = end_point
+    	
+    	return horizontal, vertical
+	\end{verbatim}
+	Assim, com os dados, geraram-se as figuras com a biblioteca \textit{Matplotlib},
+	obtendo-se dessa forma as figuras no conjunto \ref{fig:cobweb}.
+	\begin{figure}[H]
+		\centering
+		\begin{subfigure} {
+			\includegraphics[width=5.5cm]{cobweb1.jpg}
+		} \end{subfigure}
+		\begin{subfigure} {
+			\includegraphics[width=5.5cm]{cobweb2.jpg}
+		} \end{subfigure}
+		\caption{\textit{Cobweb plots} requisitados}
+		\label{fig:cobweb}
+	\end{figure}
+	\section{Estabilidade de pontos fixos}
+	Deve-se provar o seguinte teorema:\\
+	Seja f um mapa suave em $\mathbb{R}$, e p um ponto fixo do mesmo. Tem-se:
+	\begin{equation}
+		\left\{\begin{array}{c}
+			|f'(p)| < 1 \quad \Rightarrow \quad $p é estável$\\
+			|f'(p)| > 1 \quad \Rightarrow \quad $p é instável$
+		\end{array}\right.
+	\end{equation}
+	Prova:\\
+	Suponha $p \quad | \quad |f'(p)| < 1$. Logo:
+	\begin{equation}
+		\lim_{x \rightarrow p} \frac{|f(x) - f(p)|}{|x - p|} = |f'(p)|
+	\end{equation}
+	Assim, existe, para algum $N_{\epsilon}(p)$:
+	\begin{equation}
+		\frac{|f(x) - f(p)|}{|x - p|} \leqslant a
+	\end{equation}
+	Onde $|f'(p)| < a < 1$.\\
+	Suponha que seja válido para a mesma $N_{\epsilon}(p)$:
+	\begin{equation}
+		\label{eq:kth_order}
+		\frac{|f^{k}(x) - f^{k}(p)|}{|x - p|} \leqslant a^{k}
+	\end{equation}
+	Para $f^{k + 1}(x)$:
+	\begin{equation}
+		\lim_{x \rightarrow p} \frac{|f^{k + 1}(x) - f^{k + 1}(p)|}{|f^{k}(x) - f^{k}(p)|} =
+		|f'^{k + 1}(p)|
+	\end{equation}
+	Como p é ponto fixo, $f'^{k + 1}(p) = f'(f^{k}(p)) = f'(p)$. Assim, existe para a mesma
+	$N_{\epsilon}(p)$:
+	\begin{equation}
+		\label{eq:kplus1th_order}
+		\frac{|f^{k + 1}(x) - f^{k + 1}(p)|}{|f^{k}(x) - f^{k}(p)|} \leqslant a
+	\end{equation}
+	Multiplicando \ref{eq:kth_order} e \ref{eq:kplus1th_order}\footnote{Válido pois envolve
+	somente valores positivos}:
+	\begin{equation}
+		\frac{|f^{k + 1}(x) - f^{k + 1}(p)|}{|x - p|} \leqslant a^{k + 1}
+	\end{equation}
+	Por p ser ponto fixo, $f^{k}(p) = f(p)$ e, pela indução finita, tem-se:
+	\begin{equation}
+		|f^{k}(x) - p| \leqslant a^{k}|x - p|
+	\end{equation}
+	No limite de k para o infinito:
+	\begin{equation}
+		\lim_{k \rightarrow \infty}|f^{k}(x) - p| \leqslant \lim_{k \rightarrow \infty}a^{k}|x - p|
+		\stackrel{a < 1}{\Rightarrow}
+	\end{equation}
+	\begin{equation}
+		\stackrel{a < 1}{\Rightarrow}
+		\lim_{k \rightarrow \infty}|f^{k}(x) - p| \leqslant 0
+		\Rightarrow \lim_{k \rightarrow \infty}f^{k}(x) = p
+	\end{equation}
+	Dessa forma, todos os valores convergem para p, sendo p desta forma estável.\\
+	Para o caso em que $|f'(x)| > 1$, partimos de:
+	\begin{equation}
+		\lim_{x \rightarrow p} \frac{|f(x) - f(p)|}{|x - p|} = |f'(p)|
+	\end{equation}
+	Sabe-se, da definição de limite, que pode-se limitar x de tal forma que se aproxima o lado
+	esquerdo do lado direito o tanto quanto se queira. Dessa forma, como $|f'(x)| > 1$, existe
+	vizinhança $N_{\epsilon}(p)$ tal que:
+	\begin{equation}
+		\frac{|f(x) - f(p)|}{|x - p|} > 1
+	\end{equation}
+	Analogamente ao caso em que $|f(x)| < 1$, tem-se:
+	\begin{equation}
+		\frac{|f^{k}(x) - f^{k}(p)|}{|x - p|} > 1 \Rightarrow
+		|f^{k}(x) - p| > |x - p|
+	\end{equation}
+	Dessa forma, tem-se que, mesmo eventualmente, o valor mapeado se afasta de p. Como isso é válido
+	para toda a vizinhança $N_{\epsilon}(p)$, eventualmente todos os pontos diferentes de p
+	sairão de $N_{\epsilon}(p)$. Assim, p é instável.
+	\section{Exercício T1.5}
+	Deve-se determinar os pontos de período 2 da seguinte função:
+	\begin{equation}
+		f(x) = 2x^{2} - 5x
+	\end{equation}
+	\begin{equation}
+		f(f(x)) = x \Rightarrow 2(2x^{2} - 5x)^{2} - 5(2x^{2} - 5x) = x \Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow 2(4x^{4} - 20x^{3} + 25x^{2}) - 10x^{2} + 25x = x \Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow 8x^{4} - 40x^{3} + 40x^{2} + 24x = 0 \Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow x^{4} - 5x^{3} + 5x^{2} + 3x = 0 \Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow x = 0 \quad ou \quad x^{3} - 5x^{2} + 5x + 3 = 0
+	\end{equation}
+	Por inspeção, 3 é raiz. Logo:
+	\begin{equation}
+		\Rightarrow x = 0 \quad ou \quad (x - 3)(x^{2} - 2x - 1) = 0 \Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow x \in \{0, 3\} \quad ou \quad x^{2} - 2x - 1 = 0
+	\end{equation}
+	\begin{equation}
+		\Rightarrow x \in \{0, 3\} \quad ou \quad x = \frac{2 \pm \sqrt{4 + 4}}{2} \Rightarrow
+	\end{equation}
+	\begin{equation}
+		\Rightarrow x \in \{0, 3, 1 - \sqrt{2}, 1 + \sqrt{2}\}
+	\end{equation}
+	Como 0 e 3 são pontos fixos de f, não são pontos de período 2. A resposta é portanto,
+	$\{1 - \sqrt{2}, 1 + \sqrt{2}\}$.
+	\section{Diagramas de bifurcação}
+	Escreveu-se o seguinte procedimento para gerar os diagramas requisitados.
+	\begin{verbatim}
+	def bifurcation_diagram(start, end, figname):
+    	"""
+        	Constructs the bifurcation diagram for map_function1
+        	:param start: point in x axis to start plotting
+        	:type start: float
+        	:param end: point in x axis to end plotting
+        	:type end: float
+        	:param figname: name of the figure to be saved
+        	:type end: float
+    	"""
+    	a_space = np.linspace(start, end, 500)
+    	horizontal = []
+    	vertical = []
+	
+    	for a in a_space:
+        	point = np.random.uniform(0, 1)
+        	for i in range(100):
+            	point = map_function1(a, point)
+		
+        	for i in range(700):
+            	horizontal.append(a)
+            	vertical.append(point)
+            	point = map_function1(a, point)
+	
+    	fig, ax = plt.subplots()
+    	ax.plot(horizontal, vertical, ',')
+    	plt.savefig(figname)
+	\end{verbatim}
+	Obteve-se dessa forma o conjunto mostrado em \ref{fig:bifurcation}.
+	\begin{figure}[H]
+		\centering
+		\begin{subfigure}{
+			\includegraphics[width=5.5cm]{bifurcation1.jpg}
+		}\end{subfigure}
+		\begin{subfigure}{
+			\includegraphics[width=5.5cm]{bifurcation2.jpg}
+		}\end{subfigure}
+		\begin{subfigure}{
+			\includegraphics[width=5.5cm]{bifurcation3.jpg}
+		}\end{subfigure}
+		\caption{Diagramas de bifurcação obtidos}
+		\label{fig:bifurcation}
+	\end{figure}
+	\section{\textit{Cobweb plot caótico}}
+	Com a mesma função mostrada no início, obteve-se a seguinte imagem.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=5.5cm]{cobweb3.jpg}
+		\caption{\textit{Cobweb plot} obtido para $a = 3.86$}
+	\end{figure}
+\end{document}
