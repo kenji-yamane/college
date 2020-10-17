@@ -1,0 +1,260 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Lista 4}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\newpage
+	\section{Determina\c{c}\~ao anal\'itica do ponto de sela}
+	Mapas de H\'enon s\~ao da forma:
+	\begin{equation}
+		f_{a, b}(x, y) = (a - x^{2} + by, x)
+		\nonumber
+	\end{equation}
+	No caso da figura 2.21a do livro:
+	\begin{equation}
+		\label{eq:221a}
+		f(x, y) = (1.28 - x^{2} - 0.3y, x)
+	\end{equation}
+	Se ($x^{*}$, $y^{*}$) \'e ponto fixo de \ref{eq:221a}:
+	\begin{equation}
+		f(x^{*}, y^{*}) = (x^{*}, y^{*}) \xRightarrow{\ref{eq:221a}}
+		\left\{\begin{array}{l}
+			x^{*} = 1.28 - x^{*2} - 0.3y^{*}\\
+			y^{*} = x^{*}
+		\end{array}\right. \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow x^{*2} + 1.3x^{*} - 1.28 = 0
+		\Rightarrow x^{*} = \frac{-1.3 \pm \sqrt{1.3^{2} + 5.12}}{2} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow (x^{*}, y^{*}) \in \{(0.65, 0.65), (-1.95, -1.95)\}
+		\nonumber
+	\end{equation}
+	Calculando a jacobiana de f:
+	\begin{equation}
+		Df = \left[\begin{array}{cc}
+			\frac{\partial f_{1}}{\partial x} & \frac{\partial f_{1}}{\partial y}\\
+			\frac{\partial f_{2}}{\partial x} & \frac{\partial f_{2}}{\partial x}
+		\end{array}\right]
+		= \left[\begin{array}{cc}
+			-2x & -0.3\\
+			1 & 0
+		\end{array}\right]
+		\nonumber
+	\end{equation}
+	Portanto:
+	\begin{equation}
+		\left\{\begin{array}{l}
+			det(Df(0.65, 0.65) - \lambda I) = \lambda^{2} + 1.3\lambda + 0.3 = 0\\
+			det(Df(-1.95, -1.95) - \lambda I) = \lambda^{2} - 3.9\lambda + 0.3 = 0
+		\end{array}\right. \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		\left\{\begin{array}{l}
+			\lambda = \frac{-1.3 \pm \sqrt{1.3^{2} - 1.2}}{2}\\
+			\lambda = \frac{3.9 \pm \sqrt{3.9^{2} - 1.2}}{2}
+		\end{array}\right.
+		\Rightarrow
+		\left\{\begin{array}{l}
+			\lambda \in \{-0.29, -1.01\} \Rightarrow (0.65, 0.65): sela\\
+			\lambda \in \{3.83, 0.07\} \Rightarrow (-1.95, -1.95): sela
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	No caso da figura 2.21b do livro:
+	\begin{equation}
+		\label{eq:221b}
+		f(x, y) = (1.4 - x^{2} - 0.3y, x)
+	\end{equation}
+	Se ($x^{*}$, $y^{*}$) \'e ponto fixo de \ref{eq:221b}:
+	\begin{equation}
+		f(x^{*}, y^{*}) = (x^{*}, y^{*}) \xRightarrow{\ref{eq:221b}}
+		\left\{\begin{array}{l}
+			x^{*} = 1.4 - x^{*2} - 0.3y^{*}\\
+			y^{*} = x^{*}
+		\end{array}\right. \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow x^{*2} + 1.3x^{*} - 1.4 = 0
+		\Rightarrow x^{*} = \frac{-1.3 \pm \sqrt{1.3^{2} + 5.6}}{2} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow (x^{*}, y^{*}) \in \{(0.7, 0.7), (-2, -2)\}
+		\nonumber
+	\end{equation}
+	Calculando a jacobiana de f:
+	\begin{equation}
+		Df = \left[\begin{array}{cc}
+			\frac{\partial f_{1}}{\partial x} & \frac{\partial f_{1}}{\partial y}\\
+			\frac{\partial f_{2}}{\partial x} & \frac{\partial f_{2}}{\partial x}
+		\end{array}\right]
+		= \left[\begin{array}{cc}
+			-2x & -0.3\\
+			1 & 0
+		\end{array}\right]
+		\nonumber
+	\end{equation}
+	Portanto:
+	\begin{equation}
+		\left\{\begin{array}{l}
+			det(Df(0.7, 0.7) - \lambda I) = \lambda^{2} + 1.4\lambda + 0.3 = 0\\
+			det(Df(-2, -2) - \lambda I) = \lambda^{2} - 4\lambda + 0.3 = 0
+		\end{array}\right. \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		\left\{\begin{array}{l}
+			\lambda = \frac{-1.4 \pm \sqrt{1.4^{2} - 1.2}}{2}\\
+			\lambda = \frac{4 \pm \sqrt{4^{2} - 1.2}}{2}
+		\end{array}\right.
+		\Rightarrow
+		\left\{\begin{array}{l}
+			\lambda \in \{-0.26, -1.14\} \Rightarrow (0.7, 0.7): sela\\
+			\lambda \in \{3.92, 0.08\} \Rightarrow (-2, -2): sela
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	\section{Determina\c{c}\~ao numer\'ica do ponto de sela}
+	Criou-se a seguinte fun\c{c}\~ao, baseada no algoritmo apresentado nos slides:
+	\begin{verbatim}
+def inverse_jacobian_step(x, a):
+    """
+        Determines dx in the Newton-Raphson method
+        :param x: two dimensional input
+        :type x: numpy array
+    """
+    
+    jacobian = np.array([[-2*x[0] - 1, -0.3], [1, -1]])
+    applied = np.array([a - x[0]**2 - 0.3*x[1] - x[0], x[0] - x[1]])
+    return np.array(np.linalg.solve(jacobian, applied))
+	\end{verbatim}
+	A partir dela se determina o dx. Utilizando como condi\c{c}\~ao de parada
+	a soma dos quadrados de dx ser menor do que $10^{-8}$, obteve-se diferentes pontos
+	de converg\^encia, dependendo do chute inicial e da escolha do par\^ametro a:
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{ccc}
+			\hline
+			a & Chute & Ponto obtido\\
+			\hline
+			1.28 & (1, 1) & (0.65479884, 0.65479884)\\
+			1.28 & (-3, -3) & (-1.95479884, -1.95479884)\\
+			1.4 & (1, 1) & (0.7, 0.7)\\
+			1.4 & (-3, -3) & (-2, -2)\\
+			\hline
+		\end{tabular}
+		\caption{Pontos fixos obtidos pelo algoritmo}
+		\label{tab:newton-raphson}
+	\end{table}
+	O que \'e bastante coerente com os resultados obtidos analiticamente, com uma pequena
+	diverg\^encia com rela\c{c}\~ao aos pontos fixos da primeira fun\c{c}\~ao. Por\'em,
+	essas diferen\c{c}as s\~ao justificadas pelas aproxima\c{c}\~oes feitas na dedu\c{c}\~ao
+	anal\'itica, sendo portanto os resultados obtidos numericamente mais pr\'oximo do
+	verdadeiro, provavelmente.
+	\section{Determina\c{c}\~ao de variedades est\'avel e inst\'avel}
+	Para se determinar as variedades de um ponto de sela de um mapa, deve-se primeiramente
+	encontrar os autovetores. Para um mapa de H\'enon qualquer:
+	\begin{equation}
+		Df(x, y) = \left[\begin{array}{cc}
+			2x & -0.3\\
+			1 & 0
+		\end{array}\right]
+	\end{equation}
+	Sejam (a, b) um autovetor correspondente ao autovalor $\lambda$ para um dado ponto. Assim:
+	\begin{equation}
+		\left[\begin{array}{cc}
+			2x^{*} & -0.3\\
+			1 & 0
+		\end{array}\right]
+		\left[\begin{array}{c}
+			a \\ b
+		\end{array}\right]
+		= \left[\begin{array}{cc}
+			\lambda a \\ \lambda b
+		\end{array}\right]
+		\xRightarrow{det(Df) = 0} a = \lambda b
+		\nonumber
+	\end{equation}
+	Dessa forma, como j\'a se tem o autovalor da se\c{c}\~ao anterior, tem-se os autovetores
+	necess\'arios para construir as variedades com o c\'odigo de \textit{kostelich}.
+
+	Escolhendo valores apropriados para os par\^ametros dispon\'iveis e escolhendo-se a
+	orienta\c{c}\~ao correta dos autovetores, p\^ode-se construir as variedades para os
+	dois mapas de Hen\'on, mostradas em \ref{fig:manifolds}.
+	\begin{figure}[H]
+		\centering
+		\begin{subfigure}
+			\centering
+			\includegraphics[width=10cm]{221a.jpg}
+		\end{subfigure}
+		\begin{subfigure}
+			\centering
+			\includegraphics[width=10cm]{221b.jpg}
+		\end{subfigure}
+		\caption{Variedades econtradas (a = 1.28 e a = 1.4).}
+		\label{fig:manifolds}
+	\end{figure}
+	\section{Expoente de \textit{Lyapunov}}
+	Escerveu-se o seguinte c\'odigo para gerar a figura requisitada.
+	\begin{verbatim}
+	import matplotlib.pyplot as plt
+	import numpy as np
+	
+	def logistic_function(a, x):
+		return a*x*(1 - x)
+	
+	def logistic_derivative(a, x):
+		return a*(1 - 2*x)
+	
+	a_space = np.linspace(2, 4, 60000)
+	lyapunov_a_space = []
+	lyapunov_exponent_space = []
+	
+	for a in a_space:
+		orbit = np.random.uniform(0, 1)
+		for i in range(100):
+			orbit = logistic_function(a, orbit)
+			
+		lyapunov_exponent = 0
+		for i in range(100):
+			orbit = logistic_function(a, orbit)
+			if logistic_derivative(a, orbit) != 0:
+				lyapunov_exponent += np.log(np.abs(logistic_derivative(a, orbit)))
+				lyapunov_exponent /= 100
+		if lyapunov_exponent > -1:
+			lyapunov_exponent_space.append(lyapunov_exponent)
+		lyapunov_a_space.append(a)
+		
+	lyapunov_exponent_space = np.array(lyapunov_exponent_space)
+	plt.plot(lyapunov_a_space, lyapunov_exponent_space, ',')
+	plt.plot(a_space, np.zeros(len(a_space)))
+	plt.savefig('lyapunov.jpg')
+
+	\end{verbatim}
+	Obtendo-se assim a figura \ref{fig:lyapunov}.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=10cm]{lyapunov.jpg}
+		\caption{Expoente de \textit{Lyapunov} para o mapa log\'istico}
+		\label{fig:lyapunov}
+	\end{figure}
+\end{document}
