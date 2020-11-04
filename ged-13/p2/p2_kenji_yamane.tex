@@ -1,0 +1,261 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{RESOLUÇÃO DE PROVA: GED-13}
+\author{Kenji Yamane}
+
+\begin{document}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=10cm]{ita_logo.png}
+	\end{figure}
+	\begin{center}
+		\textbf{\normalsize{INSTITUTO TECNOLÓGICO DE AERONÁUTICA}}\\
+		\vspace{2.5cm}
+		\large{Kenji de Souza Yamane}\\
+		\vspace{4.7cm}
+		\textbf{RESOLUÇÃO DA PROVA II}\\
+		\large{GED 13 - PROBABILIDADE E ESTATÍSTICA}\\
+		\vspace{4.7cm}
+		\small{São José dos Campos – SP\\2020}
+	\end{center}
+	\newpage
+	\tableofcontents
+	\newpage
+	\section{Introdução}
+	O presente trabalho contém a solução da Prova II da matéria GED 13 - Probabilidade e
+	Estatística do segundo ano do fundamental do ano de 2020.
+
+	As resoluções quando necess\'ario se utilizam da linguagem de programação R, tendo
+	como plataforma o \textit{Linux}, sobre linha de comando.
+
+	As linhas de código foram diretamente copiadas da linha de comando do sistema operacional
+	e inseridas em um código de \LaTeX, em ambiente \textit{verbatim}, sem nenhuma alteração.
+	O código em \LaTeX, gerou então este arquivo. Todas as figuras deste relat\'orio foram
+	geradas tamb\'em com \LaTeX, com o pacote \textit{tikz}.
+	
+	Como foram diretamente retirados da interface do \textit{Linux}, \textgreater é indicativo
+	de comando, e + é indicativo de comando sequenciado para os c\'odigos em R.
+	\newpage
+	\section{Quest\~ao 1}
+	Seja \textit{X} uma vari\'avel aleat\'oria com densidade dada por
+	\begin{equation}
+		f(x) = \left\{\begin{array}{lc}
+			a(1 + x), & se \quad 0 < x \leq 1\\
+			\frac{2}{3}, & se \quad 1 < x \leq 2 \\
+			0, & $caso contr\'ario$
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	\subsection{a}
+	Obtenha o valor de a.
+	\begin{equation}
+		\int_{-\infty}^{+\infty}f(x)dx = 1 \Rightarrow
+		\int_{-\infty}^{0}f(x)dx + \int_{0}^{1}f(x)dx +
+		\int_{1}^{2}f(x)dx + \int_{2}^{+\infty}f(x)dx = 1 \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow \int_{0}^{1}f(x)dx + \int_{1}^{2}f(x)dx = 1 \Rightarrow
+		\int_{0}^{1}a(1 + x)dx + \int_{1}^{2}\frac{2}{3}dx = 1 \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		\int_{0}^{1}a(1 + x) = \frac{1}{3} \Rightarrow
+		a(x + \frac{x^{2}}{2} + c) \big|_{0}^{1} = \frac{1}{3} \Rightarrow
+		a(1 + \frac{1}{2}) = \frac{1}{3}\Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		a\frac{3}{2} = \frac{1}{3} \Rightarrow
+		a = \frac{2}{9}
+		\nonumber
+	\end{equation}
+	\subsection{b}
+	Calcule $P\left(\frac{1}{2} \leq x \leq \frac{3}{2}\right)$.
+	\begin{equation}
+		P\left(\frac{1}{2} \leq x \leq \frac{3}{2}\right) =
+		\int_{\frac{1}{2}}^{\frac{3}{2}}f(x)dx =
+		\int_{\frac{1}{2}}^{1}f(x)dx + \int_{1}^{\frac{3}{2}}f(x)dx =
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		= \int_{\frac{1}{2}}^{1}\frac{2}{9}(1 + x)dx + \int_{1}^{\frac{3}{2}}\frac{2}{3}dx
+		= \frac{2}{9}(x + \frac{x^{2}}{2} + c)\big|_{\frac{1}{2}}^{1} +
+		\frac{2}{3}(x + c)\big|_{1}^{\frac{3}{2}} =
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		= \frac{2}{9}(\frac{1}{2} + \frac{3}{8}) + \frac{2}{3}\frac{1}{2} =
+		\frac{2}{9}\frac{7}{8} + \frac{1}{3} = \frac{19}{36}
+		\nonumber
+	\end{equation}
+	\newpage
+	\section{Quest\~ao 2}
+	Seja \textit{X} uma vari\'avel aleat\'oria discreta com fun\c{c}\~ao de probabilidade
+	\begin{equation}
+		p(x) = \frac{c}{4^{x}}, \quad x \in \mathbb{N}
+		\nonumber
+	\end{equation}
+	\subsection{a}
+	Obtenha o valor de \textit{c}.
+	\begin{equation}
+		\sum_{i}p_{i}(x) = 1 \Rightarrow \sum_{x = 0}^{\infty} \frac{c}{4^{x}} = 1 \Rightarrow
+		\frac{c}{1 - \frac{1}{4}} = 1 \Rightarrow c\frac{4}{3} = 1 \Rightarrow c = \frac{3}{4}
+		\nonumber
+	\end{equation}
+	\subsection{b}
+	Obtenha a probabilidade de \textit{X} ser par.
+	\begin{equation}
+		P(X = 2k) = p(2k), \quad k \in \mathbb{N} \Rightarrow P(X = 2k) =
+		\frac{c}{4^{2k}} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		P(X|2) = \sum_{k = 0}^{\infty} \frac{c}{16^k} = \frac{c}{1 - \frac{1}{16}} =
+		\frac{3}{4}\frac{16}{15} = \frac{4}{5}
+		\nonumber
+	\end{equation}
+	\newpage
+	\section{Quest\~ao 3}
+	Considere duas retas no $\mathbb{R}^{2}$, dadas por y = 0 e y = 1. Marylin
+	est\'a parada no ponto de origem do plano. Ela escolhe um \^angulo $\theta$ distribu\'ido
+	uniformemente em (0, $\pi$) e desenha um segmento de reta entre as linhas y = 0 e y = 1
+	em um \^angulo $\theta$ a partir da origem no $\mathbb{R}^{2}$. Suponha que o segmento
+	de reta encontre a linha y = 1 no ponto (X, 1).
+	\begin{center}
+		\begin{tikzpicture}
+			\draw[thick, ->] (-2, 0) -- (2, 0) node[anchor=north west] {x};
+			\draw[thick, ->] (0, -2) -- (0, 2) node[anchor=south east] {y};
+			\foreach \x in {-1, 0, 1}
+				\draw (\x cm, -1pt) -- (\x cm, 1pt);
+			\foreach \y in {-1, 0, 1}
+				\draw (-1 pt, \y cm) -- (1 pt, \y cm);
+			\draw (-2, 1) -- (2, 1);
+			\draw (0, 0) -- (1, 1) node[anchor=south] {\footnotesize (X, 1)};
+			\filldraw [gray] (1, 1) circle (1pt);
+			\draw (0.2cm, 0) arc (0:45:0.2cm);
+			\node (A) at (0.35cm, 0.20cm) {$\theta$};
+		\end{tikzpicture}
+	\end{center}
+	\subsection{a}
+	Encontre a fun\c{c}\~ao de densidade de probabilidade de \textit{X}.
+
+	Considere $\Theta$ a vari\'avel aleat\'oria associada \`a vari\'avel $\theta$.
+	Assim:
+	\begin{equation}
+		P(\Theta \leq \theta) = \frac{\theta}{\pi}
+		\nonumber
+	\end{equation}
+	Tem-se, portanto, que:
+	\begin{equation}
+		P(X \leq x) = P(\Theta \geq arccos\left(\frac{x}{\sqrt{x^{2} + 1}}\right)) =
+		1 - P(\Theta \leq arccos\left(\frac{x}{\sqrt{x^{2} + 1}}\right)) =
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		= 1 - \frac{arccos\left(\frac{x}{\sqrt{x^{2} + 1}}\right)}{\pi} \Rightarrow
+		p(x) = \frac{d P(X \leq x)}{dx} = \frac{\frac{1}{\sqrt{1 - \frac{x^{2}}{x^{2} + 1}}}}{\pi}
+		\frac{d\left[\frac{x}{\sqrt{x^{2} + 1}}\right]}{dx}
+		\Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow p(x) = \frac{\sqrt{x^{2} + 1}}{\pi}\frac{1}{(x^{2} + 1)^{\frac{3}{2}}} =
+		\frac{1}{\pi + \pi x^{2}}
+		\nonumber
+	\end{equation}
+	Pode-se ainda confirmar que de fato ela constitui uma fun\c{c}\~ao densidade
+	de probabilidade pois:
+	\begin{equation}
+		\int_{-\infty}^{+\infty}p(x)dx = \lim_{x \rightarrow +\infty}P(X \leq x) =
+		1 - \lim_{x \rightarrow +\infty}\frac{arccos\left(\frac{x}{\sqrt{x^{2} + 1}}\right)}{\pi} =
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		= 1 - \frac{arccos\left(\lim_{x \rightarrow \infty} \frac{1}{\sqrt{1 +
+		\frac{1}{x^{2}}}}\right)}{\pi} =
+		1 - 0 = 1
+		\nonumber
+	\end{equation}
+	O gr\'afico correspondente \`a essa fdp \'e:
+	\begin{center}
+		\begin{tikzpicture}
+			\draw[thick, ->] (-3, 0) -- (3, 0) node[right] {x};
+			\draw[thick, ->] (0, -1.5) -- (0, 1.5) node[right] {y};
+			\draw (-1 pt, 1 cm) -- (1 pt, 1 cm) node[anchor=west] {1};
+			\draw[scale=1, domain=-3:3, smooth, variable=\x, blue]
+			plot ({\x}, {1/(pi + pi*\x*\x)});
+		\end{tikzpicture}
+	\end{center}
+	\subsection{b}
+	Encontre o valor esperado [esperan\c{c}a] da densidade obtida em (a).
+	\begin{equation}
+		E[X] = \int_{-\infty}^{+\infty}xp(x)dx = \int_{-\infty}^{+\infty}\frac{x}{\pi + \pi x^{2}}dx
+		= \int_{-\infty}^{0}\frac{x}{\pi + \pi x^{2}}dx +
+		\int_{0}^{+\infty}\frac{x}{\pi + \pi x^{2}}dx
+		\nonumber
+	\end{equation}
+	Analisando uma das parcelas:
+	\begin{equation}
+		\int_{-\infty}^{0}\frac{x}{\pi + \pi x^{2}}dx =
+		\frac{ln(\pi)}{2\pi} -
+		\lim_{x \rightarrow -\infty} \frac{ln(\pi + \pi x^{2})}{2\pi}
+		\nonumber
+	\end{equation}
+	O qual diverge. Portanto, a esperan\c{c}a requisitada n\~ao existe.
+	\section{Quest\~ao 4}
+	O relatório de uma empresa de seguros apresenta dados estatísticos de danos (sinistros)
+	de veículos na cidade de São Paulo. Os dados mostram que os quilômetros anuais do
+	veículo (ou seja, quilômetros por veículo por ano) dirigidos entre os sinistros de trânsito
+	podem ser representados por uma variável aleatória Normal com média de 15000
+	quilômetros por ano e um coeficiente de variação \footnote{Note que est\'a escrito coeficiente
+	de varia\c{c}\~ao, e n\~ao vari\^ancia.}
+	de 25\%.
+	\begin{equation}
+		CV = 100\frac{s}{\bar{x}} \Rightarrow \frac{s}{\bar{x}} = 0.25 \Rightarrow
+		s = \frac{15000}{4} = 3750
+	\end{equation}
+	\subsection{a}
+	Qual é a probabilidade de um motorista (típico) que dirige 10000 quilômetros por ano
+	sofrer um sinistro em um ano?
+
+	Se X for maior que 10000, ele n\~ao sofrer\'a nenhum sinistro. Se for menor que 5000, sofrer\'a
+	mais do que um sinistro. Portanto, o valor requisitado corresponde \`a:
+	\begin{equation}
+		P(5000 \leq X \leq 10000) = P(X \leq 10000) - P(X \leq 5000)
+		\nonumber
+	\end{equation}
+	Utilizando o R:
+	\begin{verbatim}
+		> pnorm(10000, mean = 15000, sd = 3750) - pnorm(5000, mean = 15000, sd = 3750)
+		[1] 0.08738084
+	\end{verbatim}
+	Portanto, a probabilidade \'e de 8,74\%.
+	\subsection{b}
+	Se o motorista típico rodou 8000 quilômetros em um determinado ano sem ter se
+	acidentado, qual a probabilidade de ele se acidentar no restante do ano?
+	
+	Corresponde \`a:
+	\begin{equation}
+		P(X \geq 8000) = 1 - P(X \leq 8000)
+		\nonumber
+	\end{equation}
+	Usando o R:
+	\begin{verbatim}
+		> 1 - pnorm(8000, mean = 15000, sd = 3750)
+		[1] 0.9690259
+	\end{verbatim}
+	Portanto a probabilidade \'e de 96,9\%.
+\end{document}
