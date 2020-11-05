@@ -1,0 +1,312 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Lista 6}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{O conjunto dos inteiros de 1 a 100}
+	Sabe-se que a \textit{box dimension} de um conjunto S \'e dado por:
+	\begin{equation}
+		boxdim(S) = \lim_{\epsilon \rightarrow 0}\frac{ln(N(\epsilon))}{ln(\frac{1}{\epsilon})}
+		\label{eq:boxdim}
+	\end{equation}
+	No caso do conjunto dos n\'umeros inteiros de 1 a 100, o valor de $N(\epsilon)$ para
+	$\epsilon$ menor que 1 sempre ser\'a 100, pois, toda caixa, por ter tamanho menor que 1,
+	poder\'a cobrir um, e somente um dos inteiros. Ademais, n\~ao importa o qu\~ao pequeno seja
+	$\epsilon$, sempre haver\'a 100 caixas que cobrem os 100 n\'umeros, as quais seriam:
+	\begin{equation}
+		c_{i} = \{x \in \mathbb{R} \; | \; i - \epsilon < x < i + \epsilon\}, \;
+		i \in \{1, 2, 3, ..., 100\}
+		\nonumber
+	\end{equation}
+	De tal forma que a caixa $c_{i}$ cobre o inteiro i.
+
+	Portanto, a equa\c{c}\~ao \ref{eq:boxdim} se simplifica a:
+	\begin{equation}
+		boxdim(\{1, 2, 3, ..., 100\}) =
+		\lim_{\epsilon \rightarrow 0}\frac{ln(100)}{ln(\frac{1}{\epsilon})} =
+		\lim_{\eta \rightarrow \infty}\frac{ln(100)}{\eta} = 0
+		\nonumber
+	\end{equation}
+	\section{O conjunto dos n\'umeros racionais de 0 a 1}
+	J\'a no caso dos racionais entre 0 e 1, n\~ao importa o qu\~ao pequeno seja $\epsilon$,
+	todas as $\frac{1}{\epsilon}$ caixas estar\~ao cobrindo algum n\'umero racional.
+
+	Antes de se realizar a prova em si, provar-se-\'a o seguinte lema: seja um n\'umero
+	irracional positivo $y \in \mathbb{I}$. Ent\~ao, existe um x positivo $\in \mathbb{Q}$ tal que
+	$x < y$.
+
+	Prova do lema:
+	\begin{equation}
+		\exists z = 10^{i}, \, i \in \mathbb{N} \; | \; zy > 1
+		\Rightarrow x = \frac{1}{z} < y
+		\nonumber
+	\end{equation}
+	Segue-se ent\~ao, na demonstra\c{c}\~ao requisitada:
+	
+	No caso de $\epsilon$ ser racional, considerando a caixa $c_{i}$, i arbitr\'ario:
+	\begin{equation}
+		c_{i} = \{x \in \mathbb{R} \; | \; (i - 1)\epsilon < x < i\epsilon\} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow y = \frac{(i - 1)\epsilon + i\epsilon}{2} = \frac{(2i - 1)\epsilon}{2}
+		\Rightarrow y \in c_{i} \; e \; y \in \mathbb{Q}
+		\nonumber
+	\end{equation}
+	No caso de $\epsilon$ ser irracional, pode-se, pelo lema provado anteriormente,
+	escolher um $\epsilon' < \epsilon$, de tal forma que, para a mesma caixa $c_{i}$,
+	pode-se escolher uma caixa $c_{j}'$ associada ao $\epsilon'$ tal que:
+	\begin{equation}
+		c_{j}' \subset c_{i}
+		\label{eq:contains}
+	\end{equation}
+	A caixa $c_{j}'$ est\'a associada ao $\epsilon' \in \mathbb{Q}$. Portanto, como
+	provado anteriormente:
+	\begin{equation}
+		\exists y \in \mathbb{Q} \; | \; y \in c_{j}' \xRightarrow{\ref{eq:contains}}
+		y \in c_{i}
+		\nonumber
+	\end{equation}
+	Portanto todas as $\frac{1}{\epsilon}$ caixas entre 0 e 1 cont\'em algum n\'umero
+	racional para qualquer $\epsilon > 0$. Logo $N(\epsilon) = \frac{1}{\epsilon}$.
+	
+	Assim:
+	\begin{equation}
+		boxdim(\mathbb{Q}\cap[0, 1]) =
+		\lim_{\epsilon \rightarrow 0}\frac{ln(N(\epsilon))}{ln(\frac{1}{\epsilon})} =
+		\lim_{\epsilon \rightarrow 0}\frac{ln(\frac{1}{\epsilon})}{ln(\frac{1}{\epsilon})} =
+		\lim_{\epsilon \rightarrow 0}1 = 1
+		\nonumber
+	\end{equation}
+	O conjunto dos n\'umeros racionais \'e um conjunto cont\'avel, como provado na lista
+	anterior. Al\'em disso, ele \'e de certa forma discreto, tendo n\'umeros irracionais
+	entre seus elementos. Entretanto sua \textit{box counting dimension} resultou em 1.
+	Essa ambival\^encia sugere comportamento fractal.
+	\section{\textit{Box Counting Dimension}}
+	Calculou-se a \textit{boxdim} de 10 milh\~oes de pontos  de uma \'orbita do
+	seguinte mapa de H\'enon:
+	\begin{equation}
+		f(x, y) = (1.4 - x^2 + 0.3y, x)
+		\nonumber
+	\end{equation}
+	Utilizou-se o algoritmo usual para o c\'alculo desse tipo de dimens\~ao. A seguir se
+	tem, por exemplo, as caixas contadas para dois tamanhos $\epsilon$ diferentes.
+	\begin{figure}[H]
+		\subfigure[Figura obtida para $\epsilon$ igual a 0.125]{
+			\includegraphics[width=5.5cm]{8bit.jpg}
+		}
+		\subfigure[Figura obtida para $\epsilon$ igual a 0.03125]{
+			\includegraphics[width=5.5cm]{32bit.jpg}
+		}
+	\end{figure}
+	Realizou-se a contagem de caixas para $\epsilon \in \{\frac{1}{8}, \frac{1}{16},
+	\frac{1}{32}, \frac{1}{64}, \frac{1}{128}, \frac{1}{256}\}$ em \textit{C++} com o seguinte
+	c\'odigo.
+	\begin{verbatim}
+#include <iostream>
+#include <fstream>
+
+#include <cmath>
+#include <cstring>
+
+#define ORBIT_SIZE 10000000
+
+
+void henon_map(double arr[]) {
+    double x = arr[0], y = arr[1];
+    
+    arr[0] = 1.4 - x*x + 0.3*y;
+    arr[1] = x;
+}
+
+int main() {
+    int marked = 0;
+    double orbit[2] = {0, 0};
+    bool grid[1024][1024] = {};
+    std::ofstream o("boxes.txt", std::ofstream::out);
+
+    for (int res = 8; res <= 256; res *= 2) {
+        for (int i = 0; i < ORBIT_SIZE; i++) {
+            if (i > 1000) {
+                int i = floor(res*orbit[0] + 2*res);
+                int j = floor(res*orbit[1] + 2*res);
+                grid[i][j] = true;
+                henon_map(orbit);
+            }
+        }
+
+        for (int i = 0; i < 1024; i++) {
+            for (int j = 0; j < 1024; j++) {
+                if (grid[i][j]) {
+                    marked++;
+                }
+            }
+        }
+
+        o << log2(res) << ",";
+        o << log2(marked) << std::endl;
+        memset(grid, sizeof(grid), false);
+        marked = 0;
+    }
+
+    o.close();
+
+    return 0;
+}
+
+	\end{verbatim}
+	E em seguida, realizou-se a regress\~ao linear, e os gr\'aficos em \textit{Python},
+	com o seguinte c\'odigo realizando a regress\~ao linear e seu gr\'afico.
+	\begin{verbatim}
+import csv
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+horizontal = []
+vertical = []
+
+with open('boxes.txt') as csvfile:
+    spamreader = csv.reader(csvfile, delimiter=',')
+    for row in spamreader:
+        horizontal.append(float(row[0]))
+        vertical.append(float(row[1]))
+
+x = np.array(horizontal)
+y = np.array(vertical)
+dim, C, r_value, p_value, err = stats.linregress(x, y)
+print('dimensao:', dim, err)
+print('C:', C)
+print('r2:', r_value**2)
+print('p:', p_value)
+plt.plot(horizontal, vertical, 'r.')
+plt.plot(np.linspace(3, 8), dim*np.linspace(3, 8) + C)
+plt.savefig('boxdim.jpg')
+
+	\end{verbatim}
+	Obtendo-se assim o seguinte gr\'afico de $log_{2}N(\epsilon)$ por
+	$log_{2}\frac{1}{\epsilon}$.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=6.5cm]{boxdim.jpg}
+		\caption{Regress\~ao obtida para as contagens de caixas.}
+	\end{figure}
+	Obteve-se um valor de 0.99 para o coeficiente de determina\c{c}\~ao, o que indica
+	coer\^encia no modelo linear, e um valor de 1,38 para a dimens\~ao fractal do
+	conjunto de H\'enon, bem diferente da obtida pelo livro. Isto pode ser advindo das
+	diferentes ferramentas utilizadas, cujas diferen\c{c}as podem impactar um resultado
+	caso este seja muito sens\'ivel.
+	\section{\textit{Correlation dimension}}
+	Utilizou-se da mesma forma, \textit{C++} para realizar a contagem, com uma \'orbita de
+	tamanho 1000 e $r \in \{\frac{1}{4}, \frac{1}{8}, \frac{1}{16}, \frac{1}{32}, \frac{1}{64},
+	\frac{1}{128}, \frac{1}{256}\}$, c\'odigo mostrado
+	a seguir.
+	\begin{verbatim}
+#include <iostream>
+#include <fstream>
+#include <utility>
+
+#include <cmath>
+#include <cstring>
+
+#define ORBIT_SIZE 1000
+
+
+void henon_map(double arr[]) {
+    double x = arr[0], y = arr[1];
+    
+    arr[0] = 1.4 - x*x + 0.3*y;
+    arr[1] = x;
+}
+
+int main() {
+    double arr[2] = {0, 0};
+    double dist[1000000], dx, dy;
+    int len = 0;
+    std::pair<double, double> orbit[ORBIT_SIZE + 1];
+    std::ofstream o("corr.txt", std::ofstream::out);
+    	
+    for (int i = 0; i < 2*ORBIT_SIZE; i++) {
+        if (i >= ORBIT_SIZE) {
+            orbit[i - ORBIT_SIZE].first = arr[0];
+            orbit[i - ORBIT_SIZE].second = arr[1];
+        }
+        henon_map(arr);
+    }
+    	
+    for (int i = 0; i < ORBIT_SIZE; i++) {
+        for (int j = i + 1; j < ORBIT_SIZE; j++) {
+            dx = orbit[i].first - orbit[j].first;
+            dy = orbit[i].second - orbit[j].second;
+            dist[len++] = sqrt(dx*dx + dy*dy);
+        }
+    }
+    	
+    double C = 0;
+    double choose2 = ORBIT_SIZE*(ORBIT_SIZE - 1)/2;
+    for (int res = 4; res <= 256; res *= 2) {
+        for (int i = 0; i < len; i++) {
+            if (dist[i] < 1.0/res) {
+                C += 1;
+            }
+        }
+        o << log2(1.0/res) << ",";
+        o << log2(C/choose2) << std::endl;
+        C = 0;
+    }
+    	
+    o.close();
+    
+    return 0;
+}
+
+	\end{verbatim}
+	Utilizando-se novamente da mesma forma que no \textit{box counting dimension} \textit{Python}
+	para tratar os dados, com o seguinte c\'odigo.
+	\begin{verbatim}
+import csv
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+horizontal = []
+vertical = []
+
+with open('corr.txt') as csvfile:
+    spamreader = csv.reader(csvfile, delimiter=',')
+    for row in spamreader:
+        horizontal.append(float(row[0]))
+        vertical.append(float(row[1]))
+
+x = np.array(horizontal)
+y = np.array(vertical)
+dim, C, r_value, p_value, err = stats.linregress(x, y)
+print('dimensao:', dim, err)
+print('C:', C)
+print('r2:', r_value**2)
+print('p:', p_value)
+plt.plot(horizontal, vertical, 'r.')
+plt.plot(np.linspace(-8, -2), dim*np.linspace(-8, -2) + C)
+plt.savefig('cordim.jpg')
+	\end{verbatim}
+	Com este c\'odigo, obteve-se a seguinte regress\~ao.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=6.5cm]{cordim.jpg}
+		\caption{Regress\~ao obtida para a dimens\~ao de correla\c{c}\~ao.}
+	\end{figure}
+	Obteve-se com este m\'etodo um coeficiente de determina\c{c}\~ao de 0.999, novamente
+	confirmando o modelo linear e uma dimens\~ao de 1.28, de novo levemente maior que a
+	determinada no livro, refor\c{c}ando a no\c{c}\~ao de uma certa imprecis\~ao.
+\end{document}
