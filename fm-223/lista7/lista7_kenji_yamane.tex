@@ -1,0 +1,228 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Lista 7}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{Mapa de \textit{Tinkerbell}}
+	Utilizou-se o seguinte c\'odigo para se determinar a \'orbita requerida.
+	\begin{verbatim}
+import numpy as np
+import matplotlib.pyplot as plt
+
+ORBIT_LENGTH = 1000000
+DISCARDED_POINTS = 100
+
+def tinkerbell_map(x, y, c4):
+    return x**2 - y**2 - 0.3*x - 0.6*y, 2*x*y + 2*x + c4*y
+
+horizontal = []
+vertical = []
+
+x_travel = 0.1
+y_travel = 0.1
+
+for i in range(ORBIT_LENGTH):
+    x_travel, y_travel = tinkerbell_map(x_travel, y_travel, 0.7)
+    if i > DISCARDED_POINTS:
+        horizontal.append(x_travel)
+        vertical.append(y_travel)
+
+plt.plot(horizontal, vertical, ',')
+plt.savefig('./tinkerbell/bigger.jpg')
+
+	\end{verbatim}
+	Utilizou-se uma \'orbita de tamanho de um milh\~ao de pontos, descartando-se os 100
+	primeiros pontos gerados. Para o valor de 0,5 para o c4 e valores pr\'oximos dele,
+	de fato obtiveram-se formas aproximadamente ovais, como mostrado a seguir.
+	\begin{figure}[H]
+		\centering
+		\subfigure[\textit{Tinkerbell} para $c_{4}$ = 0,4]{
+			\includegraphics[width=5.5cm]{tinkerbell/slightly_smaller.jpg}
+		}
+		\subfigure[\textit{Tinkerbell} para $c_{4}$ = 0,5]{
+			\includegraphics[width=5.5cm]{tinkerbell/normal.jpg}
+		}
+		\subfigure[\textit{Tinkerbell} para $c_{4}$ = 0,6]{
+			\includegraphics[width=5.5cm]{tinkerbell/slightly_bigger.jpg}
+		}
+		\caption{\'Orbitas obtidas para valores pr\'oximos de 0,5 para o $c_{4}$.}
+	\end{figure}
+	Para valores maiores que 0,5, obteve-se um formato parecido com uma espiral e para valores
+	menores que 0,5, obteve-se novamente ciclos quasiperi\'odico, com formatos mais diferentes
+	de um oval, mostrados a seguir.
+	\begin{figure}[H]
+		\centering
+		\subfigure[\textit{Tinkerbell} para $c_{4}$ = 0]{
+			\includegraphics[width=5.5cm]{tinkerbell/smaller.jpg}
+		}
+		\subfigure[\textit{Tinkerbell} para $c_{4}$ = 0,7]{
+			\includegraphics[width=5.5cm]{tinkerbell/bigger.jpg}
+		}
+		\caption{\'Orbitas obtidas para valores mais distantes de 0,5 para o $c_{4}$.}
+	\end{figure}
+	Para valores bem maiores ou bem menores que 0,5 para $c_{4}$, problemas de
+	\textit{overflow} come\c{c}aram a aparecer, o que sugere que bacias de atra\c{c}\~ao para
+	o infinito come\c{c}am a aparecer.
+	\section{C\'alculo num\'erico da derivada}
+	Utilizando a fun\c{c}\~ao arco tangente:
+	\begin{equation}
+		f(x) = arctan(x)
+		\nonumber
+	\end{equation}
+	Cuja derivada anal\'itica corresponde a:
+	\begin{equation}
+		f'(x) = \frac{1}{1 + x^2}
+		\nonumber
+	\end{equation}
+	Aproximou-se numericamente o valor desta derivada para x = 1 por diferen\c{c}as
+	finitas progressivas, e calculou-se o erro:
+	\begin{equation}
+		E(\partial x) = \left|
+		f'(1) - \frac{f(1 + \partial x) - f(x)}{\partial x}
+		\right|
+		\nonumber
+	\end{equation}
+	Para um valor de $\partial x = 10^{-i}, \quad i \in \{0, 1, 2, ..., 16\}$, podendo-se
+	ent\~ao gerar um gr\'afico E por $\partial x$. Utilizou-se o seguinte c\'odigo:
+	\begin{verbatim}
+from math import atan
+import matplotlib.pyplot as plt
+
+horizontal = []
+vertical = []
+
+for i in range(17):
+    dx = 10**(-i)
+    horizontal.append(dx)
+    vertical.append(abs(1/2 - (atan(1 + dx) - atan(1))/dx))
+
+fig, ax = plt.subplots()
+
+ax.plot(horizontal, vertical, '.')
+plt.xlabel('dx')
+plt.ylabel('E')
+ax.set_xscale('log')
+plt.savefig('derivative.jpg')
+
+	\end{verbatim}
+	Com o qual p\^ode-se gerar o seguinte gr\'afico.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=6cm]{derivative.jpg}
+		\caption{Valor obtido pela aproxima\c{c}\~ao para diferentes $\partial x$.}
+	\end{figure}
+	Onde se observa claramente uma diverg\^encia com a realidade, derivada anal\'itica, para
+	valores muito grandes e valores muito pequenos de $\partial x$.
+	
+	O erro associado \`a valores muito grandes \'e explicado simplesmente pela aproxima\c{c}\~ao
+	necessitar de valores bem pequenos para ser v\'alida, um $\partial x$, por defini\c{c}\~ao
+	\'e infinitamente pequeno.
+
+	O erro associado \`a valores muito pequenos, entretanto, \'e explicado por outra
+	\'optica, dado que um valor menor deveria ser mais preciso. Ele \'e um sintoma do erro
+	intransigente das opera\c{c}\~oes de uma m\'aquina, a qual precisa aproximar um n\'umero real
+	\`as vezes, gerando um erro associado. Quando se trabalha com valores muito pequenos,
+	faz sentido esta inabilidade aparecer.
+	\section{Eps}
+	Utilizou-se o seguinte c\'odigo em \textit{Python} para se calcular o eps da minha m\'aquina,
+	utilizando algoritmo de busca bin\'aria.
+	\begin{verbatim}
+import numpy as np
+
+lesser = 1e-20
+bigger = 1
+
+NUM_ITERATIONS = 100
+
+for i in range(NUM_ITERATIONS):
+    middle = (lesser + bigger)/2
+    
+    if 1 + middle == 1:
+        lesser = middle
+    else:
+        bigger = middle
+
+print(bigger)
+print(np.finfo(float).eps)
+	\end{verbatim}
+	Obteve-se o valor de $1,1102230246251588.10^{-16}$ numericamente com o algoritmo de busca
+	bin\'aria e o valor de $2,220446049250313.10^{-16}$ com a fun\c{c}\~ao do pacote
+	\textit{numpy}, claramente o dobro. Somando-se o valor obtido numericamente com 1,
+	de fato, resulta num valor maior que 1, por\'em errado, como se estivesse somado
+	com o valor obtido por \textit{numpy}. Pesquisou-se no site do \textit{Matlab} e ele
+	tamb\'em indica o segundo valor como o valor de eps, dizendo ser correspondente
+	a $2^{-52}$. O fato de valores at\'e metade ainda resultarem em um valor diferente de
+	1 quando somados a 1 pode ser explicado portanto levando em considera\c{c}\~ao que
+	apesar deles serem menores que o \'ultimo bit dispon\'ivel, s\~ao aproximados
+	na conta da m\'aquina para este bit.
+	\section{N\'umeros de \textit{Lyapunov}}
+	Utilizou-se o seguinte c\'odigo feito com base no algoritmo fornecido para
+	calcular os expoentes de \textit{Lyapunov} assim como a dimens\~ao de \textit{Lyapunov}.
+	\begin{verbatim}
+import numpy as np
+from math import log
+
+ORBIT_LENGTH = 10000
+MAP_DIMENSION = 2
+
+def henon_map(vet):
+    return np.array([1.4 - vet[0]**2 + 0.3*vet[1], vet[0]])
+
+def henon_jacobian(vet):
+    return np.array([[-2*vet[0], 0.3], [1, 0]])
+
+eye = np.eye(MAP_DIMENSION)
+w = []
+for i in range(MAP_DIMENSION):
+    w.append(eye[i])
+v = np.array([0, 0])
+lyapunov_exponents = np.zeros(MAP_DIMENSION)
+
+for i in range(ORBIT_LENGTH):
+    z = []
+    for j in range(MAP_DIMENSION):
+        z.append(np.matmul(henon_jacobian(v), w[j]))
+
+    y = []
+    for j in range(MAP_DIMENSION):
+        y.append(z[j])
+        for k in range(j):
+            y[j] -= y[k]*np.dot(z[j], y[k])/np.dot(y[k], y[k])
+	
+    for j in range(MAP_DIMENSION):
+        lyapunov_exponents[j] += log(np.linalg.norm(y[j]))
+
+    for j in range(MAP_DIMENSION):
+        w[j] = y[j]/np.linalg.norm(y[j])
+
+    v = henon_map(v)
+
+for i in range(MAP_DIMENSION):
+    lyapunov_exponents[i] /= ORBIT_LENGTH
+
+for i in range(MAP_DIMENSION):
+    print(lyapunov_exponents[i])
+
+print('dimension:', 1 + lyapunov_exponents[0]/abs(lyapunov_exponents[1]))
+
+	\end{verbatim}
+	Obtendo-se com este c\'odigo valores de 0.413 e -1.617 para os expoentes de
+	\textit{Lyapunov}, os quais est\~ao perfeitamente condizentes com os valores indicados
+	no livro, estes os quais s\~ao basicamentes os encontrados pelo c\'odigo porem truncados
+	na segunda casa decimal.
+
+	A dimens\~ao de \textit{Lyapunov} obtida foi de 1,26, bem mais pr\'oxima do valor
+	encontrado pelo livro, 1,27, do que o valor encontrado na lista passada, 1,38, o que
+	sugere como o valor do livro est\'a mais pr\'oximo do valor real.
+\end{document}
