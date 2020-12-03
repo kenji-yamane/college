@@ -1,0 +1,556 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Lista 8}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{Medida natural de um mapa linear por partes}
+	Calculou-se a fun\c{c}\~ao p cuja integral resulta na medida
+	natural para o seguinte mapa:
+	\begin{equation}
+		f(x) = \left\{\begin{array}{ll}
+			2 + \sqrt{2}(x - 1) & se \quad 0 \leq x \leq \frac{2 - \sqrt{2}}{2}\\
+			\sqrt{2}(1 - x) & se \quad \frac{2 - \sqrt{2}}{2} \leq x \leq 1
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	Utilizando o seguinte c\'odigo em \textit{Python}:
+	\begin{verbatim}
+import numpy as np
+from math import sqrt
+import matplotlib.pyplot as plt
+
+NUM_BINS = 100
+ORBIT_LEN = 300000000
+CUTS = 1
+
+def natural_measure(func, start, end):
+    bin_length = (end - start)/NUM_BINS
+    bins = np.zeros(NUM_BINS)
+    orbit_point = (start + end)/2
+    orbit_point = (start + orbit_point)/2
+    orbit_point = (start + orbit_point)/2
+
+    for i in range(ORBIT_LEN):
+        orbit_point = func(orbit_point)
+        		
+        to_start = orbit_point - start
+        to_bins = int(to_start/bin_length)
+        bins[to_bins] = bins[to_bins] + 1
+	
+    bins /= ORBIT_LEN # natural measure
+    bins /= bin_length # invariant measure
+    
+    return bins
+
+def critical_map(x):
+    c = 1 - sqrt(2)/2
+    if x < c:
+        return 2 + sqrt(2)*(x - 1)
+    else:
+        return sqrt(2)*(1 - x)
+
+def logistic_map(x):
+    return 4*x*(1 - x)
+
+x = np.linspace(0, 1, NUM_BINS)
+y = natural_measure(critical_map, 0, 1)
+x = x[CUTS:-CUTS]
+y = y[CUTS:-CUTS]
+plt.ylim(0, 2.5)
+plt.plot(x, y, '.')
+plt.savefig('critical_measure.jpg')
+
+	\end{verbatim}
+	Obtendo-se desta forma a seguinte imagem, posta ao lado da imagem obtida no livro
+	do \textit{Alligood}:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Fun\c{c}\~ao p obtida pelo c\'odigo.]{
+			\includegraphics[width=5.5cm]{measures/critical_measure.jpg}
+		}
+		\subfigure[Correspondente apresentado no livro.]{
+			\includegraphics[width=5.5cm]{measures/critical_book.jpg}
+		}
+		\caption{Densidade de medida.}
+	\end{figure}
+	Inicialmente o ru\'ido associado estava bem maior por\'em notou-se que quanto
+	menos intervalos e maior a \'orbita, maior era a precis\~ao obtida, resultando nesta
+	imagem, cuja semelhan\c{c}a com a do livro de fato \'e grande. \'E razo\'avel assumir que
+	no limite da \'orbita ao infinito, o resultado do c\'ogido iria convergir ao obtido
+	pelo livro.
+	\section{Medida natural do mapa log\'istico}
+	Utilizou-se o mesmo c\'odigo, alterando par\^ametros como o tamanho da \'orbita,
+	para se calcular a densidade de medida do mapa log\'istico com a = 4:
+	\begin{equation}
+		G(x) = 4x(1 - x)
+		\nonumber
+	\end{equation}
+	Obtendo-se assim o seguinte gr\'afico, posto ao lado do obtido pelo livro do
+	\textit{Alligood}:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Fun\c{c}\~ao p obtida pelo c\'odigo.]{
+			\includegraphics[width=5.5cm]{measures/logistic_measure.jpg}
+		}
+		\subfigure[Correspondente apresentado no livro.]{
+			\includegraphics[width=5.5cm]{measures/logistic_book.jpg}
+		}
+		\caption{Densidade de medida.}
+	\end{figure}
+	Percebe-se como ele est\'a bem mais pr\'oximo da curva te\'orica em rela\c{c}\~ao
+	ao mapa anterior, e vale enfatizar como foi necess\'ario uma \'orbita menor que a anterior
+	para se obter esta imagem, podendo-se aumentar tamb\'em o n\'umero de intervalos usados.
+	Isso provavelmente decorre do fato desta fun\c{c}\~ao ser suave, e portanto mais bem
+	comportada em termos de derivada e \'orbitas.
+	\section{Exerc\'icio 7.1}
+	\subsection{a}
+	\begin{equation}
+		\ddot{x} + kx = 0
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		y = \dot{x} \Rightarrow \dot{y} = \ddot{x} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow \left\{\begin{array}{lll}
+			\dot{x} & = & y\\
+			\dot{y} & = & -kx
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	Assim a matriz associada \'e:
+	\begin{equation}
+		A = \left[\begin{array}{cc}
+			0 & 1\\
+			-k & 0
+		\end{array}\right] \Rightarrow
+		det(A - I\lambda) = \left|\begin{array}{cc}
+			-\lambda & 1\\
+			-k & -\lambda
+		\end{array}\right| \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow det(A - I\lambda) = \lambda^2 + k
+		\nonumber
+	\end{equation}
+	\subsection{b}
+	Caso k seja positivo, os autovalores ser\~ao puramente imagin\'arios,
+	o que implica em curvas peri\'odicas ao redor da origem. Utilizando
+	o seguinte c\'odigo:
+	\begin{verbatim}
+import numpy as np
+from math import cos, sin, pi
+import matplotlib.pyplot as plt
+
+TRAJECTORY_LENGTH = 7000
+TIME_STEP = 0.001
+ARROW_RESOLUTION = 0.0004
+ARROW_STEP = 1000
+
+def rotation_mtx(theta):
+    row_1 = [cos(theta), -sin(theta)]
+    row_2 = [sin(theta), cos(theta)]
+    
+    return np.array([row_1, row_2])
+
+def ode_law(x):
+    k = 1
+    return np.array([x[1], -k*x[0]])
+
+def runge_kutta_step(x):
+    x1 = TIME_STEP*ode_law(x)
+    x2 = TIME_STEP*ode_law(x + x1/2)
+    
+    return x + x2
+
+horizontal = []
+vertical = []
+
+def draw_arrow(point, direction):
+    original_point = np.array(point)
+    direction /= np.linalg.norm(direction)
+    
+    end_1 = np.matmul(rotation_mtx(3*pi/4), direction)
+    end_2 = np.matmul(rotation_mtx(-3*pi/4), direction)
+    
+    for i in range(100):
+        point += end_1*ARROW_RESOLUTION
+        horizontal.append(point[0])
+        vertical.append(point[1])
+    	
+    point = original_point
+    for i in range(100):
+        point += end_2*ARROW_RESOLUTION
+        horizontal.append(point[0])
+        vertical.append(point[1])
+
+for i in range(9):
+    orbit_point = np.array([0, (i + 1)/10])
+    direction = ode_law(orbit_point)
+    arrows = 0
+
+    for j in range(TRAJECTORY_LENGTH):
+        if arrows == ARROW_STEP:
+            direction = ode_law(orbit_point)
+            draw_arrow(np.array(orbit_point), direction)
+            arrows = 0
+    orbit_point = runge_kutta_step(orbit_point)
+    
+    horizontal.append(orbit_point[0])
+    vertical.append(orbit_point[1])
+    
+    arrows += 1
+
+fig, ax = plt.subplots()
+ax.spines['left'].set_position('center')
+ax.spines['right'].set_color('none')
+ax.spines['bottom'].set_position('center')
+ax.spines['top'].set_color('none')
+
+ax.plot(horizontal, vertical, 'k,')
+plt.savefig('harmonic_mhs.jpg')
+
+	\end{verbatim}
+	Obt\'em-se a seguinte figura para o plano de fases da EDO, para k = 1.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=6cm]{phase_planes/harmonic_mhs.jpg}
+		\caption{Plano de fases para a EDO harm\^onica com k positivo.}
+	\end{figure}
+	O que corrobora o resultado previsto teoricamente.
+	
+	Para k negativo:
+	\begin{equation}
+		\lambda = -\sigma^2 \Rightarrow det(A - I\lambda) = \lambda^2 + k \Rightarrow
+		\lambda^2 - \sigma^2 = 0 \Rightarrow \lambda \in \{\sigma, -\sigma\}
+		\nonumber
+	\end{equation}
+	Sendo portanto um ponto de sela. Encontrando o autovetor de $\sigma$:
+	\begin{equation}
+		\left[\begin{array}{cc}
+			0 & 1\\
+			\sigma^2 & 0
+		\end{array}\right] \left[\begin{array}{c}
+			a\\
+			b
+		\end{array}\right] = \left[\begin{array}{c}
+			\sigma a\\
+			\sigma b
+		\end{array}\right] \Rightarrow
+		b = \sigma a \Rightarrow v_{\sigma} = \left[\begin{array}{c}
+			1\\
+			\sigma
+		\end{array}\right]
+		\nonumber
+	\end{equation}
+	Analogamente, para $-\sigma$:
+	\begin{equation}
+		\Rightarrow v_{-\sigma} = \left[\begin{array}{c}
+			1\\
+			-\sigma
+		\end{array}\right]
+		\nonumber
+	\end{equation}
+	Adaptando o mesmo c\'odigo para funcionar com k = -1, obteve-se a seguinte figura:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=6cm]{phase_planes/exponential_msh.jpg}
+		\caption{Plano de fases para a EDO harm\^onica com k negativo.}
+	\end{figure}
+	O que novamente corrobora com o resultado previsto numericamente. Em virtude da forma
+	como o c\'odigo foi escrito, a densidade de flechas indica a rela\c{c}\~ao com o tempo.
+	Enquanto na primeira figura esta \'e constante, nesta de agora os efeitos exponenciais
+	est\~ao vis\'iveis.
+	
+	Para k = 0:
+	\begin{equation}
+		\dot{y} = kx \Rightarrow \dot{y} = 0 \Rightarrow y = c \Rightarrow x = ct + d
+		\nonumber
+	\end{equation}
+	Portanto, para valores positivos de y, x aumenta, para valores negativos de y, x
+	diminui, e toda a reta y = 0 corresponde a \textit{equilibria}.
+
+	Inserindo como pontos iniciais como sendo da reta x = 0 no c\'odigo usado anteriormente:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=6cm]{phase_planes/zero_mhs.jpg}
+		\caption{Plano de fases para a EDO harm\^onica com k nulo.}
+	\end{figure}
+	A densidade de flechas corretamente mostra que quanto maior o m\'odulo de y,
+	maior o m\'odulo da taxa de varia\c{c}\~ao de x.
+	\section{Exerc\'icio 7.3}
+	Os pontos de equil\'ibrio correspondem \`aqueles tais que \textbf{f}(\textbf{x}) = 0.
+	Assim:
+	\begin{equation}
+		\left\{\begin{array}{c}
+			2x - y = 0\\
+			x^2 + 4y = 0
+		\end{array}\right. \Rightarrow
+		y = 2x \Rightarrow x^2 + 8x = 0 \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow x \in \{0, -8\}
+		\nonumber
+	\end{equation}
+	Como $y = 2x$, os pontos de equil\'ibrio s\~ao (0, 0) e (-8, -16).
+	\begin{equation}
+		D_f = \left[\begin{array}{cc}
+			\frac{\partial f_1}{\partial x} & \frac{\partial f_1}{\partial y}\\
+			\frac{\partial f_2}{\partial x} & \frac{\partial f_2}{\partial y}
+		\end{array}\right] \Rightarrow
+		D_f = \left[\begin{array}{cc}
+			2 & -1\\
+			2x & 4
+		\end{array}\right]
+		\nonumber
+	\end{equation}
+	Para o ponto (0, 0), a matriz $D_f$ \'e triangular superior e portanto seus
+	autovalores s\~ao os elementos da diagonal principal, 2 e 4. Como ambos s\~ao
+	positivos, (0, 0) corresponde a um ponto inst\'avel.
+
+	Para o ponto (-8, -16):
+	\begin{equation}
+		D_f(-8, -16) = \left[\begin{array}{cc}
+			2 & -1\\
+			-16 & 4
+		\end{array}\right] \Rightarrow
+		det(D_f(-8, -16) - \lambda I) = \left|\begin{array}{cc}
+			2 - \lambda & -1\\
+			-16 & 4 - \lambda
+		\end{array}\right| \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow det(D_f(-8, -16) - \lambda I) = \lambda^2 - 6\lambda - 8 = 0
+		\Rightarrow \lambda = \frac{6 \pm \sqrt{36 + 48}}{2} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\lambda = 3 \pm \sqrt{21}
+		\nonumber
+	\end{equation}
+	Como pelo menos um dos autovalores \'e positivo e nenhum \'e nulo, (-8, -16)
+	tamb\'em \'e inst\'avel.
+	\section{Exerc\'icio 7.9}
+	\begin{equation}
+		\ddot{x} + \dot{x} + x + x^3 = 0
+		\nonumber
+	\end{equation}
+	O que \'e equivalente a:
+	\begin{equation}
+		\left\{\begin{array}{l}
+			\dot{x} = y\\
+			\dot{y} = -x - x^3 - y\\
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		D_f = \left[\begin{array}{cc}
+			\frac{\partial f_1}{\partial x} & \frac{\partial f_1}{\partial y}\\
+			\frac{\partial f_2}{\partial x} & \frac{\partial f_2}{\partial y}
+		\end{array}\right] \Rightarrow
+		D_f = \left[\begin{array}{cc}
+			0 & 1\\
+			-1 - 3x^2 & -1
+		\end{array}\right]
+		\nonumber
+	\end{equation}
+	Para o ponto (0, 0):
+	\begin{equation}
+		D_f = \left[\begin{array}{cc}
+			0 & 1\\
+			-1 & -1
+		\end{array}\right] \Rightarrow
+		det(D_f - \lambda I) = \left|\begin{array}{cc}
+			-\lambda & 1\\
+			-1 & -1 - \lambda
+		\end{array}\right| \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		det(D_f - \lambda I) = \lambda^2 + \lambda + 1 = 0 \Rightarrow
+		\lambda = \frac{-1 \pm \sqrt{1 - 4}}{2} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\lambda \in \{cis(\frac{2\pi}{3}), cis(\frac{4\pi}{3})\}
+		\nonumber
+	\end{equation}
+	Assim, todos os autovalores da fun\c{c}\~ao possuem parte real estritamente negativa
+	e portanto (0, 0) \'e um ponto assintoticamente est\'avel.
+	\section{Exerc\'icio 7.16}
+	A EDO \'e equivalente a:
+	\begin{equation}
+		\left\{\begin{array}{l}
+			\dot{x} = y\\
+			\dot{y} = x - ax^3
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	Pontos de equil\'ibrio devem resultar no vetor nulo:
+	\begin{equation}
+		\left\{\begin{array}{l}
+			y = 0\\
+			x - ax^3 = 0
+		\end{array}\right. \Rightarrow x(1 - ax^2) = 0
+		\nonumber
+	\end{equation}
+	Assim (0, 0) \'e ponto de equil\'ibrio e, se a for positivo, $(\pm\frac{1}{\sqrt{a}}, 0)$
+	tamb\'em s\~ao.
+	\begin{equation}
+		D_f = \left[\begin{array}{cc}
+			\frac{\partial f_1}{\partial x} & \frac{\partial f_1}{\partial y}\\
+			\frac{\partial f_2}{\partial x} & \frac{\partial f_2}{\partial y}
+		\end{array}\right] \Rightarrow
+		D_f = \left[\begin{array}{cc}
+			0 & 1\\
+			1 - 3ax^2 & 0
+		\end{array}\right] \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow det(D_f - \lambda I) = \lambda^2 - 1 + 3ax^2 = 0
+		\label{eq:characteristic}
+	\end{equation}
+	Assim, para (0, 0), os autovalores s\~ao 1 e -1. Como pelo menos um dos autovalores \'e
+	positivo, (0, 0) \'e inst\'avel. Com rela\c{c}\~ao a seus autovetores:
+	\begin{equation}
+		\left[\begin{array}{cc}
+			0 & 1\\
+			1 & 0
+		\end{array}\right]
+		\left[\begin{array}{c}
+			a\\
+			b
+		\end{array}\right] =
+		\left[\begin{array}{c}
+			a\\
+			b
+		\end{array}\right] \Rightarrow v_1 =
+		\left[\begin{array}{c}
+			1\\
+			1
+		\end{array}\right]
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\left[\begin{array}{cc}
+			0 & 1\\
+			1 & 0
+		\end{array}\right]
+		\left[\begin{array}{c}
+			a\\
+			b
+		\end{array}\right] =
+		\left[\begin{array}{c}
+			-a\\
+			-b
+		\end{array}\right] \Rightarrow v_{-1} =
+		\left[\begin{array}{c}
+			1\\
+			-1
+		\end{array}\right]
+		\nonumber
+	\end{equation}
+	Caso a seja positivo, pode-se concluir tamb\'em para $(\pm\frac{1}{\sqrt{a}}, 0)$ a partir
+	da equa\c{c}\~ao \ref{eq:characteristic} que os autovalores para os dois s\~ao
+	$\pm i\sqrt{2}$. Isso significa que os dois equil\'ibrios n\~ao s\~ao hiperb\'olicos
+	e n\~ao \'e poss\'ivel determinar conclus\~oes a respeito de suas estabilidades somente
+	com a jacobiana.
+
+	Utilizando o mesmo c\'odigo do exerc\'icio 7.1, adaptando e modificando os valores iniciais
+	para esta fun\c{c}\~ao, p\^ode-se construir diversos planos de fases para esta fam\'ilia
+	de EDO's:
+	\begin{figure}[H]
+		\centering
+		\subfigure[a = -1.]{
+			\includegraphics[width=5.5cm]{phase_planes/a_minus.jpg}
+		}
+		\subfigure[a = 1.]{
+			\includegraphics[width=5.5cm]{phase_planes/a_one.jpg}
+		}
+		\caption{Planos de fase para a EDO em pauta.}
+	\end{figure}
+	Como esperado, para a negativo, (0, 0), o \'unico ponto de equil\'ibrio, atua como ponto
+	inst\'avel, gerando um plano de fase bem semelhante a de um mapa linear de equil\'ibrio
+	correspondente. As curvas quando tomadas em mais tempo divergem para o infinito.
+
+	Para a igual a 1, pode-se perceber que curvas peri\'odicas se formam ao redor dos pontos
+	$(\pm\frac{1}{\sqrt{a}}, 0)$, o que sugere que eles sejam pontos est\'aveis, sem serem
+	assintoticamente. O comportamento do ponto (0, 0) ainda \'e congruente com o previsto
+	pela teoria, inst\'avel.
+	
+	Tamb\'em foi testado com valores menores que 1:
+	\begin{figure}[H]
+		\centering
+		\subfigure[a = 0,5.]{
+			\includegraphics[width=5.5cm]{phase_planes/a_half.jpg}
+		}
+		\subfigure[a = 0,25.]{
+			\includegraphics[width=5.5cm]{phase_planes/a_quarter.jpg}
+		}
+		\caption{Planos de fase para a EDO em pauta.}
+	\end{figure}
+	Percebe-se que os pontos $(\pm\frac{1}{\sqrt{a}}, 0)$ se afastam da origem, pois o valor
+	de a diminui, mas seus comportamentos continuam os mesmos, com curvas peri\'odicas
+	ao seu redor. Estes mapas se equivalem ao a igual a 1 por\'em com uma escala cada vez
+	maior.
+
+	Por \'ultimo, testou-se com valores bem maiores que 1.
+	\begin{figure}[H]
+		\centering
+		\subfigure[a = 10.]{
+			\includegraphics[width=5.5cm]{phase_planes/a_ten.jpg}
+		}
+		\subfigure[a = 100.]{
+			\includegraphics[width=5.5cm]{phase_planes/a_hundred.jpg}
+		}
+		\caption{Planos de fase para a EDO em pauta.}
+	\end{figure}
+	Claro que se esperava que os dois pontos $(\pm\frac{1}{\sqrt{a}}, 0)$ come\c{c}assem a
+	se juntar, e eles se aglomeram na origem. Isso acaba gerando o resultado curioso em que
+	os tr\^es pontos parecem o mesmo ponto e dessa forma todos est\~ao gerando curvas peri\'odicas.
+	Assume-se que se houvesse uma an\'alise do que ocorre mais de perto, a diferen\c{c}a entre os
+	tr\^es pontos se tornaria vis\'ivel, por\'em os caminhos nessa escala menor demoram muito tempo
+	para se formarem, o que impede de realizar esse tipo de an\'alise computacionalmente.
+	\section{\textit{Computer Experiment} 8.1}
+	Utilizando e adaptando novamente o mesmo c\'odigo do exerc\'icio 7.1:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Trajet\'orias internas.]{
+			\includegraphics[width=5.5cm]{phase_planes/van_der_pol_in.jpg}
+		}
+		\subfigure[Trajet\'orias externas.]{
+			\includegraphics[width=5.5cm]{phase_planes/van_der_pol_out.jpg}
+		}
+		\caption{Planos de fase para a equa\c{c}\~ao de \textit{Van der Pol}.}
+	\end{figure}
+	Percebe-se que esta forma aproximadamente quadril\'atera \'e de fato o conjunto \^omega
+	limite para praticamente todos os pontos iniciais. Por\'em:
+	\begin{equation}
+		\left\{\begin{array}{c}
+			\dot{x} = y\\
+			\dot{y} = -x - y(x^2 - 1)
+		\end{array}\right.
+		\Rightarrow y = 0 \Rightarrow x = 0
+		\nonumber
+	\end{equation}
+	(0, 0) \'e ponto de equil\'ibrio da equa\c{c}\~ao. Ela obviamente \'e inst\'avel pela figura,
+	por\'em uma \'orbita que comece neste ponto ter\'a como conjunto \^omega limite o ponto
+	(0, 0), sendo este o outro conjunto deste tipo para a equa\c{c}\~ao.
+\end{document}
