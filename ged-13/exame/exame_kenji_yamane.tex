@@ -1,0 +1,316 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{RESOLUÇÃO DE PROVA: GED-13}
+\author{Kenji Yamane}
+
+\begin{document}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=10cm]{ita_logo.png}
+	\end{figure}
+	\begin{center}
+		\textbf{\normalsize{INSTITUTO TECNOLÓGICO DE AERONÁUTICA}}\\
+		\vspace{2.5cm}
+		\large{Kenji de Souza Yamane}\\
+		\vspace{4.7cm}
+		\textbf{RESOLUÇÃO DO EXAME}\\
+		\large{GED 13 - PROBABILIDADE E ESTATÍSTICA}\\
+		\vspace{4.7cm}
+		\small{São José dos Campos – SP\\2020}
+	\end{center}
+	\newpage
+	\tableofcontents
+	\newpage
+	\section{Introdução}
+	O presente trabalho contém a solução do Exame da matéria GED 13 - Probabilidade e
+	Estatística do segundo ano do fundamental do ano de 2020.
+
+	As resoluções quando necess\'ario se utilizam da linguagem de programação R, tendo
+	como plataforma o \textit{Linux}, sobre linha de comando.
+
+	As linhas de código foram diretamente copiadas da linha de comando do sistema operacional
+	e inseridas em um código de \LaTeX, em ambiente \textit{verbatim}, sem nenhuma alteração.
+	O código em \LaTeX, gerou então este arquivo. Todas as figuras deste relat\'orio foram
+	geradas com R.
+	
+	Como foram diretamente retirados da interface do \textit{Linux}, \textgreater é indicativo
+	de comando, e + é indicativo de comando sequenciado para os c\'odigos em R.
+	\newpage
+	\section{Quest\~ao 1}
+	O nível de impureza em um lote de produtos químicos selecionado aleatoriamente é uma
+	variável aleatória com $\mu$ = 4,0\% e $\sigma$ = 1,5\%. Para uma amostra aleatória de
+	50 lotes, ou seja, $X_1, X_2, ..., X_{50}$, em que $\overline{X}$ denota sua média, encontrar:
+	\subsection{a}
+	Uma aproximação para a probabilidade de que o nível médio de impureza esteja entre
+	3,5\% e 3,8\%.
+
+	Sabe-se, do teorema limite central, que, com rela\c{c}\~ao a $\overline{X}$:
+	Logo:
+	\begin{equation}
+		\left\{\begin{array}{c}
+			\mu_{\overline{X}} = \mu = 4,0\\
+			\sigma_{\overline{X}} = \frac{\sigma}{\sqrt{n}} = \frac{1,5}{\sqrt{50}}
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	Desta forma, em R:
+	\begin{verbatim}
+		> end_acc <- pnorm(3.8, mean=4, sd=1.5/sqrt(50))
+		> begin_acc <- pnorm(3.5, mean=4, sd=1.5/sqrt(50))
+		> paste('R:', end_acc - begin_acc)
+		[1] "R: 0.16367823034853"
+	\end{verbatim}
+	\subsection{b}
+	Uma aproximação para o quantil, em termos de $\overline{x}$, tal que a área
+	à direita da distribuição seja de 5\%. Ou seja, considerando
+	$z = \frac{\overline{x} - \mu}{\frac{\sigma}{\sqrt{n}}}$
+	determine o $\overline{x}$ que deixa à direita uma área de 0,05.
+
+	Pode-se determinar isto utilizando R:
+	\begin{verbatim}
+		> z <- qnorm(1 - 0.05)
+		> x.bar <- 4 + z*1.5/sqrt(50)
+		> paste('R:', x.bar)
+		[1] "R: 4.348926146103"
+	\end{verbatim}
+	\section{Quest\~ao 2}
+	Seja X, indicando a proporção de tempo alocado que um operador selecionado
+	aleatoriamente gasta trabalhando em uma determinada atividade de produção. Suponha
+	que a função de densidade de probabilidade de X seja:
+	\begin{equation}
+		f(x; \theta) = \left\{\begin{array}{c}
+			(\theta + 1)x^\theta, \quad 0 \leq x \leq 1\\
+			0, \quad $$\textit{caso contr\'ario,}$$
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	onde, -1 < $\theta$. Uma amostra aleat\'oria de dez operadores produziu os
+	seguintes dados
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+			$x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $x_8$ & $x_9$ & $x_{10}$\\
+			\hline
+			0.92 & 0.79 & 0.90 & 0.65 & 0.86 & 0.47 & 0.73 & 0.97 & 0.94 & 0.77
+		\end{tabular}
+	\end{table}
+	\subsection{a}
+	Utilize o método dos momentos para obter um estimador de $\theta$, em seguida, calcule a
+	estimativa para esses dados.	
+	\begin{equation}
+		E[X] = \int_0^1x(\theta + 1)x^\theta dx = \int_0^1(\theta + 1)x^{\theta + 1} =
+		\frac{\theta + 1}{\theta + 2}x^{\theta + 2} + c\big|_0^1 \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow E[X] = \frac{\theta + 1}{\theta + 2} \Rightarrow
+		\alpha_1(\theta) = E[X] = \frac{\theta + 1}{\theta + 2} = \overline{X} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow \frac{\theta + 2}{\theta + 1} = \frac{1}{\overline{X}} \Rightarrow
+		1 + \frac{1}{\theta + 1} = \frac{1}{\overline{X}}
+		\nonumber
+	\end{equation}
+	Assim, pelo m\'etodo dos momentos:
+	\begin{equation}
+		\tilde{\theta} = \frac{1}{\frac{1}{\overline{x}} - 1} - 1
+		\nonumber
+	\end{equation}
+	Utilizando R:
+	\begin{verbatim}
+		> vet <- c(0.92, 0.79, 0.9, 0.65, 0.86, 0.47, 0.73, 0.97, 0.94, 0.77)
+		> estimated.theta <- 1/(1/mean(vet) - 1) - 1
+		> paste('R:', estimated.theta)
+		[1] "R: 3"
+	\end{verbatim}
+	\subsection{b}
+	Obtenha o estimador de máxima verossimilhança de $\theta$, em seguida, calcule a estimativa
+	para os dados fornecidos.
+	\begin{equation}
+		L(\theta | \mathbf{x}) = \prod_{i = 1}^{10}(\theta + 1)x_i^\theta \Rightarrow
+		\ln L(\theta | \mathbf{x}) = n\ln(\theta + 1) + \theta\sum_{i = 1}^{10}\ln x_i
+		\Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow \frac{\partial \ln L(\theta | \mathbf{x})}{\partial \theta} =
+		\frac{n}{\theta + 1} + \sum_{i = 1}^{10}\ln x_i = 0 \Rightarrow
+		\nonumber
+	\end{equation}
+	Pelo m\'etodo da m\'axima verossimilhan\c{c}a, um candidato para estimador \'e:
+	\begin{equation}
+		\hat{\theta} = -\frac{n}{\sum_{i = 1}^{10}\ln x_i} - 1
+		\nonumber
+	\end{equation}
+	Para confirmar se de fato \'e:
+	\begin{equation}
+		\frac{\partial^2 \ln L(\theta | \mathbf{x})}{\partial^2 \theta} =
+		-\frac{n}{(\theta + 1)^2} \Rightarrow
+		\frac{\partial^2 \ln L(\theta | \mathbf{x})}{\partial^2 \theta}\big|_{\theta = \hat{\theta}}
+		= -\frac{\left(\sum_{i = 1}^{10}\ln x_i\right)^2}{n} < 0
+		\nonumber
+	\end{equation}
+	Assim, ele \'e um estimador v\'alido. Com R:
+	\begin{verbatim}
+		> estimated.theta <- -1/mean(log(vet)) - 1
+		> paste('R:', estimated.theta)
+		[1] "R: 3.11606823702958"
+	\end{verbatim}
+	\section{Quest\~ao 3}
+	Em trabalho de laboratório, é desejável executar uma verificação cuidadosa da
+	variabilidade de leituras produzidas em amostras-padrão. Em um estudo da quantidade
+	de cálcio na água potável realizada como parte de uma avaliação da qualidade da água, o
+	mesmo padrão foi analisado pelo laboratório seis vezes em intervalos aleatórios. As seis
+	leituras (em partes por milhão [ppm]) foram 9,54; 9,61; 9,32; 9,48; 9,70 e 9,26.
+	\subsection{a}
+	Faça o teste de Shapiro-Wilk, que é o mais indicado para amostras pequenas n < 30,
+	para verificar se essa amostra tem distribuição Normal. Utilize o shapiro.test do
+	software R (uma vez que esse software é um dos indicados no Devore) para fazer essa
+	verificação.
+
+	Utilizando R:
+	\begin{verbatim}
+> vet <- c(9.54, 9.61, 9.32, 9.48, 9.7, 9.26)
+> shapiro.test(vet)
+
+        Shapiro-Wilk normality test
+
+data:  vet
+W = 0.95699, p-value = 0.7963
+	\end{verbatim}
+	Como o p-valor \'e acima de 5\%, a amostra muito provavelmente possui distribui\c{c}\~ao
+	normal.
+	\subsection{b}
+	Estimar $\sigma^2$, a variância da população para leituras neste padrão, usando um intervalo
+	de confiança de 90\%.
+	
+	\begin{equation}
+		1 - \alpha = 0.9 \Rightarrow \alpha = 0.1
+		\nonumber
+	\end{equation}
+	Assim, como se quer estimar a vari\^ancia com este valor de $\alpha$:
+	\begin{equation}
+		\frac{(n - 1)s^2}{\chi^2_{\frac{\alpha}{2}; n - 1}} \leq \sigma^2 \leq
+		\frac{(n - 1)s^2}{\chi^2_{1 - \frac{\alpha}{2}; n - 1}}
+		\nonumber
+	\end{equation}
+	Usando R:
+	\begin{verbatim}
+		> begin <- 5*var(vet)/qchisq(1 - 0.05, 5)
+		> end <- 5*var(vet)/qchisq(0.05, 5)
+		> paste(begin, '-', end)
+		[1] "0.0128946325587154 - 0.124620657113753"
+	\end{verbatim}
+	\section{Quest\~ao 4}
+	Sabe-se que a vida útil de um certo tipo de bateria de carro é normalmente distribuída
+	com média $\mu$ = 5 anos e desvio padrão $\sigma$ = 0,9 anos. Um novo tipo de bateria
+	é projetado para aumentar a vida útil média. As hipóteses são $H_0$: $\mu$ = 5 e $H_a$:
+	$\mu > 5$. Considere que $X_1$, $X_2$, ... , $X_{25}$ seja uma amostra aleatória da
+	distribuição de novas baterias. Suponha que a variância permaneça inalterada na nova
+	distribuição. Então, a distribuição de $\overline{X}$ é dada por $N\left(\mu,\left(
+	\frac{\sigma}{\sqrt{n}}\right)^2\right) = N(\mu, (0.18)^2)$. Suponha que a regi\~ao
+	de rejei\c{c}\~ao seja escolhida como $\{\overline{X} \geq 5,42\}$.
+	\subsection{a}
+	Determine a probabilidade de Erro Tipo I ($\alpha$), ou seja,	
+
+	P(rejeitar $H_0|H_0$ \'e verdadeira) = P($\overline{X} \geq 5,42 |
+	\overline{X} \sim$ N(5, $(0.18^2)$))
+
+	Represente graficamente em termos das distribuições envolvidas o $\alpha$ (alfa).	
+
+	Pode-se encontrar o valor com R:
+	\begin{verbatim}
+		> acc <- pnorm(5.42, mean=5, sd=0.18)
+		> paste('R:', 1 - acc)
+		[1] "R: 0.00981532862864531"
+	\end{verbatim}
+	A representa\c{c}\~ao gr\'afica disso seria:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=7cm]{4a.png}
+		\caption{Probabilidade do Erro Tipo I}
+	\end{figure}
+	Gr\'afico gerado com o seguinte c\'odigo em R:
+	\begin{verbatim}
+		> draw.right <- function(signal, anchor) {
+		+     plot(signal, 4, 6)
+		+     horizontal <- c(anchor, seq(anchor, 6, l=100), 6)
+		+     vertical <- c(0, signal(seq(anchor, 6, l=100)), 0)
+		+     polygon(x=horizontal, y=vertical, col='black')
+		+     text(anchor + 0.04, signal(anchor)/2 - 0.02, expression(alpha), col='white')
+		+ }
+		> signal1 <- function(x) dnorm(x, mean=5, sd=0.18)
+		> draw.right(signal1, 5.42)
+	\end{verbatim}
+	\subsection{b}
+	Determine a probabilidade de Erro Tipo II ($\beta$) quando $\mu$ = 5,2 e o poder. Represente
+	graficamente em termos das distribuições envolvidas o $\beta$(5,2).
+	
+	Esta corresponde \`a seguinte probabilidade:
+
+	P(n\~ao rejeitar $H_0|H_0$ \'e falso) = P($\overline{X} \leq 5,42 |
+	\overline{X} \sim$ N(5.2, $(0.18^2)$))
+
+	A qual pode ser calculada com R:
+	\begin{verbatim}
+		> acc <- pnorm(5.42, mean=5.2, sd=0.18)
+		> paste('R:', acc)
+		[1] "R: 0.889188198770303"
+	\end{verbatim}
+	A representa\c{c}\~ao gr\'afica disso seria:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=7cm]{4b.png}
+		\caption{Probabilidade do Erro Tipo II para $\mu = 5,2$.}
+	\end{figure}
+	Gr\'afico gerado com o seguinte c\'odigo em R:
+	\begin{verbatim}
+		> draw.all <- function(signal, anchor) {
+		+     draw.right(signal1, anchor)
+		+     plot(signal, 4, 6, add=TRUE)
+		+     horizontal <- c(4, seq(4, anchor, l=100), anchor)
+		+     vertical <- c(0, signal(seq(4, anchor, l=100)), 0)
+		+     polygon(x=horizontal, y=vertical, col='gray')
+		+     text((5 + anchor)/2, signal(anchor)/2, expression(beta))
+		+     plot(signal1, 4, 6, add=TRUE)
+		+ }
+		> signal2 = function(x) dnorm(x, mean=5.2, sd=0.18)
+		> draw.all(signal2, 5.42)
+	\end{verbatim}
+	\subsection{c}
+	Determine a probabilidade de Erro Tipo II quando $\mu$ = 5,5 e o poder. Represente
+	graficamente em termos das distribuições envolvidas o $\beta$(5,5).
+	
+	Esta corresponde \`a seguinte probabilidade:
+
+	P(n\~ao rejeitar $H_0|H_0$ \'e falso) = P($\overline{X} \leq 5,42 |
+	\overline{X} \sim$ N(5.5, $(0.18^2)$))
+
+	A qual pode ser calculada com R:
+	\begin{verbatim}
+		> acc <- pnorm(5.42, mean=5.5, sd=0.18)
+		> paste('R:', acc)
+		[1] "R: 0.328360643281885"
+	\end{verbatim}
+	A representa\c{c}\~ao gr\'afica disso seria:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=7cm]{4c.png}
+		\caption{Probabilidade do Erro Tipo II para $\mu = 5,5$.}
+	\end{figure}
+	Gr\'afico gerado com o seguinte c\'odigo em R:
+	\begin{verbatim}
+		> signal3 <- function(x) dnorm(x, mean=5.5, sd=0.18)
+		> draw.all(signal3, 5.42)
+	\end{verbatim}
+\end{document}
