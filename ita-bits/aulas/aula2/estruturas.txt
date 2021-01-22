@@ -1,0 +1,9 @@
+Estruturas a serem usadas em cada problema:
+Brinde Face: stack
+Balanço de Parênteses: stack
+Jogando Cartas Fora: queue
+A lenda de Flavious Josephus: queue
+Fibonacci: deque
+A Fila de Desempregados: deque
+TDA Racional: pair
+Abelha Maja: pair

@@ -1,0 +1,200 @@
+\documentclass{beamer}
+\usetheme{PaloAlto}
+\usepackage{graphicx, color, hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+
+\title[Apresentação]{Estruturas de dados binárias}
+\author[\textit{Kenji Yamane}]{Kenji Yamane}
+\date{Maio de 2020}
+
+\setlength{\parindent}{20 pt}
+
+\begin{document}
+
+\begin{frame}
+
+\titlepage
+
+%\begin{figure}
+%	\includegraphics[width=30 pt]{c-symbol}
+%	\hspace{20 pt}
+%	\includegraphics[width=30 pt]{cpp-symbol}
+%	\label{c and cpp}
+%\end{figure}
+
+\end{frame}
+
+\begin{frame}
+
+\frametitle{Tópicos da aula}
+
+\tableofcontents
+
+\end{frame}
+
+\section{Bitset}
+	
+	\begin{frame}
+	\frametitle{Forma alternativa de se guardar dados}
+		Algumas vezes o problema a ser resolvido trabalha somente com dados binários, 0 ou 1. Certamente, você poderia guardar esses dados em um \texttt{array} simples ou em um \texttt{vector} de inteiros, porém há uma estrutura de dados alternativa possivelmente necessária para o tão desejado \textit{accepted}: \texttt{bitset}. Ela é basicamente um \texttt{array} que guarda valores binários. A diferença é que ela usa muito menos memória que o \texttt{array}, pois se preocupa em reservar espaço somente para dois valores. Isso pode ser diferencial em alguns casos pois \textit{memory limit exceeded} também é uma realidade, se expressando como \textit{runtime error}.
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Funções de \textit{bitset}}
+		Ela possui funções também, similar às estruturas da STL. Algumas funções são:
+
+		\begin{itemize}
+			\item size() -> retorna o tamanho do \textit{bitset}.
+			\item set(x) -> insere o valor de 1 na posição x.
+			\item reset(x) -> insere o valor de 0 na posição x.
+			\item flip(x) -> troca o valor na posição x (0 vira 1 e 1 vira 0).
+		\end{itemize}
+		Seu uso é parecido com estruturas lineares de dados, como mostrado a seguir.
+	\end{frame}
+
+	\begin{frame}[fragile]
+	\frametitle{Código 1}
+		\begin{lstlisting}
+int main() {
+    bitset<4> bits; //4 bits, todos com 0
+
+    bits.set(0); // 0001
+    bits.set(1); // 0011
+    bits.reset(0); // 0010
+    bits.flip(3); // 1010
+
+    cout << bits[0] << endl; // 0
+    cout << bits << endl; // 1010
+    cout << bits.size() << endl; // 4
+
+    return 0;
+}
+		\end{lstlisting}
+	\end{frame}
+
+	\section{Bitmask}
+
+	\begin{frame}
+	\frametitle{Ainda outra alternativa}
+	Há ainda outra forma bem mais usada como economia de memória: se o objetivo
+	é guardar bits, por que não utilizar as próprias variáveis nativas de \textit{C++},
+	como o \texttt{int}! Ele é uma coleção de binários, pois sua representação no
+	computador é na forma binária. Isso é possível de se efetuar com as chamadas
+	\textbf{operações \textit{bit-wise}}. Elas consistem em uso de operadores especiais
+	bem mais rápidos que os operadores comuns por trabalharem de forma \textit{bit-wise},
+	bit a bit.
+	\end{frame}
+
+	\section{Operadores \textit{bit-wise}}
+
+	\begin{frame}
+	\frametitle{Os operadores}
+	Recuperando das aulas de lógica do cursinho:
+
+	\begin{itemize}
+		\item ``e'' -> somente verdadeiro se ambos são verdadeiros (somente 1 com 1 dá 1).
+		\item ``ou'' -> se algum for verdadeiro, o resultado é verdadeiro (somente 0 com 0 dá 0).
+		\item ``xor'' -> \textit{exclusive-or}, verdadeiro somente quando se tem um verdadeiro e um falso (1 com 0 ou 0 com 1).
+	\end{itemize}
+	Temos operadores correspondentes em \textit{C++}. \texttt{\&} é ``e'' \textit{bit-wise}, \texttt{|} é ``ou'' \textit{bit-wise} e \texttt{\^} é ``xor'' \textit{bit-wise}. Eles estão exemplificados no código do próximo \textit{slide}.
+	\end{frame}
+
+	\begin{frame}[fragile]
+	\frametitle{Código 2}
+		\begin{lstlisting}
+int main() {
+    cout << (3&1) << endl; // 1
+    // em binario: 11&01 = 01
+	
+    cout << (3|1) << endl; // 3
+    // em binario: 11|01 = 11
+
+    cout << (3^1) << endl; // 2
+    // em binario: 11^01 = 10
+
+    return 0;
+}
+		\end{lstlisting}
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Mais operadores}
+	Há ainda outros três operadores novos, nesse universo \textit{bit-wise}:
+
+	\begin{itemize}
+		\item operador \~{} -> negação \textit{bit-wise} (equivalente a realizar flip em todos
+		os bits).
+		\item operador << -> realiza \textit{shift} para a esquerda de todos os \textit{bits}.
+		\item operador >> -> realiza \textit{shift} para a direita de todos os \textit{bits}.
+	\end{itemize}
+	Cada um está exemplificado a seguir.
+	\end{frame}
+
+	\begin{frame}[fragile]
+	\frametitle{Código 3}
+		\begin{lstlisting}
+int main() {
+    cout << ~1 << endl; // -2(int tem 32 bits)
+    int x = 1;
+
+    x <<= 1; // 2 (em binario: 10)
+    x <<= 1; // 4 (em binario: 100)
+    x <<= 1; // 8 (em binario: 1000)
+    x >>= 1; // 4 (em binario: 100)
+    x >>= 1; // 2 (em binario: 10)
+    // Sim, pode-se acoplar
+    // esses operadores com =
+
+    return 0;
+}
+		\end{lstlisting}
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Os operadores}
+	Aqui é interessante relembrar uma coisa: a representação de números negativos é
+	por complemento de dois. Nessa representação, o número negativo é obtido fazendo-se
+	o complemento mais um, para poder encaixar números de $-2^{B} + 1$ a $2^{B} - 1$ em
+	uma representação binária de B + 1 bits (lembrando que um bit é 0 ou 1). Em operações
+	\textit{bit-wise}, isso se expressa na seguinte forma: -x == \~{}x + 1. Por isso,
+	ocorre algo como o primeiro comando do código anterior.
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Como efetivar o \textit{bitmask}}
+	Agora tendo em mente os operadores, pode-se imaginar a série de coisas interessantes
+	possível de se fazer com eles (supondo a inteiro):
+
+	\begin{itemize}
+		\item multiplicar por 2: a <<= 1;
+		\item dividir por 2: a >>= 1;
+		\item set(x): a |= (1 << x);
+		\item reset(x): a \& = \~{}(1 << x);
+		\item flip(x): a \^{} = (1 << x);
+		\item pegar o 1 menos significativo: int one = (a \& (-a));
+		\item criar um set com n 1's: int ones = (1 << n) - 1;
+	\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Como efetivar o \textit{bitmask}}
+	Reforça-se que, além de economizarem memória, operações desse tipo são bem rápidas,
+	pois alteram diretamente na representação baixo nível do número. As ações de
+	multiplicar e dividir por 2 e pegar o dígito 1 menos significativo em especial serão
+	usadas na próxima aula.
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Problemas!}
+	\begin{itemize}
+	\item \textcolor{blue}{\underline{\href{https://www.urionlinejudge.com.br/judge/pt/problems/view/2289}{Distância Hamming}}}
+	\item \textcolor{blue}{\underline{\href{https://www.urionlinejudge.com.br/judge/pt/problems/view/2091}{Número Solitário}}}
+	\item \textcolor{blue}{\underline{\href{https://www.urionlinejudge.com.br/judge/pt/problems/view/2290}{Números Apaixornados}}}
+	\item \textcolor{blue}{\underline{\href{https://www.urionlinejudge.com.br/judge/pt/problems/view/2500}{Wiliam Xorando}}}
+	\end{itemize}
+	\end{frame}
+
+
+\end{document}

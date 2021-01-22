@@ -1,0 +1,383 @@
+\documentclass{beamer}
+\usetheme{PaloAlto}
+\usepackage{graphicx, color, hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+
+\title[Apresentação]{Aula 04 - Bizus e Paradigmas}
+\author[\textit{Kenji Yamane}]{Kenji Yamane}
+\date{Março de 2020}
+
+\setlength{\parindent}{20 pt}
+
+\begin{document}
+
+\begin{frame}
+
+\titlepage
+
+%\begin{figure}
+%	\includegraphics[width=30 pt]{c-symbol}
+%	\hspace{20 pt}
+%	\includegraphics[width=30 pt]{cpp-symbol}
+%	\label{c and cpp}
+%\end{figure}
+
+\end{frame}
+
+\begin{frame}
+
+\frametitle{Tópicos da aula}
+
+\tableofcontents
+
+\end{frame}
+
+\section{Vector e Strings}
+	
+	\begin{frame}
+	\frametitle{Vector e Strings}
+	    Inicialmente vamos primeiro terminar o assunto de estruturas de dados
+	    falando de duas estruturas lineares bastante usadas: vector e strings!
+	    (seriam os vetores e strings de c++).\par
+	    O primeiro é como se fosse um deque com mais algumas funcionalidades,
+	    enquanto o segundo é a estruturas de dados de c++ preparada para guardar
+	    palavras. (Com ela vocês não precisam mais tratar palavras como um vetor
+	    de char, agora existe um "tipo" string).
+	\end{frame}
+	\begin{frame}
+	\frametitle{Vector}
+		Vector, implementado na biblioteca vector, além das funções normais de
+		deque, tem as funções de poder inserir e apagar elementos de qualquer
+		posição dos dados em O(N), como exemplificado
+		a seguir. \par
+		\begin{block}{Código 1}
+		\textcolor{green}{\#include \textless iostream\textgreater}\\
+		\textcolor{green}{\#include \textless vector\textgreater}\\
+		\vspace{20pt}
+		int main( )\{\\
+		\hspace{10 pt} vector<int> v = \{3, 4, 5, 6, 7, 8, 9\};\\
+		\hspace{10 pt} v.erase(v.begin() + 3);
+		\textcolor{teal}{//\{3, 4, 5, 7, 8, 9\}}\\
+		\hspace{10 pt} v.insert(v.begin() + 2, 31);
+		\textcolor{teal}{//\{3, 4, 31, 5, 7, 8, 9\}}\\
+		\hspace{14 pt}\textbf{return 0;}\\
+		\}
+	\end{block}
+	\end{frame}
+	\begin{frame}
+	\frametitle{Strings}
+		Strings, inclusas na biblioteca string
+		são as estruturas de dados que guardam palavras, e elas são
+		bem parecidas com variáveis em c++!\par
+		\begin{block}{Código 2}
+		\textcolor{green}{\#include \textless iostream\textgreater}\\
+		\textcolor{green}{\#include \textless string\textgreater}\\
+		\vspace{20pt}
+		int main( )\{\\
+		\hspace{10 pt} string str = "corona" + "virus";\\
+		\hspace{10 pt} if (str == "coronavirus") cout << str;\\
+		\hspace{10 pt} str[2] = 'y';
+		\textcolor{teal}{//str == "coyonavirus"}\\
+		\hspace{14 pt}\textbf{return 0;}\\
+		\}
+		\end{block}
+	\end{frame}
+	\begin{frame}
+	\frametitle{Strings}
+	As strings ainda podem ser tratadas de forma parecida com vector, por
+	ser também uma estrutura de dados, tendo também funções como as seguintes.\par
+	\begin{itemize}
+	\item front()
+	\item back()
+	\item push\_back(x)
+	\item pop\_back()
+	\item size()
+	\end{itemize}
+	\end{frame}
+
+
+\section{Bizus}
+
+	\begin{frame}
+	\frametitle{Biblioteca bizu}
+	Uma boa quantidade de estrutura de dados foi apresentada, cada uma
+	em uma biblioteca diferente e algumas nem fazem sentido o nome da biblioteca
+	(utility?). Mas aí não se preocupem que existe uma biblioteca que inclui todas
+	as bibliotecas, contando com stdio, stdlib, todas as bibliotecas de c e c++.
+	O nome dela é \textbf{bits/stdc++.h}. \par
+	Agora vocês não precisam mais inserir um monte de bibliotecas no começo. Mas
+	saibam que usar essa biblioteca é má prática, então considere seu uso permitido
+	somente nas competições.
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{EOF}
+		Existem alguns problemas que não dão quantos casos eles vão ler.
+		Por exemplo, suponha um problema simples que dado um número lido N,
+		ele quer que você imprima o número N, até EOF. EOF significa (End Of File).
+		Os juízes online normalmente testam os códigos com um arquivo de entrada,
+		e esse arquivo tem vários casos. Quando o problema diz aquilo, ele quer
+		que você pare quando identificar o final do arquivo. Como fazer isso? scanf é
+		uma função que retorna -1 quando não consegue ler, então basta ler até não der
+		mais:
+	\begin{block}{Código 3}
+		\hspace{10 pt} while (scanf(\"\%d\", \&N) != -1)\\
+		\hspace{14 pt} printf(\"\%d\textbackslash n\");\\
+	\end{block}
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Acelerar cin cout}
+	Vocês provavelmente não sabem, mas cin e cout são mais lentos que printf e scanf,
+	tanto a ponto de em alguns raros casos, trocar de cin e cout para printf scanf pode
+	realmente fazer um programa que estava dando TLE para accepted (bem raro, mas
+	acontece).
+	Só que, cin e cout são mais fáceis de usar e strings de c++ só podem ser lidas
+	por eles. Se quiserem continuar usando cin cout saibam que é possível torná-las
+	tão rápidas quanto printf scanf com as seguintes linhas mágicas no seu código:
+	\begin{block}{Código 4}
+		\hspace{10 pt} ios\_base::sync\_with\_stdio(false);\\
+		\hspace{10 pt} cin.tie(NULL);\\
+	\end{block}
+	\end{frame}
+	\begin{frame}
+	\frametitle{Aritmética modular computacional}
+	Como se calcula o número a mod b? Com essa equação?
+	\begin{equation}
+		modAB = a\%b; \nonumber
+	\end{equation} \par
+	Não! Essa equação não funciona para números negativos. O correto é:
+	\begin{equation}
+		modAB = (a\%b + b)\%b; \nonumber
+	\end{equation}
+	\end{frame}
+	\begin{frame}
+	\frametitle{Números flutuantes}
+		Use floats e doubles com precaução. Erros de aproximação são uma coisa
+		muito chata e eles sempre acontecem quando um autor de um problema pensou
+		numa resolução com números inteiros com erro 0 de aproximação. Mas se não tiver
+		outro jeito, lembrem-se de sempre comparar igualdade de dois pontos flutuantes
+		com epsilon, não com ==.
+	\end{frame}
+	\begin{frame}
+	\frametitle{Algorithm}
+		As seguintes funções da biblioteca Algorithm são simples mas bem úteis!
+		\begin{itemize}
+			\item max(a, b) $\Rightarrow$ (a > b ? a : b)
+			\item min(a, b) $\Rightarrow$ (a < b ? a : b)
+			\item sort (v, v + N) $\Rightarrow$ ordena o vetor v de 0 a N - 1
+		\end{itemize}
+	\end{frame}
+	\begin{frame}
+	\frametitle{Last touches}
+		Três últimos bizus:
+		\begin{itemize}
+			\item Não complique desnecessariamente um problema simples. Por exemplo,
+			um problema que só precisa de ferramentas de queue e aí você trata com
+			vector e inverte e brinca e dá erase um monte de vezes nos dados.
+			\item Usem e abusem das variáveis globais. Saibam também que elas já vem
+			inicializadas. Porém, mesma história da bits/stdc++. Elas são má prática
+			e só considere permitido no nosso clubinho.
+			\item Não conheço um juíz online que não requer \textbackslash n no final das frases.
+			Ou seja
+			faça cout << x << '\textbackslash n', não cout << x;
+		\end{itemize}
+	\end{frame}
+
+\section{Paradigmas}
+
+	\begin{frame}
+	\frametitle{O que são paradigmas?}
+	Existe uma variedade enorme de problemas por aí nos juízes online e nas competições.
+	Com relação à solução de alguns desses problemas, pode ser algo meio carteado e
+	obscuro. Mas existem raciocínios de resolução de problemas que constituem a resposta
+	ou parte da resposta para uma boa parte dos problemas, podendo ajudar bastante
+	na construção de um algoritmo-solução. Esses raciocínios se chamam paradigmas e são
+	os seguintes:
+	\begin{itemize}
+		\item Força Bruta
+		\item Guloso
+		\item Dividir para Conquistar
+		\item Programação Dinâmica
+	\end{itemize}
+	\end{frame}
+	
+\section{Força bruta}
+
+	\begin{frame}
+	\frametitle{Como funciona força bruta}
+		Esse paradigma é bem simples e direto: teste todas as possibilidades de resposta
+		e veja qual dá certo. Ele exprime bem a ideia de um paradigma também: um
+		raciocínio relativamente generalizado que é a resolução ou ajuda na resolução
+		de vários problemas. Todavia, \textbf{cuidado}, esse paradigma normalmente
+		dá a resposta certa quando você o aplica mas vocês devem conseguir ver isso
+		também: frequentemente dá TLE.
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Exemplos de problemas}
+		Dados três inteiros A, B e C (0 < A,B,C < 10001), encontre outros três
+		inteiros x, y, z tal que $x + y + z = A; xyz = B; x^{2}+ y^{2} + z^{2} = C;$
+		Você pode dar uma de cursinho e resolver isso usando equações carteadas de
+		polinômios em O(1). Porém, nosso paradigma em questão serve para isso! Só testar
+		todos os x, y, e z. O problema especificou que são inteiros. Você poderia considerar a
+		primeira equação e perceber que os números tem que estar entre -10000 e 10000. Assim
+		você poderia testar todos as triplas de inteiros com essa limitação, como mostra
+		o próximo slide.
+	\end{frame}
+
+	\begin{frame}[fragile]
+	\frametitle{Código 5}
+		\begin{lstlisting}
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+  int A, B, C;
+  cin >> A >> B >> C;
+  for (int x = -10000; x <= 10000; x++)
+    for (int y = -10000; y <= 10000; y++)
+      for (int z = -10000; z <= 10000; z++)
+        if (x+y+z == A)
+          if (x*y*z == B)
+            if (x*x + y*y + z*z == C)
+              printf("%d %d %d\n", x, y, z);
+  return 0;	
+}
+		\end{lstlisting}
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Exemplos de problemas}
+		A complexidade do código anterior é $O(N^{3})$. Como N nesse caso é 10000,
+		seu computador nunca aguentaria esse algoritmo. Mas aí que entra a otimização.
+		Você pode testar todas as possibilidades, mas vai descartando o espaço amostral.
+		Nesse caso se você considerar a terceira equação, x e y e z só podem ir até 100,
+		o que torna o algoritmo viável.\par
+		Um outro ponto nesses algoritmos de força bruta
+		é algo simples mas desafiador: como testar todas as possibilidades? Por
+		exemplo, outro problema: dada uma sequência de números determine se existe 
+		uma subsequência contígua tal que sua soma é S. A resposta se encontra no
+		próximo slide.
+	\end{frame}
+
+	\begin{frame}[fragile]
+	\frametitle{Código 6}
+		\begin{lstlisting}
+  ...
+  int N, arr[1000], S;
+  cin >> N;
+  for (int i = 0; i < N; i++) cin >> arr[i];
+  cin >> S;
+  for (int i = 0; i < N; i++)
+    for (int j = i; j < N; j++){
+      int sum = 0;
+      for (int k = i; k <= j; k++)
+        sum += arr[k];
+      if (sum == S) printf("encontrado\n");
+    }
+  return 0;	
+}
+		\end{lstlisting}
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Exemplos de problemas}
+		Complexidade também de $O(N^{3})$, com uma certa chance de dar TLE dependendo
+		da entrada (os paradigmas das próximas aulas são menos propensos a dar TLE).
+		Em outros problemas, avaliar todos os resultados pode ser mais fácil de se
+		realizar utilizando recursão.\par
+		Em outro exemplo de problema, suponha que, dada
+		uma sequência e um valor S, eu queira saber se existe subsequência (dessa
+		vez não necessariamente contíguas) tal que a soma seja igual a S.
+	\end{frame}
+
+	\begin{frame}[fragile]
+	\frametitle{Código 7}
+		\begin{lstlisting}
+#include <bits/stdc++.h>
+using namespace std;
+
+int N, arr[100], S;
+
+void func(int position, int sum){
+  if (position == N && sum == S)
+    printf("encontrado\n");
+
+  //ou o numero n entra na soma
+  func(position + 1, sum);
+  //ou entra
+  func(position + 1, sum + arr[position]);
+}
+		\end{lstlisting}
+	\end{frame}
+
+	\begin{frame}[fragile]
+	\frametitle{Código 7}
+		\begin{lstlisting}
+
+int main(){
+  cin >> N;
+  for (int i = 0; i < N; i++) cin >> arr[i];
+  cin >> S;
+  func(0, 0);
+  //comeca na posicao 0
+  //e com soma acumulada 0
+  return 0;
+}
+		\end{lstlisting}
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Exemplos de problemas}
+		O algoritmo é simples, ele só é difícil de entender por ser recursivo. É
+		o mesmo princípio de como contar quantos subconjuntos um dado conjunto tem.
+		Para gerar todos os subconjuntos, cada elemento pode ter duas possibilidades:
+		1 ou 0, ou ele entra nesse subconjunto ou não. Claramente, complexidade
+		de $O(2^{N})$ o que é absurdamente grande.\par
+		Para ordenar um vetor, é possível
+		fazer por força bruta. Basta testar todas as permutações e verificar qual a
+		que está ordenada. Mas seria em O(N!) e existem vários outros algoritmos para resolver esse
+		tipo de problema. Um dos mais simples é o bubble sort ($O(N^{2})$), a seguir.
+	\end{frame}
+
+	\begin{frame}[fragile]
+	\frametitle{Código 9}
+		\begin{lstlisting}
+...
+  int N, arr[1000];
+  cin >> N;
+  for (int i = 0; i < N; i++) cin >> arr[i];
+  for (int i = N; i > 0; i--)
+    for (int j = 0; j < i - 1; j++)
+      if (arr[j] > arr[j + 1]){
+        int aux = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = aux;
+      }
+  //o laco do j transfere o maior ate i - 1
+  return 0;
+}
+		\end{lstlisting}
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Problemas de força bruta}
+	Obs 1: Os três últimos problemas são do uva, um site em decadência mas que tem problemas muito bons. Se o link não funcionar,
+	tente em um navegador diferente, ou pesquisa no google direto. \par
+	Obs 2: Entenda a diferença entre uma linha entre os casos de teste e uma linha depois de cada caso de teste
+	para não sofrer com presentation error no problema division.
+	\begin{itemize}
+	\item \textcolor{blue}{\underline{\href{https://www.urionlinejudge.com.br/judge/pt/problems/view/1999}{Baile de Reconciliação}}}
+	\item \textcolor{blue}{\underline{\href{https://www.urionlinejudge.com.br/judge/pt/problems/view/2771}{Média}}}
+	\item \textcolor{blue}{\underline{\href{https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=641&page=show_problem&problem=666}{Division}}}
+	\item \textcolor{blue}{\underline{\href{https://onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1301}{Rat Attack}}}
+	\item \textcolor{blue}{\underline{\href{https://onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=691}{8 Queens Chess Problem}}}
+	\end{itemize}
+	\end{frame}
+
+
+\end{document}
