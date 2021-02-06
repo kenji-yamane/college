@@ -8,6 +8,15 @@
 # IDE auxiliary directories
 *.idea
 
+# latex auxiliary files
+*.aux
+*.toc
+*.log
+*.xml
+*.nav
+*.vrb
+*.snm
+
 # stray swap vim files
 *.swp
 

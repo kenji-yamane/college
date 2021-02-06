@@ -1,0 +1,35 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Cores do VSS}
+\author{Kenji Yamane}
+
+\definecolor{vssgreen}{RGB}{0, 255, 0}
+\definecolor{vsspurple}{RGB}{168, 122, 255}
+\definecolor{vssorange}{RGB}{255, 128, 0}
+\definecolor{vsspink}{RGB}{255, 51, 255}
+\definecolor{vssblue}{RGB}{0, 0, 255}
+\definecolor{vssyellow}{RGB}{255, 255, 51}
+\definecolor{vsscyan}{RGB}{145, 255, 245}
+\definecolor{vssred}{RGB}{255, 0, 0}
+    
+\begin{document}
+		\begin{tikzpicture}
+			\filldraw [vssgreen] (0, 0) circle (2);
+			\filldraw [vsspurple] (7, 0) circle (2);
+			\filldraw [vssorange] (0, 5) circle (2);
+			\filldraw [vsspink] (7, 5) circle (2);
+			\filldraw [vssblue] (0, 10) circle (2);
+			\filldraw [vssyellow] (7, 10) circle (2);
+			\filldraw [vsscyan] (0, 15) circle (2);
+			\filldraw [vssred] (7, 15) circle (2);
+		\end{tikzpicture}
+\end{document}
