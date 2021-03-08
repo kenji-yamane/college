@@ -1,0 +1,115 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Lista 8}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{Quest\~ao 2}
+	Para os quesitos desta quest\~ao, utilizou-se o seguinte c\'odigo:
+	\begin{verbatim}
+import numpy as np
+import matplotlib.pyplot as plt
+
+STEP = 0.001
+NUM_ORBITS = 100
+DISCARDED_LENGTH = 40000
+ORBIT_LENGTH = 1000
+
+horizontal = []
+vertical = []
+
+def edo_func(x, y, r):
+	return np.array([r*x + y - x**3, -x + r*y + 2*y**3])
+
+def runge_kutta(x, y, control_param):
+	v1 = STEP*edo_func(x, y, control_param)
+	v1prime = np.array([x, y]) + v1/2
+	v2 = STEP*edo_func(v1prime[0], v1prime[1], control_param)
+	n = np.array([x, y]) + v2
+	
+	return n[0], n[1]
+
+def search_stables(control_param):
+	for i in range(NUM_ORBITS):
+		x = np.random.uniform(-0.1, 0.1)
+		y = np.random.uniform(-0.1, 0.1)
+		
+		for j in range(DISCARDED_LENGTH):
+			x, y = runge_kutta(x, y, control_param)
+		
+		for j in range(ORBIT_LENGTH):
+			x, y = runge_kutta(x, y, control_param)
+			
+			horizontal.append(x)
+			vertical.append(y)
+
+search_stables(0.01)
+
+plt.xlabel('x')
+plt.ylabel('y')
+plt.plot(horizontal, vertical, 'r,')
+plt.savefig('after2.png')
+
+	\end{verbatim}
+	\subsection{a}
+	Nesta quest\~ao, utilizando-se o valor de 0,1 para a vari\'avel de controle,
+	partindo-se de 100 pontos amostrados aleatoriamente entre -1 e 1 para cada uma
+	de suas coordenadas, observou-se o seguinte.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=6cm]{after1.png}
+		\caption{Retrato de fase para r = 0,1.}
+	\end{figure}
+	Onde claramente se observa um ciclo est\'avel.
+	Para um valor antes de 0 para a vari\'avel de controle, -0,1, teve-se mais
+	dificuldade na an\'alise, portanto constru\'iram-se tr\^es retratos de fase,
+	gradativamente aumentando-se o tamanho da \'orbita de descarte.
+	\begin{figure}[H]
+		\centering
+		\subfigure{\includegraphics[width=5cm]{before1_short.png}}
+		\subfigure{\includegraphics[width=5cm]{before1_med.png}}
+		\subfigure{\includegraphics[width=5cm]{before1_long.png}}
+		\caption{Retratos de fase para r = -0,1.}
+	\end{figure}
+	Apesar de n\~ao parecer, se analisar a escala utilizada em cada figura, percebe-se
+	claramente que as \'orbitas est\~ao convergindo para o (0, 0).
+
+	Dado que foi afirmado que \'e uma bifurca\c{c}\~ao \textit{Hopf}, com estas informa\c{c}\~oes,
+	pode-se concluir que ela \'e supercr\'itica. Os retratos de fase para -0,1 foram
+	constru\'idos com diversas tentativas de amostragem aleat\'orias at\'e m\'odulo de 10 e
+	p\^ode-se confirmar que n\~ao h\'a outro ciclo est\'avel.
+	
+	\subsection{b}
+	Utilizando-se 0,01 para r, e amostrando-se aleatoriamente x e y entre -0.1 e 0.1,
+	tem-se o seguinte retrato de fase.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=6cm]{after2.png}
+		\caption{Retrato de fase para r = 0,01.}
+	\end{figure}
+	Onde nota-se como n\~ao h\'a converg\^encia para (0, 0), tendo pontos t\~ao longe
+	quanto 0,4. Portanto, (0, 0) \'e um ponto inst\'avel.
+
+	Utilizando-se -0,01 para r:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=6cm]{before2.png}
+		\caption{Retrato de fase para r = -0,01.}
+	\end{figure}
+	Verifica-se como h\'a converg\^encia para o (0, 0) e ainda uma dist\^ancia consider\'avel
+	entre uma \'orbita aparentemente c\'iclica e a nuvem de converg\^encia. Ademais,
+	aumentando-se o alcance da amostragem, pontos come\c{c}am a divergir. Portanto,
+	\'e razo\'avel deduzir que haja um ciclo inst\'avel ao redor de um ponto est\'avel.
+
+	Essas caracter\'isticas configuram uma bifurca\c{c}\~ao \textit{Hopf} subcr\'itica.
+\end{document}
