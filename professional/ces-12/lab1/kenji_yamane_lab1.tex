@@ -1,0 +1,161 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Lab 1 - \textit{Hashing}}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{Quest\~ao 1}
+	\subsection{Por que necessitamos escolher uma boa função de hashing, e quais as consequências
+	de escolher uma função ruim?}
+	A fun\c{c}\~ao de \textit{hashing} \'e a principal respons\'avel por determinar
+	o n\'umero de colis\~oes que ocorrem na \textit{hash table}. Por exemplo, uma fun\c{c}\~ao
+	de \textit{hashing} que simplesmente determina como chave 0, vai maximizar o n\'umero
+	de colis\~oes. Outro exemplo \'e uma fun\c{c}\~ao que leva em conta somente o primeiro
+	caractere. Muitos elementos ir\~ao colidir desta forma. E um maior n\'umero de colis\~oes
+	implica em comandos de inser\c{c}\~ao, consulta e remo\c{c}\~ao mais lentos.
+
+	Uma fun\c{c}\~ao \textit{hashing} ideal maximiza a entropia dos tamanhos de cada
+	\textit{bucket} da \textit{hash table}. Dessa forma ela aproveita ao m\'aximo o espa\c{c}o
+	de mem\'oria utilizado, minimizando colis\~oes. Ademais, se manipular os \textit{buckets}
+	junto com a \textit{hashing function}, \'e poss\'ivel desenhar algoritmos controlando
+	em um certo n\'ivel um \textit{trade-off} velocidade-mem\'oria, escolhendo qual a que se
+	quer priorizar.
+
+	\subsection{Por que h\'a uma diferen\c{c}a significativa entre considerar apenas o 1o
+	caractere ou a soma de todos?}
+	Considerar somente o 1o caractere \'e inferior por v\'arias raz\~oes. Uma delas \'e
+	visualizada com as seguintes observa\c{c}\~oes:
+	\begin{equation}
+		mod('a' - char(0), 29) = 10
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		mod('z' - char(0), 29) = 6
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		mod('A' - char(0), 29) = 7
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		mod('Z' - char(0), 29) = 3
+		\nonumber
+	\end{equation}
+	Ou seja, os \textit{buckets} de \'indices de 4, 5, 8 e 9 possuem menos \textit{strings}
+	vinculados a eles pois possuem somente uma letra inicial que levam a eles. Todos os outros
+	recebem duas, uma mai\'uscula e uma min\'uscula. Isso possui potencial para desnivelar
+	e portanto, diminuir a entropia. Ademais, sabe-se que na l\'ingua portuguesa e tamb\'em
+	no uso coloquial das palavras, h\'a um pequeno \textit{bias} para determinadas letras.
+	Isso tamb\'em implica em maior concentra\c{c}\~ao de palavras em determinado \textit{bucket}
+	e portanto em menor entropia.
+
+	\subsection{Por que um dataset apresentou resultados muito piores do que os outros,
+	quando consideramos apenas o 1o caractere?}
+	Pois este \textit{dataset} em especial acumula justamente palavras com mesma letra inicial
+	(dentre outras coisas). Tanto que existe uma parte que consiste somente de palavras
+	come\c{c}ando com a letra c. O gr\'afico de distribui\c{c}\~ao para este arquivo
+	com esta \textit{hash function} mostra justamente um pico enorme ao redor do \'indice
+	do c.
+
+	\section{Quest\~ao 2}
+	\subsection{Com uma tabela de hash maior, o hash deveria ser mais fácil. Afinal temos mais
+	posições na tabela para espalhar as strings. Hash com tamanho 30 não deveria ser sempre melhor
+	do que com tamanho 29?  Porque não é este o resultado? (atenção: o arquivo mod30 não é o único
+	resultado onde tamanho 30 é pior do que tamanho 29)}
+	N\~ao \'e uma regra, pois existem \textit{datasets} atacantes e efeitos ocasionados pelo
+	n\'umeo 29 ser primo, que s\~ao discutidos nas duas pr\'oximas quest\~oes.
+	\subsection{Uma regra comum  é usar um tamanho primo (e.g. 29) e não um tamanho com
+	vários divisores, como 30. Que tipo de problema o tamanho primo evita, e
+	porque a diferença não é muito grande no nosso exemplo?}
+	Lema: \textit{Strings} cujo tamanho possuem um fator comum com o n\'umero pelo qual est\'a se
+	tirando o resto na \textit{hash function} ser\~ao mapeados em um m\'ultiplo deste
+	fator comum.
+
+	Prova: Suponha que o m\'odulo da \textit{hash function} \'e m, o tamanho da string seja s e
+	o fator comum entre eles seja k. Se s for menor que m, s \'e o n\'umero mapeado e ele em si
+	\'e m\'ultiplo de k. Se s for maior que m:
+	\begin{equation}
+		\exists c, d | s = ck \, e \, m = dk
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		s = m\%s + mp\Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		ck = m\%s + dpk \Rightarrow m\%s = (c - dp)k
+		\nonumber
+	\end{equation}
+	Como consequ\^encia deste lema, padr\~oes s\~ao formados nas \textit{hashings} das
+	palavras com tamanhos que s\~ao m\'ultiplos de certos n\'umeros, aqueles divisores
+	do m\'odulo da \textit{hash function}. Portanto, se este n\'umero for primo, este
+	problema n\~ao existe. As \textit{hash functions} do lab possuem esse valor pequeno,
+	29 e 30, portanto existem pequenos divisores. Este efeito deve se tornar bem maior
+	a medida que se aumenta o n\'umero de \textit{buckets}, pois o n\'umero de divisores
+	poss\'iveis tamb\'em aumenta.
+	\subsection{Note que o arquivo mod30 foi feito para atacar um hash por divisão de tabela de
+	tamanho 30.  Como este ataque funciona?  (dica: plote a tabela de hash para a função
+	correta e arquivo correto. Um exemplo de como usar o código está em em checkhashfunc)}
+	Ele acumula especialmente
+	palavras que possuem o mesmo mod30, 4, pelo que se observa no gr\'afico de
+	distribui\c{c}\~ao nos \textit{buckets}.
+	\section{com tamanho 997 (primo) para a tabela de hash ao invés de 29, não deveria ser
+	mais fácil?  afinal, temos 997 posições para espalhar números ao invés de 29.  Porque às vezes o
+	hash por divisão com 29 buckets obtém melhores resultados do que com 997? Porque a versão com
+	produtório (prodint) é melhor? Porque este problema nao apareceu quando usamos tamanho 29?}
+	A tabela \'e grande, por\'em no final fica esparsa, como se observa pelos gr\'aficos
+	de distribui\c{c}\~ao.
+
+	Em mapas por divis\~ao, chaves consecutivas s\~ao mapeadas em \textit{buckets}
+	consecutivos. Isso abre espa\c{c}o para forma\c{c}\~ao de padr\~oes. No caso
+	do desempenho mais fraco para essa quest\~ao, o padr\~ao que se forma adv\'em do
+	tamanho da palavra. Cada letra tem um valor ASCII subtraido de uma constante que
+	no final resulta em algo em torno de 100. Isso faz com que mais palavras sejam
+	acumuladas nas centenas, resultando em menor uniformidade e menor entropia.
+
+	Isso n\~ao acontece com o tamanho 29 pois ele \'e menor que 100, de tal forma que
+	seu m\'odulo dispersa todos esses amontoados de palavras entre seus 29
+	\textit{buckets}. Similarmente, por\'em atrav\'es do outro extremo, a prodint
+	dispersa os n\'umeros pois a multiplica\c{c}\~ao de n n\'umeros perto de 100 possui
+	um resultado mais esparso. Evidentemente, o problema ainda persiste de certa forma
+	e por isso seu desempenho continua pior que o de tamanho 29.
+	
+	\section{hash por divisão é o mais comum, mas outra alternativa é hash de multiplicação (NÃO
+	É O MESMO QUE prodint.m). É uma alternativa viável? porque hashing por divisão é mais comum?}
+	Pelos gr\'aficos, \'e plenamente vi\'avel e aparenta at\'e ter menos \textit{bias}. Todavia,
+	percebe-se que \textit{hashing} por divis\~ao \'e mais f\'acil de implementar, al\'em de
+	ser mais r\'apido, por envolver somente opera\c{c}\~oes de adi\c{c}\~ao e resto em
+	inteiros. Deve ser por essa raz\~ao, que ele \'e mais comum.
+
+	\section{Qual a vantagem de Closed Hash sobre OpenHash, e quando escolheríamos
+	Closed Hash ao invés de Open Hash? (pesquise! É suficiente um dos pontos mais importantes)}
+	\textit{Closed Hash} n\~ao necessita de uma estrutura de dados auxiliar para funcionar.
+	Tudo \'e lidado no pr\'oprio vetor. Isso implica em uma organiza\c{c}\~ao na mem\'oria
+	bem mais simples e melhor, todos os elementos s\~ao dispostos linearmente na mem\'oria.
+
+	Por\'em, determinar o seu tamanho levando em conta o espa\c{c}o de chaves \'e dif\'icil.
+	Dessa forma, ela deve ser usada quando se conhece o n\'umero de chaves, sabendo-se tamb\'em
+	que n\~ao haver\~ao muitas inser\c{c}\~oes nem remo\c{c}\~oes.
+
+	\section{Suponha que um atacante conhece exatamente qual é a sua função de hash (o código é
+	aberto e o atacante tem acesso total ao código), e pretende gerar dados especificamente
+	para atacar o seu sistema (da mesma forma que o arquivo mod30 ataca a função de hash
+	por divisão com tamanho 30).  Como podemos implementar a nossa função de hash de
+	forma a impedir este tipo de ataque?}
+	A ideia corresponde em, quando se efetivar o \textit{hashing} de uma \textit{string},
+	ao inv\'es de se limitar a somente uma \textit{hash function}, escolhe-se aleatoriamente
+	uma de uma fam\'ilia de \textit{hash functions}, que sejam consistentes juntas. Desta
+	forma, atacar esta \textit{hash table} seria bem dif\'icil, pois ela teria de pensar na
+	interse\c{c}\~ao das vulnerabilidades de cada \textit{hash function} da fam\'ilia, o qual,
+	dependendo de como se constr\'oi essa fam\'ilia, \'e bastante pequeno.
+\end{document}
