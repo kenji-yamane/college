@@ -1,0 +1,104 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Lab 2}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{Quest\~ao 1}
+	O resultado advindo da simula\c{c}\~ao do controle frontal est\'a na Fig.
+	\ref{fig:frontal}.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=7cm]{1.png}
+		\caption{\textit{Output} do \textit{Simulink} relativo ao controlador frontal.}
+		\label{fig:frontal}
+	\end{figure}
+	Como se percebe, a posi\c{c}\~ao est\'a de fato convergindo ao desejado, atingindo
+	por volta de 63\% deste valor no tempo 0,15, em uma an\'alise a olho nu, o que tamb\'em
+	condiz com o valor requisitado. Ademais, a fun\c{c}\~ao \'e claramente uma
+	exponencial negativa, condizente com o fato do \'unico polo da fun\c{c}\~ao de
+	transfer\^encia ser -Kx.
+	\section{Quest\~ao 2}
+	O conjunto de figuras \ref{fig:lateral1} compara os \textit{outputs} da simula\c{c}\~ao,
+	y e $\psi$, para um valor de entrada 0,1 com rela\c{c}\~ao ao y.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Sa\'ida em y.]{
+			\includegraphics[width=5cm]{lat_y1.png}
+		}
+		\subfigure[Sa\'ida em $\psi$.]{
+			\includegraphics[width=5cm]{lat_psi1.png}
+		}
+		\caption{Para $y_r = 0,1$.}
+		\label{fig:lateral1}
+	\end{figure}
+	A similaridade entre os dois gr\'aficos refor\c{c}a como a aproxima\c{c}\~ao \'e
+	muito boa, mesmo para \^angulos grandes, como foi estipulado no roteiro.
+
+	O conjunto de figuras \ref{fig:lateral3} compara os \textit{outputs} da simula\c{c}\~ao,
+	y e $\psi$, para um valor de entrada 0,3 com rela\c{c}\~ao ao y.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Sa\'ida em y.]{
+			\includegraphics[width=5cm]{lat_y3.png}
+		}
+		\subfigure[Sa\'ida em $\psi$.]{
+			\includegraphics[width=5cm]{lat_psi3.png}
+		}
+		\caption{Para $y_r = 0,3$.}
+		\label{fig:lateral3}
+	\end{figure}
+	Aqui diferen\c{c}as come\c{c}aram a aparecer, n\~ao em virtude da aproxima\c{c}\~ao,
+	mas por causa da n\~ao linearidade, a satura\c{c}\~ao. O valor de pico neste caso
+	aumentou para al\'em de 80 graus, de modo a revelar os efeitos da n\~ao linearidade.
+
+	O conjunto de figuras \ref{fig:lateral5} compara os \textit{outputs} da simula\c{c}\~ao,
+	y e $\psi$, para um valor de entrada 0,5 com rela\c{c}\~ao ao y. Aqui os gr\'aficos
+	j\'a est\~ao bem diferentes.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Sa\'ida em y.]{
+			\includegraphics[width=5cm]{lat_y5.png}
+		}
+		\subfigure[Sa\'ida em $\psi$.]{
+			\includegraphics[width=5cm]{lat_psi5.png}
+		}
+		\caption{Para $y_r = 0,5$.}
+		\label{fig:lateral5}
+	\end{figure}
+	Aqui se observa uma acentua\c{c}\~ao do que foi discutido na figura anterior, e vale
+	notar que um atraso do modelo n\~ao linear para o linear j\'a existente na figura
+	anterior tamb\'em se acentuou. Isso revela o porqu\^e de modelos n\~ao lineares n\~ao
+	funcionarem com o controle cl\'assico. A habilidade do controle de se controlar os
+	requisitos no tempo se perde. Por outro lado, no modelo linear, a fun\c{c}\~ao
+	\texttt{pole} do \textit{MATLAB} revela que os polos dele possuem parte real negativa
+	e parte imagin\'aria n\~ao nula, condizente com a oscila\c{c}\~ao amortecida
+	gerada, mostrando como seu poder de resposta aos requisitos do tempo se mant\'em.
+
+	Todavia, o modelo linear, tamb\'em n\~ao ter\'a efici\^encia quando integrado ao
+	controlador frontal, pois a diferen\c{c}a de sinal decorrente de n\~ao haver cosseno
+	aparece. Ser\'a necess\'ario aplicar a satura\c{c}\~ao no controlador completo, portanto.
+	\section{Quest\~ao 3}
+	Implementando-se o controlador completo, obteve-se os resultados expostos
+	na Fig. \ref{fig:complete_control}.
+	\begin{figure}[H]
+		\centering
+		\subfigure[De frente]{\includegraphics[width=5cm]{followline.png}}
+		\subfigure[De tr\'as]{\includegraphics[width=5cm]{followline_neg.png}}
+		\caption{Resultados obtidos com o controlador completo.}
+		\label{fig:complete_control}
+	\end{figure}
+	Verifica-se que, apesar das diversas heur\'isticas (na verdade em virtude delas -.-),
+	o controlador obteve desempenho excepcional, chegando nas posi\c{c}\~oes x e y
+	desejadas com velocidade nula, e \textit{overshoot} pequeno.
+\end{document}
