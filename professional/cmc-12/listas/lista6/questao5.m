@@ -5,7 +5,7 @@ function [Kp, Ki] = questao5()
 
 % Kp = ...
 % Ki = ...
-    Kp = -2.8690e-7;
-    Ki = -8.1238e-5;
+    Kp = -1.3902e-7;
+    Ki = -1.5003e-4;
 
 end

@@ -10,7 +10,7 @@ function [eInf, tr, ts] = questao4()
 % tr = ...
 % ts = ...
     eInf = 0.25;
-    tr = 1.68;
+    tr = 0.84;
     ts = 3.9;
 
 end
