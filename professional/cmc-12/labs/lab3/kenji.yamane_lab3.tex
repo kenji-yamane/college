@@ -1,0 +1,455 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Lab 3}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{Controlador P + \textit{Feedforward}}
+	\subsection{Determina\c{c}\~ao da fun\c{c}\~ao de transfer\^encia de malha fechada}
+	Atrav\'es do diagrama de blocos fornecido, desconsiderando-se o dist\'urbio:
+	\begin{equation}
+		N\Omega_l = K_t\frac{K_pN(R_l - \Omega_l) + N(K_fR_l - K_t\Omega_l)}
+		{(Ls + R)(J_{eq}s + B_{eq})} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow \Omega_l = K_t\frac{K_p(R_l - \Omega_l) + (K_fR_l - K_t\Omega_l)}
+		{(Ls + R)(J_{eq}s + B_{eq})} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		(Ls + R)(J_{eq}s + B_{eq})G_R = K_tK_p(1 - G_R) + K_t(K_f - K_tG_R) \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow [(Ls + R)(J_{eq}s + B_{eq}) + K_tK_p + K_t^2]G_R = K_tK_p + K_tK_f
+		\Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow G_R = \frac{K_tK_p + K_tK_f}
+		{LJ_{eq}s^2 + (LB_{eq} + RJ_{eq})s + RB_{eq} + K_tK_p + K_t^2}
+		\nonumber
+	\end{equation}
+	\subsection{Determina\c{c}\~ao da fun\c{c}\~ao de transfer\^encia do dist\'urbio}
+	Atrav\'es do diagrama de blocos fornecido, desconsiderando-se a refer\^encia:
+	\begin{equation}
+		N\Omega_l = \frac{-N\Omega_lK_t\frac{K_p + K_t}
+		{Ls + R} + \frac{T_e}{N\eta}}{J_{eq}s + B_{eq}} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow (J_{eq}s + B_{eq})G_D = -G_DK_t\frac{K_p + K_t}
+		{Ls + R} + \frac{1}{N^2\eta} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow [LJ_{eq}s^2 + (LB_{eq} + RJ_{eq})s + RB_{eq}]G_D = -G_DK_t(K_p + K_t) +
+		\frac{Ls + R}{N^2\eta} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow G_D = \frac{Ls + R}
+		{N^2\eta[LJ_{eq}s^2 + (LB_{eq} + RJ_{eq})s + RB_{eq} + K_tK_p + K_t^2]}
+		\nonumber
+	\end{equation}
+	\subsection{Requisitos}
+	\subsubsection{Constante de tempo}
+	O denominador comum entre as fun\c{c}\~oes de transfer\^encia, aplicado com L = 0 \'e:
+	\begin{equation}
+		RJ_{eq}s + RB_{eq} + K_tK_p + K_t^2
+		\nonumber
+	\end{equation}
+	Desta forma, a constante de tempo $\tau$ \'e dada por:
+	\begin{equation}
+		\tau = \frac{RJ_{eq}}{RB_{eq} + K_tK_p + K_t^2}
+		\Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow \tau K_tK_p = RJ_{eq} - \tau RB_{eq} - \tau K_t^2
+		\Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow K_p = \frac{RJ_{eq} - \tau RB_{eq} - \tau K_t^2}{\tau K_t}
+		\label{eq:kp_pff}
+	\end{equation}
+	\subsubsection{Erro nulo em regime}
+	Considerando somente a fun\c{c}\~ao de transfer\^encia da refer\^encia:
+	\begin{equation}
+		\Omega_l = R_l\frac{K_tK_p + K_tK_f}{RJ_{eq}s + RB_{eq} + K_tK_p + K_t^2}
+		\nonumber
+	\end{equation}
+	Assim, para o erro em regime, aplicando degrau unit\'ario:
+	\begin{equation}
+		E =
+		\frac{1}{s}\frac{RJ_{eq}s + RB_{eq} - K_tK_f + K_t^2}{RJ_{eq}s + RB_{eq} + K_tK_p + K_t^2}
+		\nonumber
+	\end{equation}
+	Pelo teorema do valor final:
+	\begin{equation}
+		\lim_{t \rightarrow \infty}e(t) = \lim_{s \rightarrow 0}sE(s) = \lim_{s \rightarrow 0}
+		\frac{RJ_{eq}s + RB_{eq} - K_tK_f + K_t^2}{RJ_{eq}s + RB_{eq} + K_tK_p + K_t^2}
+		\Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		e_\infty = \frac{RB_{eq} - K_tK_f + K_t^2}{RB_{eq} + K_tK_p + K_t^2}
+		\label{eq:err_pff}
+	\end{equation}
+	Para anular o erro em regime:
+	\begin{equation}
+		e_\infty = 0 \xRightarrow{\ref{eq:err_pff}} RB_{eq} - K_tK_f + K_t^2 = 0
+		\Rightarrow K_f = \frac{RB_{eq} + K_t^2}{K_t}
+		\label{eq:kf_pff}
+	\end{equation}
+	Caso n\~ao se desconsiderasse o efeito do indutor:
+	\begin{equation}
+		e_\infty = \lim_{s \rightarrow 0}
+		\frac{LJ_{eq}s^2 + (LB_{eq} + RJ_{eq})s + RB_{eq} - K_tK_f + K_t^2}
+		{LJ_{eq}s^2 + (LB_{eq} + RJ_{eq})s + RB_{eq} + K_tK_p + K_t^2} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow e_\infty = \frac{RB_{eq} - K_tK_f + K_t^2}{RB_{eq} + K_tK_p + K_t^2}
+		\nonumber
+	\end{equation}
+	Que \'e a mesma express\~ao de \ref{eq:err_pff}, portanto zera tamb\'em.
+	\subsection{Resultados obtidos}
+	Aplicando os valores obtidos em \ref{eq:kf_pff} e \ref{eq:kp_pff}, obteve-se a figura
+	\ref{fig:res_pff}.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Velocidade da roda.]{\includegraphics[width=6cm]{../w_roda_pfeedforward.png}}
+		\subfigure[Velocidade do motor.]{\includegraphics[width=6cm]{../w_motor_pfeedforward.png}}
+		\subfigure[Comando de voltagem.]{\includegraphics[width=6cm]{../comando_pfeedforward.png}}
+		\caption{Resultados obtidos usando o controlador P + \textit{feedforward}.}
+		\label{fig:res_pff}
+	\end{figure}
+	Verifica-se claramente que a velocidade da roda \'e por volta de tr\^es vezes menor
+	que a velocidade do motor, efeito advindo da redu\c{c}\~ao, conforme o previsto pela
+	teoria.
+
+	O erro em regime na primeira metade \'e visivelmente pr\'oximo de 0, coerente com o que
+	foi calculado na se\c{c}\~ao de erro em regime. A partir do tempo
+	0,1, o erro aumenta bastante, evidentemente um efeito da perturba\c{c}\~ao aplicada neste
+	segundo. \'E uma falha prevista, pois o controlador foi projetado visando somente
+	a fun\c{c}\~ao de transfer\^encia da refer\^encia. De fato, pode-se calcular este
+	erro, utilizando o teorema do valor final e o princ\'ipio da superposi\c{c}\~ao:
+	\begin{equation}
+		\lim_{t \rightarrow \infty}e_t = \lim_{s \rightarrow 0}s(\Omega_l - R_l) =
+		\lim_{s \rightarrow 0}s(R_lG_R - R_l - DG_D)
+		\nonumber
+	\end{equation}
+	Sabe-se que $R_lG_R - R_l = 0$ em virtude do projeto do controlador:
+	\begin{equation}
+		e_\infty = \lim_{s \rightarrow 0}(-sDG_D) =
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		= -\lim_{s \rightarrow 0}0.2\frac{Ls + R}
+		{N^2\eta[LJ_{eq}s^2 + (LB_{eq} + RJ_{eq})s + RB_{eq} + K_tK_p + K_t^2]} =
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		= -0.2\frac{R}
+		{N^2\eta[RB_{eq} + K_tK_p + K_t^2]}
+		\nonumber
+	\end{equation}
+	Calculando este valor no \textit{Matlab}, obt\'em-se o valor de 21,1202, coerente
+	com a diferen\c{c}a que se observa no erro em regime quando se adiciona a perturba\c{c}\~ao.
+
+	Com rela\c{c}\~ao ao comportamento do comando V, verifica-se que ele responde proporcionalmente
+	\'a diverg\^encia que a sa\'ida tem em rela\c{c}\~ao \`a refer\^encia, como esperado, em
+	virtude do seu controlador proporcional. Percebe-se ainda que quando a sa\'ida chega na
+	refer\^encia, sua voltagem ainda \'e acima de 0, o que mostra o controlador
+	\textit{feedback} atuando. Este mesmo controlador, entretanto, impede o controlador
+	proporcional de se ajustar adequadamente \`a perturba\c{c}\~ao, mostrando como o
+	comportamento da tens\~ao aplicada tamb\'em est\'a coerente com o controlador projetado.
+	\section{Controlador PI}
+	\subsection{Determina\c{c}\~ao da fun\c{c}\~ao de transfer\^encia de malha fechada}
+	Atrav\'es do diagrama de blocos fornecido, desconsiderando-se o dist\'urbio:
+	\begin{equation}
+		N\Omega_l = K_t\frac{CN(FR_l - \Omega_l) - NK_t\Omega_l}
+		{(Ls + R)(J_{eq}s + B_{eq})} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Omega_l = K_t\frac{\frac{K_iR_l - (K_ps + K_i)\Omega_l}{s} - K_t\Omega_l}
+		{(Ls + R)(J_{eq}s + B_{eq})} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		(Ls + R)(J_{eq}s + B_{eq})G_R =
+		K_t\frac{K_i - (K_ps + K_i)G_R}{s} - K_t^2G_R \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow [LJ_{eq}s^3 + (LB_{eq} + RJ_{eq})s^2 + (RB_{eq} + K_t^2)s]G_R =
+		K_t[K_i - (K_ps + K_i)G_R]
+		\Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow G_R = \frac{K_tK_i}
+		{LJ_{eq}s^3 + (LB_{eq} + RJ_{eq})s^2 + (RB_{eq} + K_t^2 + K_tK_p)s + K_tK_i}
+		\nonumber
+	\end{equation}
+	\subsection{Determina\c{c}\~ao da fun\c{c}\~ao de transfer\^encia do dist\'urbio}
+	Atrav\'es do diagrama de blocos fornecido, desconsiderando-se a refer\^encia:
+	\begin{equation}
+		N\Omega_l = \frac{-N\Omega_lK_t\frac{C + K_t}
+		{Ls + R} + \frac{T_e}{N\eta}}{J_{eq}s + B_{eq}} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow (J_{eq}s + B_{eq})G_D = -G_DK_t\frac{(K_p + K_t)s + K_i}
+		{Ls^2 + Rs} + \frac{1}{N^2\eta} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow [LJ_{eq}s^3 + (LB_{eq} + RJ_{eq})s^2 + RB_{eq}s]G_D =
+		-G_DK_t[(K_p + K_t)s + K_i] + \frac{Ls^2 + Rs}{N^2\eta} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow G_D = \frac{Ls^2 + Rs}
+		{N^2\eta[LJ_{eq}s^3 + (LB_{eq} + RJ_{eq})s^2 + (RB_{eq} + K_t^2 + K_tK_p)s + K_tK_i]}
+		\nonumber
+	\end{equation}
+	\subsection{Requisitos}
+	O denominador comum entre as fun\c{c}\~oes de transfer\^encia, aplicado com L = 0 \'e:
+	\begin{equation}
+		RJ_{eq}s^2 + (RB_{eq} + K_t^2 + K_tK_p)s + K_tK_i
+		\nonumber
+	\end{equation}
+	Portanto, comparando com o sistema de segunda ordem padr\~ao:
+	\begin{equation}
+		\left\{\begin{array}{l}
+			2\xi\omega_n = \frac{RB_{eq} + K_t^2 + K_tK_p}{RJ_{eq}}\\
+			\omega_n^2 = \frac{K_tK_i}{RJ_{eq}}
+		\end{array}\right. \Rightarrow
+		\left\{\begin{array}{l}
+			K_p = \frac{2RJ_{eq}\xi\omega_n - K_t^2 - RB_{eq}}{K_t}\\
+			K_i = \frac{RJ_{eq}\omega_n^2}{K_t}
+		\end{array}\right.
+		\label{eq:k_pi}
+	\end{equation}
+	Os valores de $\omega_n$ e $\xi$ podem ser obtidos pelos requisitos:
+	\begin{equation}
+		\left\{\begin{array}{l}
+			M_p = \exp{\left(-\frac{\pi\xi}{\sqrt{1 - \xi^2}}\right)} \Rightarrow
+			\xi = \frac{|\ln M_p|}{\sqrt{\pi^2 + (\ln M_p)^2}}\\
+			t_r\big|_{0}^{100\%} = \frac{\pi - \arccos{\xi}}{\omega_n\sqrt{1 - \xi^2}} \Rightarrow
+			\omega_n = \frac{\pi - \arccos{\xi}}{t_r\big|_{0}^{100\%}\sqrt{1 - \xi^2}}
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	\subsection{Erro em regime}
+	Considerando o caso em que n\~ao h\'a perturba\c{c}\~ao, e sem neglicenciar o efeito do
+	indutor:
+	\begin{equation}
+		E =
+		R\frac{LJ_{eq}s^3 + (LB_{eq} + RJ_{eq})s^2 + (RB_{eq} + K_t^2 + K_tK_p)s}
+		{LJ_{eq}s^3 + (LB_{eq} + RJ_{eq})s^2 + (RB_{eq} + K_t^2 + K_tK_p)s + K_tK_i}
+		\nonumber
+	\end{equation}
+	Aplicando uma entrada degrau unit\'ario e o teorema do valor final:
+	\begin{equation}
+		e_\infty = \lim_{s \rightarrow 0}
+		\frac{LJ_{eq}s^3 + (LB_{eq} + RJ_{eq})s^2 + (RB_{eq} + K_t^2 + K_tK_p)s}
+		{LJ_{eq}s^3 + (LB_{eq} + RJ_{eq})s^2 + (RB_{eq} + K_t^2 + K_tK_p)s + K_tK_i}
+		\Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		e_\infty = 0
+		\nonumber
+	\end{equation}
+	Considerando o caso em que h\'a perturba\c{c}\~ao, a parcela $R - RG_R$ \'e anulada
+	da mesma forma. Analisando o que acontece com $DG_D$, aplicando degrau unit\'ario:
+	\begin{equation}
+		\lim_{s \rightarrow 0}sDG_D =
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		= \lim_{s \rightarrow 0}\frac{Ls^2 + Rs}
+		{N^2\eta[LJ_{eq}s^3 + (LB_{eq} + RJ_{eq})s^2 + (RB_{eq} + K_t^2 + K_tK_p)s + K_tK_i]} =
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		= 0
+		\nonumber
+	\end{equation}
+	Portanto o erro em regime \'e nulo, seja com perturba\c{c}\~ao, seja sem, seja considerando
+	\subsection{Resultados obtidos}
+	Aplicando os valores obtidos em \ref{eq:k_pi}, obteve-se a figura
+	\ref{fig:res_pi}.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Velocidade da roda.]{\includegraphics[width=5.8cm]{../w_roda_pi.png}}
+		\subfigure[Velocidade do motor.]{\includegraphics[width=5.8cm]{../w_motor_pi.png}}
+		\subfigure[Comando de voltagem.]{\includegraphics[width=5.8cm]{../comando_pi.png}}
+		\caption{Resultados obtidos usando o controlador PI.}
+		\label{fig:res_pi}
+	\end{figure}
+	Analisando o gr\'afico com o aux\'ilio do \textit{Matlab}, observa-se que o valor de
+	refer\^encia \'e atingido de primeira no instante 0,0196 s, coerente com o requisito
+	de 0,02 s para o $t_r\big|_{0}^{100\%}$. Al\'em disso o valor m\'aximo para a velocidade
+	da roda foi calculado como sendo 52,34, o que corresponde a um sobressinal de 4,68\%,
+	consideravelmente pr\'oximo do requisitado tamb\'em. Ademais, a velocidade da roda novamente
+	\'e coerente com o redutor aplicado, sendo aproximadamente 3 vezes menor que a velocidade
+	do motor.
+
+	Analisando em qual valor o sistema se estabilizou antes e depois de ocorrer a
+	perturba\c{c}\~ao, verifica-se que ele \'e igual a refer\^encia at\'e a segunda casa
+	decimal, o que mostra como seu erro \'e praticamente nulo nas duas situa\c{c}\~oes.
+
+	Claramente o termo I do controlador \'e o respons\'avel por eliminar o erro em regime
+	nos dois casos, com e sem perturba\c{c}\~ao. Se fosse pelo controlador P, ele iria zerar
+	a voltagem quando chegasse na refer\^encia e iria trocar seu sinal quando a perturba\c{c}\~ao
+	afeta o sistema. Isso n\~ao ocorre em nenhum dos casos, sendo portanto o I que se op\~oe
+	a estas medidas para poder eliminar o erro efetivamente.
+
+	Para se determinar quais fen\^omenos f\'isicos s\~ao eliminados pelo controlador para
+	poder se ter erro em regime, volta-se \`as equa\c{c}\~oes que regem o sistema:
+	\begin{equation}
+		\left\{\begin{array}{l}
+			J_{eq}\dot{\omega}_m + B_{eq}\omega_m = \tau_m + \frac{\tau_e}{N\eta}\\
+			V - K_t\omega_m = L\dot{i} + Ri
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	Como se est\'a considerando em equil\'ibrio, todos os valores que correspondem a derivadas
+	s\~ao nulos:
+	\begin{equation}
+		\left\{\begin{array}{l}
+			B_{eq}\omega_m = \tau_m + \frac{\tau_e}{N\eta} \Rightarrow \omega_m =
+			\frac{\tau_m}{B_{eq}} + \frac{\tau_e}{NB_{eq}\eta}\\
+			V - K_t\omega_m = Ri \Rightarrow V =
+			K_t\frac{\tau_m}{B_{eq}} + K_t\frac{\tau_e}{NB_{eq}\eta} + Ri
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	De tal forma que se conclui que os fen\^omenos f\'isicos que precisam ser anulados pela
+	voltagem para se ter erro nulo em regime s\~ao, al\'em da perturba\c{c}\~ao, o torque
+	gerado pelo motor e a voltagem gerada pela resist\^encia.
+	\section{Aproxima\c{c}\~ao por polos dominantes}
+	Retomando a f\'ormula da fun\c{c}\~ao de transfer\^encia para a entrada, desconsiderando-se
+	o efeito do indutor:
+	\begin{equation}
+		G_R = \frac{K_tK_i}
+		{RJ_{eq}s^2 + (RB_{eq} + K_t^2 + K_tK_p)s + K_tK_i}
+		\nonumber
+	\end{equation}
+	Os polos para esta fun\c{c}\~ao de transfer\^encia podem ser encontrados usando
+	\textit{Matlab} como sendo $-114,97 \pm 117,3i$.
+	\subsection{Diferentes valores de indutores}
+	Inserindo a fun\c{c}\~ao de transfer\^encia completa no \textit{script} fornecido,
+	em que se varia o valor da indut\^ancia, obt\'em-se a figura \ref{fig:inductors}.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Resposta ao degrau para diferentes indutores.]
+		{\includegraphics[width=6cm]{../degree_response_inductor_pi.png}}
+		\subfigure[Polos para diferentes indutores.]
+		{\includegraphics[width=6cm]{../poles_inductor_pi.png}}
+		\caption{Resultados para diferentes indutores.}
+		\label{fig:inductors}
+	\end{figure}
+	Analisando estas figuras com o aux\'ilio do \textit{Matlab}, verifica-se que para os
+	3 valores mais baixos do indutor t\^em-se uma aproxima\c{c}\~ao razo\'avel dos polos
+	em rela\c{c}\~ao \`a fun\c{c}\~ao de transfer\^encia feita se desconsiderando o indutor,
+	sendo o mais longe dele, o terceiro, distante de 15 unidades\footnote{No plano complexo.}
+	do polo feito considerando o indutor igual a 0. Os 2 indutores de valores maiores j\'a se
+	afastam bastante, chegando a uma dist\^ancia de 100.
+
+	Percebe-se ainda que conforme o valor do indutor aumenta, o polo real se aproxima cada vez
+	mais da origem, e os polos conjugados se afastam verticalmente da origem, mantendo sua
+	parte real aproximadamente igual. Este fator, quando analisado junto com o crit\'erio
+	de polos dominantes de que o polo real deve ter uma dist\^ancia \`a origem de pelo menos
+	5 vezes mais que o m\'odulo da parte real dos polos complexos conjugados revela, como,
+	quanto maior o valor do indutor, menos o m\'etodo dos polos dominantes \'e v\'alido.
+
+	Analisando a resposta ao degrau, verifica-se que o aumento do valor do indutor
+	aumenta o \textit{overshoot} e diminui o tempo de subida de 0 a 100\%, al\'em de aumentar
+	as oscila\c{c}\~oes. Todos estes fatores est\~ao coerentes com a modifica\c{c}\~ao
+	mais vis\'ivel observada nos polos conjugados conforme se aumenta a indut\^ancia:
+	os polos se afastando verticalmente do eixo real. Isso implica em maior valor
+	da componente imagin\'aria, a qual est\'a relacionada com oscila\c{c}\~oes.
+	\section{Diferentes valores de tempo de subida}
+	Agora, testando-se a fun\c{c}\~ao de transfer\^encia completa da entrada,
+	variando-se desta vez o tempo de subida de 0 a 100\%, obt\'em-se a figura \ref{fig:tr}.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Resposta ao degrau para diferentes indutores.]
+		{\includegraphics[width=6cm]{../degree_response_tr_pi.png}}
+		\subfigure[Polos para diferentes indutores.]
+		{\includegraphics[width=6cm]{../poles_tr_pi.png}}
+		\caption{Resultados para diferentes indutores.}
+		\label{fig:tr}
+	\end{figure}
+	Verifica-se um comportamento bastante parecido com quando se aumentava o valor do indutor.
+	Os polos se movem para longe da reta real verticalmente e a resposta ao degrau se torna
+	mais inst\'avel e oscilat\'oria, por\'em desta vez \'e com a diminui\c{c}\~ao do tempo
+	de subida de 0 a 100\%. A resposta ao degrau de fato atinge mais r\'apido o valor de
+	refer\^encia pela primeira vez, por\'em se observa que existe tamb\'em um
+	\textit{trade-off} entre isso e manter a validade dos polos dominantes, assim
+	como a estabilidade das oscila\c{c}\~oes.
+	\section{Implementa\c{c}\~ao Digital}
+	Implementando-se o pr\'e-filtro e o compensador digitais, obteve-se como resultado
+	a figura \ref{fig:digital}.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Velocidade da roda.]
+		{\includegraphics[width=6cm]{../w_roda_discreto.png}}
+		\subfigure[Comando da voltagem.]
+		{\includegraphics[width=6cm]{../comando_discreto.png}}
+		\caption{Resultados obtidos com controlador discreto.}
+		\label{fig:digital}
+	\end{figure}
+	Analisando-se a imagem com aux\'ilio do \textit{Matlab}, observa-se que o controlador
+	com discretiza\c{c}\~ao de frequ\^encia mais alta atinge o valor de refer\^encia pela
+	primeira vez no instante 0,019s, com um valor m\'aximo de 52,08, correspondente a um
+	\textit{overshoot} de 4,16\%, valores bem pr\'oximos do requisitado. Conforme se diminui
+	a freque\^encia, observa-se um fen\^omeno parecido com quando se alterava o valor
+	do indutor e do tempo de subida de 0 a 100\%: as curvas se tornam mais inst\'aveis,
+	com mais oscila\c{c}\~oes e um \textit{overshoot} maior, com um tempo de subida menor.
+	Claramente, quanto maior a frequ\^encia da discretiza\c{c}\~ao, melhor a resposta
+	aos requisitos. Isso \'e decerto esperado, dado que conforme se diminui a frequ\^encia,
+	se aumenta o tempo de amostragem, o que torna a aproxima\c{c}\~ao da derivada e integral
+	feita nos c\'alculos menos v\'alida.
+	\section{\textit{Anti-windup}}
+	Implementado-se o \textit{anti-windup} e executando seu respectivo \textit{script},
+	tem-se a figura \ref{fig:anti_windup}.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Velocidade da roda.]
+		{\includegraphics[width=6cm]{../w_roda_windup.png}}
+		\subfigure[Comando da voltagem.]
+		{\includegraphics[width=6cm]{../comando_windup.png}}
+		\caption{Resultados obtidos com e sem \textit{windup}.}
+		\label{fig:anti_windup}
+	\end{figure}
+	Quando se utiliza \textit{anti-windup}, atinge-se o valor de refer\^encia pela primeira vez
+	no instante 0,0256s, e o valor m\'aximo obtido \'e 102,146, correspondente a um
+	\textit{overshoot} de 4,29\%, ambos valores bem pr\'oximos do requisitado. Da\'i,
+	se observa que quando n\~ao se implementa o \textit{anti-windup}, tem-se de fato como
+	previsto um \textit{overshoot} bem maior, chegando a ser maior que 15\%. A atua\c{c}\~ao
+	limitante do \textit{anti-windup} est\'a evidente no gr\'afico do comando, e sua efetividade
+	\'e refor\c{c}ada, mitigando o ac\'umulo de erro sobre o integrador.
+\end{document}
