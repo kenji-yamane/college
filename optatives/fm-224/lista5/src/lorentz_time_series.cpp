@@ -6,7 +6,7 @@
 #include "lib/Lorentz.h"
 
 #define CONV 1000
-#define ORBIT_LEN 20000
+#define ORBIT_LEN 80000
 
 int main() {
 	LorentzParams params = {
