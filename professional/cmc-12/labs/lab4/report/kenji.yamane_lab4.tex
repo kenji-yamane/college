@@ -1,0 +1,367 @@
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2cm,right=2cm,marginparwidth=1.5cm]{geometry}
+
+\title{Lab 4}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{Projeto do Controlador de Arfagem}
+	Para se obter a fun\c{c}\~ao de transfer\^encia $G_{f\theta}(s)$, pode-se analisar
+	a malha fornecida:
+	\begin{equation}
+		\Theta = \frac{K_{v\theta}[K_{p\theta}(\Theta_r - \Theta) - s\Theta]}{Js^2}
+		\Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		(Js^2 + K_{v\theta}s + K_{v\theta}K_{p\theta})\Theta = K_{v\theta}K_{p\theta}\Theta_r
+		\Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		G_{f\theta} = \frac{K_{v\theta}K_{p\theta}}{Js^2 + K_{v\theta}s + K_{v\theta}K_{p\theta}}
+		\nonumber
+	\end{equation}
+	Comparando com um sistema de segunda ordem padr\~ao:
+	\begin{equation}
+		\left\{\begin{array}{l}
+			2\xi\omega_n = \frac{K_{v\theta}}{J}\\
+			\omega_n^2 = \frac{K_{v\theta}K_{p\theta}}{J}
+		\end{array}\right. \Rightarrow
+		\left\{\begin{array}{l}
+			K_{v\theta} = 2J\xi\omega_n\\
+			K_{p\theta} = \frac{\omega_n}{2\xi}
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	$\xi$ pode ser obtido a partir do requisito de sobressinal:
+	\begin{equation}
+		M_p = exp\left(-\frac{\pi\xi}{\sqrt{1 - \xi^2}}\right) \Rightarrow
+		\frac{\pi^2\xi^2}{1 - \xi^2} = ln^2M_p \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+	 	\Rightarrow \frac{\pi^2}{ln^2M_p} = \frac{1}{\xi^2} - 1 \Rightarrow
+		\xi^2 = \frac{ln^2M_p}{\pi^2 + ln^2M_p} \Rightarrow
+		\xi = \frac{|lnM_p|}{\sqrt{\pi^2 + ln^2M_p}}
+		\label{eq:xi}
+	\end{equation}
+	E $\omega_n$ a partir deste valor de $\xi$ e a partir do requisito de tempo de subida
+	(de 0 a 100\%):
+	\begin{equation}
+		t_r\big|_0^{100\%} = \frac{\pi - arccos\xi}{\omega_n\sqrt{1 - \xi^2}} \Rightarrow
+		\omega_n = \frac{\pi - arccos\xi}{t_r\big|_0^{100\%}\sqrt{1 - \xi^2}}
+		\label{eq:omega_n}
+	\end{equation}
+	Avaliando o controlador projetado a partir destas equa\c{c}\~oes, simulando sua resposta
+	\`a fun\c{c}\~ao degrau:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=8cm]{figures/step_response_theta.eps}
+		\caption{Resposta do controlador projetado para a arfagem, frente a um degrau unit\'ario.}
+	\end{figure}
+	Analisando o gr\'afico com o aux\'ilio do ponto fixador do \textit{Matlab}, observa-se que
+	ele atinge pela primeira vez o valor de 1 exatamente no tempo de 0.1s, o requisito de tempo
+	de subida de 0 a 100\%. Al\'em disso, ele tamb\'em atinge um valor m\'aximo de exatamente
+	1.05, correspondente a um sobressinal de 0.05. Portanto, confirma-se que o controlador
+	foi projetado corretamente.
+	\section{Projeto do Controlador Vertical}
+	A partir da malha apresentada:
+	\begin{equation}
+		Z = \frac{(K_{dz}s^2 + K_{pz}s + K_{iz})(Z_rF_z - Z)}{ms^3} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		(ms^3 + K_{dz}s^2 + K_{pz}s + K_{iz})Z = (K_{dz}s^2 + K_{pz}s + K_{iz})F_zZ_r
+		\Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow
+		G_{fz} = \frac{(K_{dz}s^2 + K_{pz}s + K_{iz})F_z}{ms^3 + K_{dz}s^2 + K_{pz}s + K_{iz}}
+		\nonumber
+	\end{equation}
+	O polin\^omio cujos polos s\~ao os sugeridos \'e:
+	\begin{equation}
+		p(s) = (s^2 + 2\xi\omega_ns + \omega_n^2)(s + 5\xi\omega_n) \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow p(s) = s^3 + 7\xi\omega_ns^2 + \omega_n^2(1 + 10\xi^2)s + 5\xi\omega_n^3
+		\nonumber
+	\end{equation}
+	Comparando este polin\^omio com o denominador da fun\c{c}\~ao de transfer\^encia $G_{fz}$:
+	\begin{equation}
+		\left\{\begin{array}{l}
+			K_{dz} = 7m\xi\omega_n\\
+			K_{pz} = m\omega_n^2(1 + 10\xi^2)\\
+			K_{iz} = 5m\xi\omega_n^3
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	Os valores de $\xi$ e $\omega_n$ podem ser obtidos a partir das equa\c{c}\~oes \ref{eq:xi}
+	e \ref{eq:omega_n} respectivamente.
+
+	Aplicando a aproxima\c{c}\~ao por polos dominantes, $G_{fz}$ se torna:
+	\begin{equation}
+		G_{fz} = \frac{(K_{dz}s^2 + K_{pz}s + K_{iz})F_z}
+		{5m\xi\omega_n(s^2 + 2\xi\omega_ns + \omega_n^2)}
+    		\nonumber
+	\end{equation}
+	Assim, para se atingir um sistema de segunda ordem padr\~ao, $F_z$ deve ser:
+	\begin{equation}
+		F_z = \frac{5m\xi\omega_n^3}{K_{dz}s^2 + K_{pz}s + K_{iz}} =
+		\frac{K_{iz}}{K_{dz}s^2 + K_{pz}s + K_{iz}}
+		\nonumber
+	\end{equation}
+	De tal forma que a fun\c{c}\~ao de transfer\^encia para a vertical efetivamente ser\'a:
+	\begin{equation}
+		G_{fz} = \frac{K_{iz}}{ms^3 + K_{dz}s^2 + K_{pz}s + K_{iz}}
+		\nonumber
+	\end{equation}
+	Comparando-se o projeto de controlador com o filtro e sem, atrav\'es da simula\c{c}\~ao
+	da resposta de cada um frente ao degrau unit\'ario, obteve-se a seguinte figura.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=8cm]{figures/filter_and_no_filter.eps}
+		\caption{Resposta do controlador vertical com filtro e sem filtro frente ao degrau
+		unit\'ario.}
+	\end{figure}
+	Observa-se como o controlador com o pr\'e-filtro \'e bem melhor que a implementa\c{c}\~ao
+	sem filtro, este passando longe dos requisitos, o que mostra a influ\^encia negativa dos zeros,
+	conforme previsto pela teoria, assim como a import\^ancia de se aplicar um pr\'e-filtro.
+
+	Obteve-se um sobressinal muito bom com o pr\'e-filtro, por\'em o tempo de subida de 0 a 100\%
+	divergiu de mais de 0.1. Realizando o sugerido de uma busca no espa\c{c}o dos requisitos:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=8cm]{figures/step_response_z.eps}
+		\caption{Resposta do controlador vertical anal\'itico e por busca frente ao degrau
+		unit\'ario.}
+	\end{figure}
+	Onde se observa claramente como o algoritmo de busca por for\c{c}a bruta melhorou
+	significativamente o tempo de subida da resposta em compara\c{c}\~ao ao requisito,
+	assim como aumentou a qualidade do sobressinal.
+	\section{Projeto do Controlador Horizontal}
+	A partir da malha apresentada:
+	\begin{equation}
+		X = G_{f\theta}\frac{g(K_{dx}s^2 + K_{px}s + K_{ix})(X_rF_x - X)}{s^3} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		X = \frac{K_{v\theta}K_{p\theta}}{Js^2 + K_{v\theta}s + K_{v\theta}K_{p\theta}}
+		\frac{g(K_{dx}s^2 + K_{px}s + K_{ix})(X_rF_x - X)}{s^3} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		G_{fx} = \frac{gF_xK_{v\theta}K_{p\theta}(K_{dx}s^2 + K_{px}s + K_{ix})}
+		{Js^5 + K_{v\theta}s^4 + K_{v\theta}K_{p\theta}s^3 + gK_{v\theta}
+		K_{p\theta}K_{dx}s^2 + gK_{v\theta}K_{p\theta}K_{px}s + gK_{v\theta}K_{p\theta}K_{ix}}
+		\nonumber
+	\end{equation}
+	Descartando a malha da arfagem:
+	\begin{equation}
+		G_{fx} = \frac{gF_x(K_{dx}s^2 + K_{px}s + K_{ix})}{s^3 + gK_{dx}s^2 + gK_{px}s + gK_{ix}}
+		\nonumber
+	\end{equation}
+	Que \'e praticamente a mesma coisa do caso vertical, trocando-se m pelo inverso de g.
+	Analogamente, portanto:
+	\begin{equation}
+		\left\{\begin{array}{l}
+			K_{dx} = \frac{7\xi\omega_n}{g}\\
+			K_{px} = \frac{\omega_n^2(1 + 10\xi^2)}{g}\\
+			K_{ix} = \frac{5m\xi\omega_n^3}{g}\\
+			F_x = \frac{K_{ix}}{K_{dx}s^2 + K_{px}s + K_{ix}}
+		\end{array}\right.
+		\nonumber
+	\end{equation}
+	Onde $\xi$ e $\omega_n$ podem ser obtidos novamente pelas equa\c{c}\~oes \ref{eq:xi} e
+	\ref{eq:omega_n} respectivamente.
+	
+	A fun\c{c}\~ao de transfer\^encia sem desconsiderar a malha da arfagem, aplicando-se
+	o filtro fica ent\~ao:
+	\begin{equation}
+		G_{fx} = \frac{gK_{v\theta}K_{p\theta}K_{ix}}
+		{Js^5 + K_{v\theta}s^4 + K_{v\theta}K_{p\theta}s^3 + gK_{v\theta}
+		K_{p\theta}K_{dx}s^2 + gK_{v\theta}K_{p\theta}K_{px}s + gK_{v\theta}K_{p\theta}K_{ix}}
+		\nonumber
+	\end{equation}
+	Simulando o controlador projetado com busca e sem:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=8cm]{figures/step_response_x.eps}
+		\caption{Resposta do controlador horizontal anal\'itico e por busca frente ao degrau
+		unit\'ario.}
+	\end{figure}
+	Observa-se como de fato o ajuste fino ajuda bastante, novamente se aproximando muito
+	dos requisitos. Tamb\'em se observa como o impacto de se ter desconsiderado a malha da
+	arfagem n\~ao foi t\~ao grande assim, e que a aproxima\c{c}\~ao por polos dominantes foi
+	novamente coerente.
+	\section{Avalia\c{c}\~ao do Sistema de Controle do Multic\'optero}
+	Simulando a), um voo de 10 s com $x_r = 0$ e $z_r = 1 m$, obteve-se as seguintes figuras:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Coordenada x ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_x_a.png}}
+		\subfigure[Coordenada z ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_z_a.png}}
+		\subfigure[Arfagem ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_theta_a.png}}
+		\subfigure[For\c{c}a ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_f_a.png}}
+		\subfigure[Torque ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_tau_a.png}}
+		\subfigure[Vista pela frente zx.]{\includegraphics[width=6cm]{figures/x_z_a.png}}
+		\caption{Resultados para o experimento a.}
+	\end{figure}
+	Observa-se pelo gr\'afico da coordenada z ao longo do tempo que os requisitos foram
+	atendidos com satisfatoriedade (inseriu-se requisito de 0.1 no sobressinal e 1 no tempo de
+	subida de 0 a 100\%), especialmente dado que o sistema foi linearizado.
+	Al\'em disso ele tamb\'em possui arfagem e x nulos, como \'e o caso para
+	esse experimento, e a vista pela frente \'e coerente com o experimento, ele sobe e
+	ultrapassa um pouco a refer\^encia, e depois retorna para ela (o que \'e confirmado por
+	simula\c{c}\~ao tamb\'em).
+
+	O torque \'e nulo, como deveria ser pois nesse caso ele somente sobe, e a for\c{c}a varia
+	de forma coerente, dado o experimento.
+
+	Simulando-se agora o experimento b:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Coordenada x ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_x_b.png}}
+		\subfigure[Coordenada z ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_z_b.png}}
+		\subfigure[Arfagem ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_theta_b.png}}
+		\subfigure[For\c{c}a ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_f_b.png}}
+		\subfigure[Torque ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_tau_b.png}}
+		\subfigure[Vista pela frente zx.]{\includegraphics[width=6cm]{figures/x_z_b.png}}
+		\caption{Resultados para o experimento b.}
+	\end{figure}
+	Observa-se como, pela vista pela frente, o drone vai at\'e os pontos desejados (o que \'e
+	confirmado pela simula\c{c}\~ao), com um pouco de dificuldade, por\'em ainda assim
+	consegue chegar com elevada precis\~ao como se pode perceber pelos gr\'aficos de x e z.
+	Al\'em disso, os requisitos de ambos os x e o y est\~ao
+	sendo satisfatoriamente respeitados, com o tempo de subida de 0 a 100\% sendo praticamente
+	1 segundo e o sobressinal 0.1, exatamente o colocado para ambos. Ademais, o torque est\'a
+	coerente com o fato dele ter de agir depois da prepara\c{c}\~ao e depois inverter
+	sua a\c{c}\~ao para compensar o sobressinal, e a for\c{c}a idem, por\'em come\c{c}ando
+	a atuar desde o in\'icio. A arfagem se mostra coerente com o simulado, sendo seguida
+	muito bem, e validando o sistema de controle projetado.
+
+	Simulando-se agora o experimento c:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Coordenada x ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_x_c.png}}
+		\subfigure[Coordenada z ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_z_c.png}}
+		\subfigure[Arfagem ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_theta_c.png}}
+		\subfigure[For\c{c}a ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_f_c.png}}
+		\subfigure[Torque ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_tau_c.png}}
+		\subfigure[Vista pela frente zx.]{\includegraphics[width=6cm]{figures/x_z_c.png}}
+		\caption{Resultados para o experimento c.}
+	\end{figure}
+	Pela vista pela frente, o drone aparente seguir com elevada precis\~ao o ponto de
+	refer\^encia, por\'em pelo v\'ideo se verifica um atraso do drone, o que \'e corroborado
+	pelo gr\'afico da coordenada x ao longo do tempo, em que h\'a um erro em regime. Claramente,
+	isso \'e algo resultante do fato da entrada ser rampa, o que implica em erro mesmo com
+	controlador integrador, que \'e o caso do controlador PID. Pode-se imaginar uma poss\'ivel
+	solu\c{c}\~ao para eliminar o erro em regime, pela teoria, que seria simplesmente adicionar
+	um polo na origem. Ainda assim o gr\'afico
+	da coordenada z ao longo do tempo se mostra satisfat\'oria, sem erro em regime e obedecendo
+	os requisitos no tempo. Da mesma forma que antes, a for\c{c}a, o torque e a arfagem apresentam
+	comportamentos que batem com o simulado e o requisitado, com a arfagem e o torque nulos,
+	em regime, e a for\c{c}a constante.
+
+	Simulando-se agora o experimento d:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Coordenada x ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_x_d.png}}
+		\subfigure[Coordenada z ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_z_d.png}}
+		\subfigure[Arfagem ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_theta_d.png}}
+		\subfigure[For\c{c}a ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_f_d.png}}
+		\subfigure[Torque ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_tau_d.png}}
+		\subfigure[Vista pela frente zx.]{\includegraphics[width=6cm]{figures/x_z_d.png}}
+		\caption{Resultados para o experimento d.}
+	\end{figure}
+	Observou-se pelo v\'ideo a mesma coisa que o experimento a, por\'em logo depois de se
+	estabilizar no ponto de refer\^encia, baixou um pouco, resultante da massa posta em cima
+	dele. Todavia, como \'e entrada degrau, o controlador integrador do PID \'e capaz de
+	eliminar erro em regime pela teoria, o que \'e confirmado na simula\c{c}\~ao. No gr\'afico
+	da coordenada z pelo tempo observa-se justamente a mesma coisa que no experimento a, por\'em
+	com a perturba\c{c}\~ao no tempo 3, e o drone se recuperando mesmo assim, recuperando-se
+	com uma for\c{c}a por sinal que \'e visualizada no gr\'afico da for\c{c}a pelo tempo.
+
+	Simulando-se agora o experimento e:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Coordenada x ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_x_e.png}}
+		\subfigure[Coordenada z ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_z_e.png}}
+		\subfigure[Arfagem ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_theta_e.png}}
+		\subfigure[For\c{c}a ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_f_e.png}}
+		\subfigure[Torque ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_tau_e.png}}
+		\subfigure[Vista pela frente zx.]{\includegraphics[width=6cm]{figures/x_z_e.png}}
+		\caption{Resultados para o experimento e.}
+	\end{figure}
+	Pelo v\'ideo, observou-se que nem o experimento c de in\'icio, com um erro em regime. Ao
+	atingir o drone, o vento n\~ao aumentou o erro em x, pelo menos n\~ao visivelmente, mudando
+	somente a arfagem para um valor constante. A vista pela frente mostra no instante 3
+	a disrup\c{c}\~ao causada pelo vento. A figura da coordenada x pelo tempo confirma como
+	o erro em regime n\~ao se alterou tanto, sendo praticamente igual ao do experimento c
+	exceto pela disrup\c{c}\~ao pequena no instante 3, o que ocorre tamb\'em na figura da
+	coordenada z ao longo do tempo, assim como da for\c{c}a ao longo do tempo. No campo do
+	\^angulo, ocorre algo de interessante, a arfagem se mant\'em em regime em uma constante,
+	com o torque nulo. Isso \'e natural, pois reflete o fato de que se tem uma for\c{c}a
+	horizontal, o que implica em diferencial de x e portanto em angula\c{c}\~ao, pelo modelo
+	linearizado utilizado para projetar o controlado.
+
+	Simulando-se agora o experimento f:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Coordenada x ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_x_f.png}}
+		\subfigure[Coordenada z ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_z_f.png}}
+		\subfigure[Arfagem ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_theta_f.png}}
+		\subfigure[For\c{c}a ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_f_f.png}}
+		\subfigure[Torque ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_tau_f.png}}
+		\subfigure[Vista pela frente zx.]{\includegraphics[width=6cm]{figures/x_z_f.png}}
+		\caption{Resultados para o experimento f.}
+	\end{figure}
+	Pelo v\'ideo observou-se como, de forma impressionante, o drone seguiu a curva de
+	\textit{Lissajous}, apenas com uma esp\'ecie de ``atraso'', que pode ser visto como um
+	erro em regime. Este erro \'e refletido nos gr\'aficos das coordenadas x e z em fun\c{c}\~ao
+	do tempo. A for\c{c}a, o torque e a arfagem todos se mostram coerentes tamb\'em com o
+	experimento, apresentando at\'e mesmo uma esp\'ecie de periodicidade. A vista pela frente
+	revela a figura de \textit{Lissajous}, e a precis\~ao impressionante com que o drone
+	seguiu a figura, somente tendo o erro em regime que somente se revela no v\'ideo,
+	e observa-se tamb\'em pequenos erros que o drone comete em rela\c{c}\~ao \`a curva
+	de \textit{Lissajous}, de forma intermitente.
+
+	Simulando-se agora o experimento g:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Coordenada x ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_x_g.png}}
+		\subfigure[Coordenada z ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_z_g.png}}
+		\subfigure[Arfagem ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_theta_g.png}}
+		\subfigure[For\c{c}a ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_f_g.png}}
+		\subfigure[Torque ao longo do tempo.]{\includegraphics[width=6cm]{figures/t_tau_g.png}}
+		\subfigure[Vista pela frente zx.]{\includegraphics[width=6cm]{figures/x_z_g.png}}
+		\caption{Resultados para o experimento g.}
+	\end{figure}
+	Observa-se como era de se esperar, algo parecido com o experimento f. Entretanto,
+	mesmo o per\'iodo sendo maior, o atraso que se observa no v\'ideo n\~ao parece ter
+	diminu\'ido, e sim mantido constante ou at\'e mesmo aumentado, o que \'e um pouco
+	contra-intuitivo, pois a velocidade menor faria o ponto ser mais ``alcan\c{c}\'avel''.
+	Isso \'e observado tamb\'em nas figuras da coordenada x e z ao longo do tempo (o atraso
+	somente parece menor pois a escala da figura \'e o dobro da utilizada no experimento f).
+	Isso somente revela como o erro \'e de fato advindo do projeto do controlador. J\'a
+	com uma rampa ele apresentava erro em regime, ent\~ao isso \'e inevit\'avel em uma
+	curva de \textit{Lissajous}. Observa-se algo de diferente, entretanto, na vista pela
+	frente, em que a curva est\'a sendo seguida mais fielmente, o que faz sentido, pois,
+	quanto mais lento, mais pr\'oximo se torna de um requisito de rampa, o que \'e algo
+	corretamente seguido pelo controlador com precis\~ao, sem erro em regime.
+\end{document}
