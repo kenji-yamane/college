@@ -1,0 +1,170 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Lab 4}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{O problema da moeda}
+	\subsection{Guloso}
+	Primeiramente analisou-se o desempenho do algoritmo guloso, o qual est\'a mostrado
+	a seguir.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Tempo de execu\c{c}\~ao.]{\includegraphics[width=6cm]{figures/troco/GRexec.pdf}}
+		\subfigure[Valor \'otimo encontrado.]{\includegraphics[width=6cm]{figures/troco/GRfound.pdf}}
+		\caption{Resultados para o algoritmo guloso.}
+	\end{figure}
+	Observa-se de forma interessante como o algoritmo demora mais para resolver o problema
+	com os casos com um valor menor. Isso aparenta a princ\'ipio ser paradoxal, entretanto
+	pode ser explicado pelo fato de que o guloso sempre busca pelo maior valor de denomina\c{c}\~ao,
+	em ordem decrescente. Assim, verifica-se que ele tem de percorrer desnecessariamente
+	todo o vetor de denomina\c{c}\~oes, quando se trata de valores muito pequenos, como o valor 1,
+	que s\'o pode ser suprido com uma moeda de um centavo.
+
+	\subsection{Dividir para conquistar}
+	Analisando-se o desempenho do algoritmo de dividir para conquistar:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Tempo de execu\c{c}\~ao.]{\includegraphics[width=6cm]{figures/troco/DCexec.pdf}}
+		\subfigure[Valor \'otimo encontrado.]{\includegraphics[width=6cm]{figures/troco/DCfound.pdf}}
+		\caption{Resultados para o algoritmo de dividir para conquistar.}
+	\end{figure}
+	Verifica-se claramente como, enquanto o algoritmo guloso se mant\'em est\'avel com o aumento
+	do valor (o que faz sentido dado que ele depende somente do vetor denomina\c{c}\~oes),
+	o algoritmo de dividir para conquistar possui uma taxa de aumento extremamente grande.
+
+	Isso se deve a ele chamar sua fun\c{c}\~ao recursivamente n vezes dentro da mesma fun\c{c}\~ao.
+	Isso gera uma complexidade exponencial em rela\c{c}\~ao ao valor.
+	
+	\subsection{Programa\c{c}\~ao din\^amica}
+	Analisando-se o desempenho do algoritmo de programa\c{c}\~ao din\^amica:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Tempo de execu\c{c}\~ao.]{\includegraphics[width=6cm]{figures/troco/PDexec.pdf}}
+		\subfigure[Valor \'otimo encontrado.]{\includegraphics[width=6cm]{figures/troco/PDfound.pdf}}
+		\caption{Resultados para o algoritmo de programa\c{c}\~ao din\^amica.}
+	\end{figure}
+	Aqui se observa um intermedi\'ario com rela\c{c}\~ao ao tempo de execu\c{c}\~ao, o que
+	confirma como o algoritmo \'e mais eficiente que o de dividir para conquistar, por\'em
+	n\~ao supera os c\'alculos simpl\'isticos do algoritmo guloso.
+
+	\subsection{Programa\c{c}\~ao din\^amica e guloso}
+	T\^em-se ainda os seguintes gr\'aficos para se comparar melhor o algoritmo guloso e o de
+	programa\c{c}\~ao din\^amica.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Tempo de execu\c{c}\~ao.]{\includegraphics[width=6cm]{figures/troco/GR_losesexec.pdf}}
+		\subfigure[Valor \'otimo encontrado.]{\includegraphics[width=6cm]{figures/troco/GR_losesfound.pdf}}
+		\caption{Compara\c{c}\~ao entre guloso e programa\c{c}\~ao din\^amica.}
+	\end{figure}
+	Aqui se confirma exatamente o que foi visto antes: o guloso \'e muito mais r\'apido
+	que o de programa\c{c}\~ao de din\^amica, por\'em n\~ao \'e \'otimo, pois em alguns
+	casos o algoritmo de programa\c{c}\~ao din\^amica encontrou valores menores que o guloso
+	encontrou para a quantidade de moedas.
+
+	Percebe-se assim, que o guloso consegue ser mais r\'apido por ser mais simples, por\'em
+	por ser mais simples n\~ao consegue cobrir todos os casos do problema.
+
+	\subsection{O algoritmo dividir para conquistar}
+	O desempenho deste algoritmo frente aos outros foi certamente horr\'ivel, entretanto
+	isso n\~ao significa que este paradigma seja ruim. Diversos problemas, como a cl\'assica
+	busca bin\'aria, ou reconstru\c{c}\~ao de \'arvores bin\'arias a partir das suas
+	descri\c{c}\~oes infixa e posfixa, ou mesmo potencia\c{c}\~ao s\~ao exemplos de problemas
+	que este paradigma consegue reduzir a um tempo linear ou mesmo logar\'itmico. O problema
+	est\'a que esta quest\~ao da moeda n\~ao \'e compat\'ivel com este paradigma, pois h\'a
+	subproblemas repetidos. Desta forma, somente neste caso, o paradigma de dividir para conquistar
+	realiza muito c\'alculo desnecess\'ario.
+	\section{\textit{Subset Sum Problem}}
+	\subsection{Implementa\c{c}\~ao}
+	\subsubsection{Programa\c{c}\~ao din\^amica}
+	Implementou-se o algoritmo por PD que resolve o problema criando-se uma matriz de N + 1
+	fileiras e W + 1 colunas, em que N \'e o n\'umero de itens e W \'e o tamanho da mochila,
+	inicialmente inicializada com tudo -1, exceto pelo ponto de partida que \'e (0, 0), o qual
+	\'e inicializado com -2. Em seguida, itera-se sobre a matriz, percorrendo-a fileira a
+	fileira. Caso um valor diferente de -1 tenha sido encontrado (o que significa que o valor
+	de j da coluna correspondente foi alcan\c{c}ado com alguma escolha de itens), muda-se
+	os valores da fileira seguinte, com n\'umero de coluna igual a j e a j mais o peso do item
+	i, que correspondem justamente \`a escolha de n\~ao inserir o item na mochila e inserir,
+	respectivamente. Desta forma, o valor da coluna de n\'umero W ser\'a diferente de -1
+	se houver alguma escolha de itens que satisfa\c{c}a o que o problema requer.
+
+	Al\'em disso, o valor para o qual \'e mudado a posi\c{c}\~ao na matriz quando ela \'e
+	``atingida'' \'e o ponto daonde se obteve esta posi\c{c}\~ao, em outras palavras o seu
+	ancestral. Como o primeiro ponto daonde se parte tem valor -2, pode-se recuperar os
+	itens escolhidos a partir da casa (N, W) recuperando o ancestral at\'e que este tenha
+	o valor de -2.
+	
+	\subsubsection{\textit{Meet in the middle}}
+	Escolheu-se o algoritmo ``MM'' como segundo algoritmo para se resolver o problema de
+	\textit{Subset Sum}. Resgatou-se todas as subsequ\^encias de cada metade do \textit{array}
+	de \textit{input} utilizando uma recurs\~ao simples, vinculando-se a soma que se obteve
+	\`a escolha de itens que levou a essa soma com o aux\'ilio de uma classe auxiliar. Desta
+	forma, pode-se recuperar a escolha de itens que levou \`a soma que resolve o problema, caso
+	encontrada. Obtidas todas as subsequ\^encias poss\'iveis de cada metade, ordenou-se as
+	subsequ\^encias da primeira metade por ordem do valor de sua soma, e em seguida iterou-se
+	sobre as subsequ\^encias da segunda metade. O peso da mochila, subtra\'ido do valor
+	da soma desta era procurado por busca bin\'aria no conjunto de subsequ\^encias da
+	primeira metade.
+
+	\subsection{Resultados}
+	Testando-se para cada um dos algoritmos com cada um dos tipos de testes (exceto o
+	``TODD''), obteve-se os seguintes resultados:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Testes AVIS]{\includegraphics[width=6cm]{figures/ssp/compAVIS.pdf}}
+		\subfigure[Testes RAND]{\includegraphics[width=6cm]{figures/ssp/compRAND.pdf}}
+		\subfigure[Testes EVOD]{\includegraphics[width=6cm]{figures/ssp/compEVOD.pdf}}
+		\subfigure[Testes P3]{\includegraphics[width=6cm]{figures/ssp/compP3.pdf}}
+		\subfigure[Testes P4]{\includegraphics[width=6cm]{figures/ssp/compP4.pdf}}
+		\subfigure[Testes P5]{\includegraphics[width=6cm]{figures/ssp/compP5.pdf}}
+		\caption{Comparando os algoritmos.}
+	\end{figure}
+	Verifica-se como o algoritmo gabarito \'e de fato muito bom, sendo o melhor
+	de todos em todos os testes. J\'a o algoritmo de programa\c{c}\~ao din\^amica \'e
+	melhor somente nos testes de AVIS e RAND, mostrando um desempenho extremamente pobre
+	nos outros. Seu tempo de execu\c{c}\~ao ficou t\~ao grande nos testes P4 e P5, que geram-se
+	\texttt{plots} deste de novo por\'em sem o algoritmo de PD para melhor visualiza\c{c}\~ao:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Testes P4]{\includegraphics[width=6cm]{figures/ssp/compDDA2P4.pdf}}
+		\subfigure[Testes P5]{\includegraphics[width=6cm]{figures/ssp/compDDA2P5.pdf}}
+		\caption{Comparando os algoritmos excluindo o PD.}
+	\end{figure}
+	Onde se verifica novamente como o algoritmo gabarito de fato \'e muito bom. Por\'em, \'e
+	interessante como o algoritmo de PD \'e melhor algumas vezes e pior outras, quando comparado
+	com o algoritmo MM.
+	
+	Analisando-se o \texttt{instance viewer} disponibilizado, deduz-se
+	claramente o que est\'a acontecendo. Os algoritmos P3, P4 e P5 possuem valores de peso total
+	de mochila cada vez maiores. Isso inclusive tem como consequ\^encia uma probabilidade
+	menor de se ter de fato alguma subsequ\^encia cuja soma \'e o valor requisitado, o que
+	se observa tamb\'em com os dados advindos dos testes:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Algoritmo DD]{\includegraphics[width=4.5cm]{figures/ssp/compTrueDD.pdf}}
+		\subfigure[Algoritmo PD]{\includegraphics[width=4.5cm]{figures/ssp/compTruePD.pdf}}
+		\subfigure[Algoritmo A2]{\includegraphics[width=4.5cm]{figures/ssp/compTrueA2.pdf}}
+		\caption{Analisando o n\'umero de respostas positivas para cada algoritmo.}
+	\end{figure}
+	Dado que a complexidade do algoritmo PD depende do tamanho da mochila, al\'em do n\'umero
+	de itens dispon\'iveis, \'e natural que seu desempenho seja cada vez pior conforme esses
+	valores aumentam, enquanto que o desempenho do MM n\~ao varia tanto, pois ele depende
+	do n\'umero de itens dispon\'iveis somente.
+
+	Esse racioc\'inio tamb\'em explica o desempenho observado nos outros testes. O teste de
+	AVIS \'e similar ao EVOD, por\'em possui n\'umeros consecutivos, com um tamanho de mochila que
+	diminui tamb\'em por causa disso. Dessa forma, o PD \'e melhor que o MM no AVIS, enquanto
+	que a situa\c{c}\~ao contr\'aria \'e obtida no EVOD. Al\'em disso, os casos de teste RAND
+	possuem os menores valores de pesos de itens e peso da mochila de todos, ent\~ao se espera
+	que o PD tenha desempenho melhor, mesmo.
+\end{document}
