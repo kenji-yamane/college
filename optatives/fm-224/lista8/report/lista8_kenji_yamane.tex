@@ -1,0 +1,126 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2cm,right=2cm,marginparwidth=1.5cm]{geometry}
+
+\title{Lista 8}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{Equa\c{c}\~ao \textit{Benjamin-Bona-Mahony}}
+	Substituindo-se $u(x, t) = \sum_{k = -\infty}^{\infty} b_k(t)e^{ikx}$ na equa\c{c}\~ao
+	de BBM, mostrada a seguir:
+	\begin{equation}
+		\frac{\partial u}{\partial t} + a\frac{\partial^3 u}{\partial x^2\partial t} + c\frac{\partial u}{\partial x}
+		+ fu\frac{\partial u}{\partial x} = -\gamma u - \epsilon sen(x - \Omega t)
+		\nonumber
+	\end{equation}
+	Tem-se:
+	\begin{equation}
+		\frac{\partial}{\partial t}\left(\sum_{k = -\infty}^{\infty} b_k(t)e^{ikx}\right) +
+		a\frac{\partial^3}{\partial x^2\partial t}\left(\sum_{k = -\infty}^{\infty} b_k(t)e^{ikx}\right) +
+		c\frac{\partial}{\partial x}\left(\sum_{k = -\infty}^{\infty} b_k(t)e^{ikx}\right) +
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		f\left(\sum_{k = -\infty}^{\infty} b_k(t)e^{ikx}\right)\frac{\partial}{\partial x}\left(\sum_{k = -\infty}^{\infty} b_k(t)e^{ikx}\right)
+		= -\gamma \sum_{k = -\infty}^{\infty} b_k(t)e^{ikx} - \epsilon sen(x - \Omega t) \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow \sum_{k = -\infty}^{\infty} \dot{b}_k(t)e^{ikx} -
+		a\sum_{k = -\infty}^{\infty} k^2\dot{b}_k(t)e^{ikx} +
+		c\sum_{k = -\infty}^{\infty} ikb_k(t)e^{ikx} +
+		f\sum_{k = -\infty}^{\infty}\sum_{m = -\infty}^{\infty} imb_k(t)b_m(t)e^{i(k + m)x}
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		= -\gamma \sum_{k = -\infty}^{\infty} b_k(t)e^{ikx} - \epsilon sen(x - \Omega t)
+		\nonumber
+	\end{equation}
+	Multiplicando por $e^{-ilx}$ e integrando no dom\'inio do espa\c{c}o, de 0 a $2\pi$, tem-se:
+	\begin{equation}
+		2\pi \dot{b}_k(t) - 2a\pi k^2\dot{b}_k(t) + 2c\pi ikb_k(t) + 2\pi f\sum_{m = -\infty}^{\infty} imb_m(t)b_{k - m}(t)
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		= -2\pi\gamma b_k(t) - \int_0^{2\pi}\epsilon e^{-ikx}sen(x - \Omega t) \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\dot{b}_k(t) - ak^2\dot{b}_k(t) + cikb_k(t) + if\sum_{m = -\infty}^{\infty} mb_m(t)b_{k - m}(t)
+		= -\gamma b_k(t) - \frac{\epsilon}{2\pi}\int_0^{2\pi}e^{-ikx}sen(x - \Omega t)dx
+		\label{eq:BBMincomplete}
+	\end{equation}
+	Resolvendo a integral desta equa\c{c}\~ao:
+	\begin{equation}
+		\int_0^{2\pi}e^{-ikx}sen(x - \Omega t)dx = -\frac{1}{ik}e^{-ikx}sen(x - \Omega t)\big|_{x = 0}^{2\pi}
+		+ \frac{1}{ik}\int_0^{2\pi}e^{-ikx}cos(x - \Omega t)dx \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow \int_0^{2\pi}e^{-ikx}sen(x - \Omega t)dx = \frac{1}{ik}\left(-\frac{1}{ik}e^{-ikx}cos(x - \Omega t)\big|_{x = 0}^{2\pi}
+		- \frac{1}{ik}\int_0^{2\pi}e^{-ikx}sen(x - \Omega t)dx\right) \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow \int_0^{2\pi}e^{-ikx}sen(x - \Omega t)dx = \frac{1}{k^2}\int_0^{2\pi}e^{-ikx}sen(x - \Omega t)dx \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow (k^2 - 1)\int_0^{2\pi}e^{-ikx}sen(x - \Omega t)dx = 0
+		\nonumber
+	\end{equation}
+	Assim, para $k \neq 1$, a integral \'e nula.
+	
+	Para k = 1:
+	\begin{equation}
+		\int_0^{2\pi}e^{-ix}sen(x - \Omega t)dx = \int_0^{2\pi}[cos(x) - isen(x)]sen(x - \Omega t)dx =
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\int_0^{2\pi}cos(x)sen(x - \Omega t)dx - i\int_0^{2\pi}sen(x)sen(x - \Omega t)dx
+		\nonumber
+	\end{equation}
+	Pelas f\'ormulas de Prostaf\'erese:
+	\begin{equation}
+		\int_0^{2\pi}e^{-ix}sen(x - \Omega t)dx = \frac{1}{2}\int_0^{2\pi}sen(2x - \Omega t) - sen(\Omega t)dx -
+		\frac{i}{2}\int_0^{2\pi}cos(\Omega t) - cos(2x - \Omega t)dx \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow \int_0^{2\pi}e^{-ix}sen(x - \Omega t)dx = -\pi sen(\Omega t) - i\pi cos(\Omega t)
+		\nonumber
+	\end{equation}
+	Aplicando isto \`a equa\c{c}\~ao \ref{eq:BBMincomplete}:
+	\begin{equation}
+		\dot{b}_k(t) - ak^2\dot{b}_k(t) + cikb_k(t) + if\sum_{m = -\infty}^{\infty} mb_m(t)b_{k - m}(t)
+		= -\gamma b_k(t) + \frac{\epsilon \delta_{1, k}}{2}\left[sen(\Omega t) + cos(\Omega t)\right] \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow \dot{b}_k = \frac{1}{1 - ak^2}\left\{-(ick + \gamma)b_k - if\sum_{m = -\infty}^{\infty} mb_mb_{k - m}
+		+ \frac{\epsilon \delta_{1, k}}{2}\left[sen(\Omega t) + cos(\Omega t)\right]\right\}
+		\nonumber
+	\end{equation}
+	Como queria-se demonstrar.
+	\section{Equa\c{c}\~ao \textit{Kuramoto-Sivashinsky}}
+	Implementando-se o m\'etodo espectral nesta equa\c{c}\~ao como est\'a nos slides, e realizando
+	a integra\c{c}\~ao das equa\c{c}\~oes diferenciais resultantes em \texttt{Julia}, obteve-se a seguinte
+	figura.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=9cm]{../bifurcation_diagram.png}
+	\end{figure}
+	Onde se observa similaridade satisfat\'oria com a figura original.
+\end{document}
+
