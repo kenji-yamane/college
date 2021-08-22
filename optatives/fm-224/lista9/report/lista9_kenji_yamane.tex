@@ -1,0 +1,64 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2cm,right=2cm,marginparwidth=1.5cm]{geometry}
+
+\title{Lista 9}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{Equa\c{c}\~ao \textit{Kuramoto-Sivashinsky}}
+	Dada por:
+	\begin{equation}
+		\partial_tu = [\nu - (1 + \partial_{xx})^2]u - u\partial_xu
+		\nonumber
+	\end{equation}
+	Expandindo:
+	\begin{equation}
+		\frac{\partial u}{\partial t} = vu - u - 2\frac{\partial^2 u}{\partial x^2} -
+		\frac{\partial^4 u}{\partial x^4} - u\frac{\partial u}{\partial x} \Rightarrow
+		\nonumber
+	\end{equation}
+	\begin{equation}
+		\Rightarrow \frac{\partial u}{\partial t} = (v - 1)u - 2\frac{\partial^2 u}{\partial x^2} -
+		\frac{\partial^4 u}{\partial x^4} - u\frac{\partial u}{\partial x}
+		\nonumber
+	\end{equation}
+	Realizando as aproxima\c{c}\~oes por diferen\c{c}as finitas:
+	\begin{equation}
+		\frac{f_i^{n + 1} - f_i^n}{\Delta t} = (v - 1)f_i^n - 2\frac{f_{i + 1}^n - 2f_i^n + f_{i - 1}^n}{(\Delta x)^2} -
+		\frac{f_{i + 2}^n - 4f_{i + 1}^n + 6f_i^n - 4f_{i - 1}^n + f_{i - 2}^n}{(\Delta x)^4} - f_i^n\frac{f_{i + 1}^n - f_{i - 1}^n}{2\Delta x}
+		\nonumber
+	\end{equation}
+	\section{Resultados}
+	Realizou-se primeiramente um c\'odigo em C para se implementar a equa\c{c}\~ao e sua resolu\c{c}\~ao por m\'etodo das diferen\c{c}as finitas,
+	realizando c\'alculo da entropia espectral por um c\'odigo em \textit{Python}. Para se encontrar o atrator do artigo, buscou-se rodar as equa\c{c}\~oes
+	com um script auxiliar que c\'alculava a entropia espectral resultante, e somente parava quando encontrava um valor pr\'oximo de 4.4 quando $\nu = 0.640$.
+	Por\'em, mesmo encontrando valores pr\'oximos n\~ao se obtia um resultado satisfat\'orio. As figuras encontradas para a figura 1 do artigo s\~ao mostradas
+	a seguir.
+	\begin{figure}[H]
+		\centering
+		\subfigure[1a]{\includegraphics[width=6cm]{../figures/1a.png}}
+		\subfigure[1b]{\includegraphics[width=6cm]{../figures/1b.png}}
+		\subfigure[1c]{\includegraphics[width=6cm]{../figures/1c.png}}
+		\subfigure[1d]{\includegraphics[width=6cm]{../figures/1d.png}}
+	\end{figure}
+	Onde n\~ao se obteve um momento per\'iodico nem quasiperi\'odico. A determina\c{c}\~ao da entropia espectral era de certa forma parecida entretanto:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=6cm]{../output/entropy_variation.png}
+	\end{figure}
+	Por\'em com uma varia\c{c}\~ao de 2 a 4 em um valor de $\nu$ menor. Mesmo aumentando-se a etapa de elimina\c{c}\~ao de transiente, ou
+	procurando-se alterar par\^ametros no mapa de Poincar\'e, n\~ao foi poss\'ivel obter figuras parecidas. Isto sugere que simplesmente
+	n\~ao foi poss\'ivel encontrar o atrator.
+\end{document}
+

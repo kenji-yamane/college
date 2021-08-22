@@ -1,0 +1,106 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Lista 7}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{Fun\c{c}\~oes densidade de probabilidade}
+	Computou-se um histograma com 1000 intervalos para as s\'eries \texttt{solar\_wind1b}
+	e \texttt{solar\_wind2.dat}. Obteve-se assim as seguintes figuras.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Pdf da 1b.]{\includegraphics[width=6cm]{../figures/pdf1b.png}}
+		\subfigure[Pdf da 2.]{\includegraphics[width=6cm]{../figures/pdf2.png}}
+		\caption{Pdf's obtidos a partir de um histograma.}
+	\end{figure}
+	Aparentemente, o pdf da 1b possui uma tend\^encia mais leptoc\'urtica e sim\'etrica, enquanto
+	o pdf da 2 \'e mais platoc\'urtica e com uma assimetria negativa. Desta forma, pode-se
+	prever que a curtose da 1b ser\'a maior que 3 (curtose da normal padr\~ao) e \textit{skewness}
+	pr\'oxima de 0, enquanto que a curtose da 2 ser\'a pr\'oxima de 3, por se aproximar de uma
+	normal padr\~ao e sendo portanto mesoc\'urtica, e sua \textit{skewness} aparentando ser positiva.
+
+	Calculando-se estes valores em \textit{Python}:
+	\begin{verbatim}
+curtose da 1b: 29.917402952291173
+skewness da 1b: -0.006064237640284134
+-------------------------
+curtose da 2: 3.561758903312367
+skewness da 2: 0.5226457966325583
+	\end{verbatim}
+	Onde se observa que de fato a \textit{skewness} de 1b \'e pr\'oxima de 0, enquanto a
+	da 2 \'e positiva. Quanto a curtose, obteve-se tamb\'em o previsto antes, de tal forma
+	que se pode construir a seguinte tabela as classificando, com base nos resultados obtidos:
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{ccc}
+			\hline
+			S\'erie & Simetria & Curtose\\
+			\hline
+			1b & Sim\'etrica & Leptoc\'urtica\\
+			2 & Assim\'etrica & Mesoc\'urtica\\
+			\hline
+		\end{tabular}
+		\caption{Classifica\c{c}\~ao das s\'eries temporais 1b e 2.}
+	\end{table}
+	\section{Densidade espectral de energia}
+	Utilizando-se a fun\c{c}\~ao \texttt{pwelch} em \textit{Matlab}, e em seguida gerando-se
+	seu gr\'afico em espa\c{c}o log utilizando a fun\c{c}\~ao \texttt{loglog}, obteve-se as
+	seguintes figuras para as s\'eries temporais:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Psd da 1a.]{\includegraphics[width=7cm]{../figures/psd1a.png}}
+		\subfigure[Psd da 2.]{\includegraphics[width=7cm]{../figures/psd2.png}}
+		\caption{Psd's obtidos a partir da fun\c{c}\~ao \texttt{pwelch}.}
+	\end{figure}
+	Analisando os gr\'aficos, e comparando com o gr\'afico mostrado nos slides, percebe-se que a
+	2 possui o intervalo entre 0.1 e 1 como intervalo inercial. Na 1a, o intervalo que mais se
+	aparenta com a reta de coeficiente angular de -1.6 \'e de 0.001 a 3.
+	\section{M\'etricas multifractais}
+	Implementando-se o c\'odigo do artigo de MFDFA em \textit{Matlab}, obteve-se os seguintes
+	resultados para a s\'erie temporal 1b.
+	\begin{figure}[H]
+		\centering
+		\subfigure[\textit{Hurst} generalizado.]
+		{\includegraphics[width=6cm]{../figures/generalized_hurst1b.png}}
+		\subfigure[\textit{Multifractal scaling exponent}.]
+		{\includegraphics[width=6cm]{../figures/multifractal_scal_exp1b.png}}
+		\subfigure[Espectro multifractal.]
+		{\includegraphics[width=6cm]{../figures/multifractal_spectrum1b.png}}
+		\caption{Resultados advindos do MFDFA para a s\'erie 1b.}
+	\end{figure}
+	Observa-se comportamento certamente esperado para um multifractal, analisando o expoente
+	generalizado de \textit{Hurst} e o \textit{multifractal scaling exponent}: h\'a uma
+	derivada n\~ao nula associada, quando se varia o momento, o que indica a presen\c{c}a
+	de ambas grandes e pequenas flutua\c{c}\~oes. Al\'em disso, o formato do espectro
+	multifractal \'e de fato c\^oncavo, com uma largura de 0.4.
+
+	Estes fatores levam a conclus\~ao de que a s\'erie 1b, e portanto a 1a, s\~ao multifractais.
+
+	Realizando-se o mesmo procedimento para a s\'erie 2:
+	\begin{figure}[H]
+		\centering
+		\subfigure[\textit{Hurst} generalizado.]
+		{\includegraphics[width=6cm]{../figures/generalized_hurst2.png}}
+		\subfigure[\textit{Multifractal scaling exponent}.]
+		{\includegraphics[width=6cm]{../figures/multifractal_scal_exp2.png}}
+		\subfigure[Espectro multifractal.]
+		{\includegraphics[width=6cm]{../figures/multifractal_spectrum2.png}}
+		\caption{Resultados advindos do MFDFA para a s\'erie 2.}
+	\end{figure}
+	Observa-se que o expoente de \textit{Hurst} generalizado, assim como o \textit{multifractal
+	scaling exponent} possuem comportamento similares ao da s\'erie 1b, o que j\'a permite concluir
+	que a s\'erie possui car\'ater multifractal. Ademais, seu espectro
+	multifractal possui tamb\'em formato c\^oncavo, com largura de 0.8, dobro da s\'erie 1a,
+	o que mostra como seu car\'ater multifractal \'e at\'e mais acentuado que a da s\'erie 1b.
+\end{document}
+

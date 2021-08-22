@@ -1,0 +1,161 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Lista 5}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{Primeira quest\~ao}
+	Utilizou-se um gerador de n\'umeros aleat\'orios advindos de uma distribui\c{c}\~ao
+	gaussiana baseado em \textit{C++}. Para se certificar de que de fato eles representam esta
+	distribui\c{c}\~ao, geraram-se 100 mil n\'umeros com este gerador, com m\'edia 0
+	e desvio padr\~ao 1, e ent\~ao computou-se seu histograma dividido em 100 intervalos
+	em \textit{Python}. Desta forma, obteve-se a seguinte figura:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=8cm]{gaussian/proof.png}
+		\caption{N\'umeros criados pelo gerador gaussiano de C++.}
+	\end{figure}
+	O que comprova que de fato eles representam a distribui\c{c}\~ao gaussiana.
+
+	Realizando assim, os 1024 n\'umeros requisitados, assim como os resultantes da aplica\c{c}\~ao
+	do filtro da m\'edia m\'ovel, tratou-se estes n\'umeros em \textit{Python} com o aux\'ilio
+	da biblioteca \textit{Numpy}, e seu pacote com o algoritmo de \textit{Fast Fourier Transform}.
+	O resultado se encontra a seguir.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Dados originais.]{\includegraphics[width=6cm]{gaussian/raw.png}}
+		\subfigure[Dados filtrados.]{\includegraphics[width=6cm]{gaussian/filtered.png}}
+		\caption{Espectros obtidos para a distribui\c{c}\~ao gaussiana.}
+	\end{figure}
+	Observa-se como o espectro resultante para os dados originais se comporta de forma esperada.
+	O ru\'ido branco apresenta estacionariedade, pois todas as suas frequ\^encias possuem
+	intensidades semelhantes no seu espectro. Em contrapartida, de forma interessante, os
+	dados filtrados apresentam uma maior intensidade nas frequ\^encias menores, o que \'e
+	claramente um ind\'icio de que ela \'e menos estacion\'aria que os dados originais.
+
+	Observando-se as s\'eries temporais em si:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Dados originais.]{\includegraphics[width=6cm]{gaussian/raw_orbit.png}}
+		\subfigure[Dados filtrados.]{\includegraphics[width=6cm]{gaussian/filtered_orbit.png}}
+		\caption{S\'eries temporais para a distribui\c{c}\~ao gaussiana.}
+	\end{figure}
+	Observa-se o efeito que o filtro tem sobre os dados. Como ele consiste numa m\'edia dos
+	dados, ele se altera mais dificilmente, percebendo-se assim como resultado uma curva mais
+	n\'itida. Isso altera tanto os dados que de fato, se tem uma n\~ao estacionariedade
+	pelo menos para o intervalo considerado. Pode-se deduzir que, como ele adv\'em de um
+	ru\'ido branco, ao aumentar-se suficientemente o tamanho da s\'erie temporal, seus padr\~oes
+	c\'iclicos come\c{c}am a ficar evidentes, e consequentemente sua estacionariedade tamb\'em.
+	\section{Segunda quest\~ao}
+	Novamente se utilizou de \textit{C++} para se gerar a s\'erie temporal advinda de um
+	gerador de n\'umeros aleat\'orios com distribui\c{c}\~ao uniforme, assim como os pontos
+	que vem do mapa de \textit{Ulam}.
+	
+	Novamente, testou-se se os gerador de n\'umeros alear\'orios realmente possu\'ia
+	distribui\c{c}\~ao uniforme:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=8cm]{uniform_ulam/uniform_proof.png}
+		\caption{N\'umeros criados pelo gerador uniforme de C++.}
+	\end{figure}
+	O que evidencia que de fato \'e o caso.
+
+	Em \textit{Python}, ent\~ao, realizava-se o c\'alculo
+	do seu espectro de pot\^encia, por\'em o resultado sempre era toda a intensidade na
+	frequ\^encia de valor 0. Descobriu-se ent\~ao que isso \'e o natural para sinais que possuem
+	m\'edia acima de 0, e que o padr\~ao era decrementar o sinal todo do valor de sua m\'edia.
+	Feito isto, obteve-se os seguintes resultados para o espectro de pot\^encia:
+	\begin{figure}[H]
+		\centering
+		\subfigure[N\'umeros aleat\'orios uniformes.]
+		{\includegraphics[width=6cm]{uniform_ulam/uniform_psd.png}}
+		\subfigure[Mapa de \textit{Ulam} sob observa\c{c}\~ao.]
+		{\includegraphics[width=6cm]{uniform_ulam/ulam_psd.png}}
+		\caption{Espectros obtidos para a segunda quest\~ao.}
+	\end{figure}
+	Onde se observa uma semelhan\c{c}a entre os dois, com ambos podendo ser considerados
+	estacion\'arios em virtude da uniformidade observada nos seus espectros de pot\^encia.
+
+	Suas semelhan\c{c}as continuam na m\'edia e no desvio padr\~ao, cujos valores obtidos
+	s\~ao mostrados na tabela a seguir.
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{ccc}
+			\hline
+			& M\'edia & Vari\^ancia\\
+			\hline
+			Uniforme & 0.499 & 0.083\\
+			\textit{Ulam} & 0.497 & 0.084\\
+			\hline
+		\end{tabular}
+		\caption{Valores de m\'edia e vari\^ancia para as s\'eries temporais da quest\~ao 2.}
+	\end{table}
+	Sendo estes valores praticamente iguais. Esses pontos todos de semelhan\c{c}a s\~ao
+	consequ\^encia da natureza ca\'otica do mapa de \textit{Ulam}. Sua \'orbita deve
+	preencher densamente o espa\c{c}o entre 0 e 1, de forma ca\'otica. Os resultados ilustram,
+	portanto, os paralelos entre o caos de \textit{Ulam} e uma distribui\c{c}\~ao uniforme, o
+	que, por sua vez, mostra como a \'orbita de \textit{Ulam} sobre a fun\c{c}\~ao de
+	observa\c{c}\~ao em pauta \'e estacion\'aria.
+	\section{Terceira quest\~ao}
+	Implementou-se o integrador de \textit{Runge-Kutta} de quarta ordem, assim como a
+	equa\c{c}\~ao de \textit{Lorentz} em \textit{C++} com o aux\'ilio da biblioteca
+	\textit{Eigen}. Inicialmente testou-os simplesmente gerando uma \'orbita de 40000 pontos
+	depois de 1000 pontos descartados come\c{c}ando do ponto (1, 1, 1) para verificar se
+	o seu atrator conhecido aparece. O passo escolhido foi de 0.01. O resultado est\'a a seguir.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=8cm]{lorentz/attractor.eps}
+		\caption{Atrator de \textit{Lorentz}.}
+	\end{figure}
+	Onde se confima a corretude dos instrumentos utilizados e implementados.
+
+	Testando-se alguns valores poss\'iveis de tamanho de \'orbita e visualizando-se
+	no atrator como a \'orbita se comporta, p\^ode-se determinar o tempo do ciclo das duas
+	folhas como sendo 1.57, enquanto que para uma folha \'e naturalmente, metade desse valor,
+	0.785. As \'orbitas resultantes podem ser verificadas na figura a seguir.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Uma folha.]{\includegraphics[width=7.5cm]{lorentz/leaf_cycle.eps}}
+		\subfigure[Duas folhas.]{\includegraphics[width=7.5cm]{lorentz/leafs_cycle.eps}}
+		\caption{\'Orbitas correspondentes a ciclos encontradas manualmente.}
+	\end{figure}
+	Como a \'orbita corresponde a uma da ponta do atrator, pode-se estimar a \'orbita em m\'edia
+	como sendo metade deste valor.
+
+	Desta forma, criou-se outro integrador, desta vez com passo igual a 0.0039 e amostrou-se
+	o valor x da \'orbita de \textit{Lorentz} a cada 4 passos do \textit{Runge Kutta}. Com ele,
+	criou-se a s\'erie temporal de \textit{Lorentz}, e, aplicando a t\'ecnica de atraso do dado,
+	reconstruiu-se o atrator para diversos valores de $\tau$:
+	\begin{figure}[H]
+		\centering
+		\subfigure[$\tau$ = T.]{\includegraphics[width=6cm]{lorentz/lorentz_reconstructed_25.eps}}
+		\subfigure[$\tau$ = T/2.]{\includegraphics[width=6cm]{lorentz/lorentz_reconstructed_12.eps}}
+		\subfigure[$\tau$ = T/4.]{\includegraphics[width=6cm]{lorentz/lorentz_reconstructed_6.eps}}
+		\subfigure[$\tau$ = T/8.]{\includegraphics[width=6cm]{lorentz/lorentz_reconstructed_3.eps}}
+		\caption{Atratores reconstru\'idos.}
+	\end{figure}
+	Sendo T o per\'iodo de uma folha de \textit{Lorentz}.
+
+	Comparando-se com as vistas laterais do atrator original que est\~ao vinculadas
+	ao eixo x:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Proje\c{c}\~ao do atrator no plano xy.]
+		{\includegraphics[width=6cm]{lorentz/attractor_xy.eps}}
+		\subfigure[Proje\c{c}\~ao do atrator no plano xz.]
+		{\includegraphics[width=6cm]{lorentz/attractor_xz.eps}}
+		\caption{Vistas laterais do atrator de \textit{Lorentz}.}
+	\end{figure}
+	Onde se verifica claramente, que, de fato, como a quest\~ao sugeriu, o melhor atraso \'e
+	um quarto do per\'iodo m\'edio de uma folha.
+\end{document}

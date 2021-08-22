@@ -1,0 +1,212 @@
+\documentclass{article}
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2cm,right=2cm,marginparwidth=1.5cm]{geometry}
+
+\pagestyle{empty}
+
+\begin{document}
+    \textbf{Questão 3.}
+
+    No caso do PVC em pauta, tem-se:
+    $$\begin{cases}
+        p(x) = 0\\
+        q(x) = 3\\
+        r(x) = x^2
+    \end{cases}$$
+
+    \textbf{a)} Utilizando splines cúbicas nos pontos $x_i = (i-1)h, \quad i = 1,\dots,N, \quad h = \frac{1}{N-1}$, tem-se que:
+    $$\begin{cases}
+        a_i = \frac{3}{2h^2} + \frac{3}{4h}p(x_i) - \frac{1}{4}q(x_i)\\
+        b_i = -\frac{3}{h^2} - q(x_i)\\
+        d_i = \frac{3}{2h^2} - \frac{3}{4h}p(x_i) - \frac{1}{4}q(x_i)\\
+        r_i = r(x_i)
+    \end{cases} \Rightarrow \begin{cases}
+        a_i = \frac{3}{2h^2} - \frac{3}{4}\\
+        b_i = -\frac{3}{h^2} - 3\\
+        d_i = \frac{3}{2h^2} - \frac{3}{4}\\
+        r_i = (i - 1)^2h^2
+    \end{cases}$$
+
+    Portanto, o problema se reduz a resolver o sistema linear
+    $$
+        \begin{bmatrix}
+            \frac{1}{4} & 1 & \frac{1}{4} & & & \\
+            \frac{3}{2h^2} - \frac{3}{4} & -\frac{3}{h^2} - 3 & \frac{3}{2h^2} - \frac{3}{4} & & & \\
+            & \frac{3}{2h^2} - \frac{3}{4} & -\frac{3}{h^2} - 3 & \frac{3}{2h^2} - \frac{3}{4} & & \\
+            & & \ddots & \ddots & \ddots & \\
+            & & \frac{3}{2h^2} - \frac{3}{4} & -\frac{3}{h^2} - 3 & \frac{3}{2h^2} - \frac{3}{4} & \\
+            & & &  \frac{3}{2h^2} - \frac{3}{4} & -\frac{3}{h^2} - 3 & \frac{3}{2h^2} - \frac{3}{4} \\
+            & & & \frac{1}{4} & 1 & \frac{1}{4} \\
+        \end{bmatrix} \begin{bmatrix}
+            c_{-1} \\
+            c_0 \\
+            c_1 \\
+            \vdots \\
+            c_{N-1} \\
+            c_N \\
+            c_{N+1}
+        \end{bmatrix} = \begin{bmatrix}
+            0 \\
+            0 \\
+            h^2 \\
+            \vdots \\
+            (N - 2)^2h^2 \\
+            1 \\
+            0 \\
+        \end{bmatrix}
+    $$
+
+    \textbf{b)} Sejam as splines lineares para intervalos igualmente espaçados
+    $$ B_i(x) = \begin{cases}
+        \frac{x-x_{i-1}}{h}, & x_{i-1} \leq x \leq x_i \\
+        \frac{x_{i+1}-x}{h}, & x_i \leq x \leq x_{i+1} \\
+        0, & x \not\in [x_{i-1},x_{i+1}]
+    \end{cases} \Rightarrow B'_i(x) = \begin{cases}
+        \frac{1}{h}, & x_{i-1} \leq x \leq x_i \\
+        -\frac{1}{h}, & x_i \leq x \leq x_{i+1} \\
+        0, & x \not\in [x_{i-1},x_{i+1}]
+    \end{cases}$$
+    $$ B_0(x) = \begin{cases}
+        \frac{x_1-x}{h}, & x_0 \leq x \leq x_1 \\
+        0, & x_1 \leq x \leq x_N
+    \end{cases} \Rightarrow B'_0(x) = \begin{cases}
+        -\frac{1}{h}, & x_0 \leq x \leq x_1 \\
+        0, & x_1 \leq x \leq x_N
+    \end{cases}$$
+    $$B_N(x) = \begin{cases}
+        \frac{x-x_{N-1}}{h}, & x_{N-1} \leq x \leq x_N \\
+        0, & x_0 \leq x \leq x_{N-1}
+    \end{cases} \Rightarrow B'_N(x) = \begin{cases}
+        \frac{1}{h}, & x_{N-1} \leq x \leq x_N \\
+        0, & x_0 \leq x \leq x_{N-1}
+    \end{cases}$$
+
+    As condições de contorno podem ser escritas como:
+
+    $$ u(0) = 0 \Rightarrow \sum_{j=1}^N c_j B_j(0) = 0 \Rightarrow c_0 = 0 $$
+    $$ u(1) = 0 \Rightarrow \sum_{j=1}^N c_j B_j(1) = 0 \Rightarrow c_N = 0 $$
+    
+    Considerando-se que, pelo m\'etodo de Galerkin, para todo $i = 2, \dots, N-1$:
+    $$ \sum_{j = 1}^N c_j \langle B_j''(x) - p(x)B_j'(x) - q(x)B_j(x) , B_i(x)\rangle = \langle r(x), B_i(x) \rangle \Rightarrow$$
+    $$ \sum_{j = 1}^N c_j\langle B_j''(x), B_i(x) \rangle - \langle p(x)B_j'(x), B_i(x)\rangle - \langle q(x)B_j(x), B_i(x)\rangle] = \langle r(x), B_i(x)\rangle \Rightarrow$$
+
+    Calculando $\langle B_j''(x), B_i(x) \rangle$:
+    \begin{align*} \langle B_j''(x), B_i(x) \rangle  & = \int_a^b B_j''(x) B_i(x) \, dx = B_j'(x) B_i(x) |_a^b - \int_a^b B_j'(x) B_i'(x) \, dx = - \int_a^b B_j'(x) B_i'(x) \, dx \\
+        & = -\int_{x_{i-1}}^{x_{i+1}} B_j'(x) B_i'(x) \, dx = -\int_{x_{i-1}}^{x_i} B_j'(x) B_i'(x) \, dx - \int_{x_i}^{x_{i+1}} B_j'(x) B_i'(x) \, dx
+    \end{align*}
+    
+    Caso $ |j - i| > 1, \, B_j$ nessa equa\c{c}\~ao ser\'a 0, o que resultar\'a em 0.
+    Caso $ j = i + 1 $:
+    $$ -\int_{x_i}^{x_{i+1}} -\frac{1}{h} \frac{1}{h} \, dx = \frac{x_{i+1} - x_i}{h^2} = \frac{1}{h}$$
+
+    Por simetria, para $ j = i - 1 $, tem-se o mesmo valor para o produto interno.
+
+    Caso $i = j$:
+    $$ -2\int_{x_{i-1}}^{x_i} \left(\frac{1}{h}\right)^2 \, dx = -2\frac{x_{i-1}-x_i}{h^2} = -\frac{2}{h}$$
+
+    Calculando $\langle p(x)B_j'(x), B_i(x)\rangle$:
+    $$ \langle p(x)B_j'(x), B_i(x)\rangle = \int_a^b p(x) B_j'(x) B_i(x)\, dx = 0 $$
+
+    Calculando $\langle q(x)B_j(x), B_i(x)\rangle$:
+    \begin{align*} \langle q(x)B_j(x), B_i(x)\rangle & = \int_a^b q(x) B_j(x) B_i(x)\, dx = \int_{x_{i - 1}}^{x_{i + 1}} q(x) B_j(x) B_i(x)\, dx\\
+    & = \int_{x_{i - 1}}^{x_{i}} q(x) B_j(x) B_i(x)\, dx + \int_{x_{i}}^{x_{i + 1}} q(x) B_j(x) B_i(x)\, dx \\
+    & = \int_{x_{i - 1}}^{x_{i}} 3 B_j(x) \frac{x-x_{i-1}}{h}\, dx + \int_{x_{i}}^{x_{i + 1}} 3 B_j(x) \frac{x_{i+1}-x}{h}\, dx \\
+    \end{align*}
+
+    Caso $ |j - i| > 1, \, B_j$ nessa equa\c{c}\~ao ser\'a 0, o que resultar\'a em 0.
+    Caso $ j = i + 1 $:
+    \begin{align*}
+        \int_{x_{i}}^{x_{i + 1}} 3 \frac{x-x_i}{h} \frac{x_{i+1}-x}{h} \, dx &= \frac{3}{h^2} \int_{x_{i}}^{x_{i + 1}} -x_ix_{i + 1} + (x_i + x_{i + 1})x - x^2 \, dx \\
+        &= \frac{3}{h^2} [-x_ix_{i + 1}h + (x_i + x_{i + 1})\frac{(x_{i + 1}^2 - x_i^2)}{2} - \frac{(x_{i + 1}^3 - x_i^3)}{3}] \\
+        &= \frac{3}{h^2} [-x_ix_{i + 1}h + (x_i + x_{i + 1})^2 \frac{h}{2} - (x_{i + 1}^2 + x_{i + 1}x_i + x_i^2)\frac{h}{3}] \\
+        &= \frac{3}{h^2} [(x_i^2 + x_{i + 1}^2) \frac{h}{2} - (x_{i + 1}^2 + x_{i + 1}x_i + x_i^2)\frac{h}{3}] \\
+        &= \frac{3}{h^2} [(3x_i^2 + 3x_{i + 1}^2) \frac{h}{6} - (2x_{i + 1}^2 + 2x_{i + 1}x_i + 2x_i^2)\frac{h}{6}] \\
+        &= \frac{3}{h^2} [(3x_i^2 + 3x_{i + 1}^2) \frac{h}{6} - (2x_{i + 1}^2 + 2x_{i + 1}x_i + 2x_i^2)\frac{h}{6}] \\
+        &= \frac{1}{2h} (x_{i + 1} - x_i)^2 = \frac{1}{2h} h^2 = \frac{h}{2} \\
+    \end{align*}
+    
+    Por simetria, para $ j = i - 1 $, tem-se o mesmo valor para o produto interno.
+
+    Para $ i = j $:
+    \begin{align*} 2\int_{x_{i - 1}}^{x_i} q(x) B_i^2(x)\, dx & = 6\int_{x_{i - 1}}^{x_i} \frac{x^2-2xx_{i-1}+x_{i-1}^2}{h^2}\, dx \\
+     & = \frac{6}{h^2}\left[\frac{x_i^3 - x_{i - 1}^3}{3} - (x_i^2 - x_{i - 1}^2)x_{i-1}+hx_{i-1}^2\right] \\
+     & = \frac{6}{h}\left[\frac{x_i^2 + x_ix_{i - 1} + x_{i - 1}^2}{3} - (x_i + x_{i - 1})x_{i-1}+x_{i-1}^2\right] \\
+     & = \frac{6}{h}\left[\frac{x_i^2 + x_ix_{i - 1} + x_{i - 1}^2}{3} - x_ix_{i - 1}\right] \\
+     & = \frac{6}{h}\left[\frac{x_i^2 - 2x_ix_{i - 1} + x_{i - 1}^2}{3}\right] = \frac{6}{h}\frac{h^2}{3} = 2h \\
+    \end{align*}
+
+    Calculando $\langle r(x), B_i(x)\rangle$:
+    \begin{align*} \langle r(x), B_i(x)\rangle &= \int_{x_{i - 1}}^{x_{i + 1}} r(x) B_i(x) \, dx \\
+    & = \int_{x_{i - 1}}^{x_{i}} \frac{x^3-x^2x_{i-1}}{h}\, dx + \int_{x_{i}}^{x_{i + 1}} \frac{x^2x_{i+1}-x^3}{h}\, d \\
+    & = \frac{\frac{x_i^4 - x_{i - 1}^4}{4} - \frac{(x_i^3 - x_{i - 1}^3)}{3}x_{i-1}}{h} + \frac{\frac{(x_{i + 1}^3 - x_i^3)}{3}x_{i+1}-\frac{(x_{i + 1}^4 - x_i^4)}{4}}{h} \\
+    & = \frac{\frac{3x_i^4 - 3x_{i - 1}^4}{12} - \frac{(4x_i^3 - 4x_{i - 1}^3)}{12}x_{i-1}}{h} + \frac{\frac{(4x_{i + 1}^3 - 4x_i^3)}{12}x_{i+1}-\frac{(3x_{i + 1}^4 - 3x_i^4)}{12}}{h} \\
+    & = \frac{1}{12h} \left[3x_i^4 - 3x_{i - 1}^4 - (4x_i^3 - 4x_{i - 1}^3)x_{i-1} + (4x_{i + 1}^3 - 4x_i^3)x_{i+1}-(3x_{i + 1}^4 - 3x_i^4)\right] \\
+    & = \frac{1}{12h} [ 3x_i^2 - x_i^2x_{i - 1} - x_ix_{i - 1}^2 - x_{i - 1}^3 - 3x_i^2 + x_i^2x_{i + 1} + x_ix_{i + 1}^2 + x_{i + 1}^3 ] \\
+    & = \frac{1}{12h} [ 2x_i^2 + 4x_i^2h + h(2x_i^2 + 2x_i^2 + x_{i - 1}^2 + x_{i + 1}^2) ] \\
+    & = x_i^2 + \frac{h^2}{12} \\
+    \end{align*}
+
+    Portanto, a equação diferencial se reduz ao sistema linear
+    $$ \begin{bmatrix}
+        1 & 0 & 0 & \cdots & 0 \\
+        \frac{1}{h}+\frac{h}{2} & -\frac{2}{h} + 2h & \frac{1}{h}+\frac{h}{2} & \cdots & 0 \\
+        0 & \frac{1}{h}+\frac{h}{2} & -\frac{2}{h} + 2h & \cdots & 0 \\
+        \vdots & \vdots & \vdots & \ddots & \vdots \\
+        0 & 0 & 0 & \cdots & \frac{1}{h}+\frac{h}{2} \\
+        0 & 0 & 0 & \cdots & 1 \\
+    \end{bmatrix}\begin{bmatrix}
+        c_1 \\ c_2 \\ c_3 \\ \vdots \\ c_{N-1} \\ c_N \\
+    \end{bmatrix} = \begin{bmatrix}
+        0 \\ x_2^2 + \frac{h^2}{12} \\ x_3^2 + \frac{h^2}{12} \\ \vdots \\ x_{N - 1}^2 + \frac{h^2}{12} \\ 0 \\
+    \end{bmatrix}$$
+
+    \textbf{c)} $u''(x) = 3u(x) + 10u(x)^3 + x^2$
+
+    Utilizando splines cúbicas nos pontos $x_i = (i-1)h, \quad i = 1,\dots,N, \quad h = \frac{1}{N-1}$, tem-se que:
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{c|ccccc}
+            & $x_{i-2}$ & $x_{i-1}$ & $x_i$ & $x_{i+1}$ & $x_{i+2}$\\
+            \hline
+            $B_i$ & 0 & $\frac{1}{4}$ & 1 & $\frac{1}{4}$ & 0\\
+            $B'_i$ & 0 & $\frac{3}{4h}$ & 0 & $-\frac{3}{4h}$ & 0\\
+            $B''_i$ & 0 & $\frac{3}{2h^2}$ & $-\frac{3}{h^2}$ & $\frac{3}{2h^2}$ & 0 \\
+        \end{tabular}
+    \end{table}
+
+    Para cada $i = 0, \dots, N$, a equação deve ser satisfeita:
+    $$ u''_i = 3u_i + 10u_i^3 + x_i^2 \Rightarrow$$
+    $$ \sum_{j = 1}^Nc_jB_j''(x_i) = 3\sum_{j = 1}^Nc_jB_j(x_i) + 10\left(\sum_{j = 1}^Nc_jB_j(x_i)\right)^3 + x_i^2 \Rightarrow$$
+    $$ \sum_{j = i - 2}^{i + 2}c_jB_j''(x_i) = 3\sum_{j = i - 2}^{i + 2}c_jB_j(x_i) + 10\left(\sum_{j = i - 2}^{i + 2}c_jB_j(x_i)\right)^3 + x_i^2 \Rightarrow$$
+    $$ \frac{3}{2h^2} c_{i-1} - \frac{3}{h^2} c_i + \frac{3}{2h^2} c_{i+1} = \frac{3}{4} c_{i-1} + 3c_i + \frac{3}{4} c_{i+1} + 10\left(\frac{1}{4} c_{i-1} + c_i + \frac{1}{4} c_{i+1}\right)^3 + x_i^2$$
+
+    Já para o Método de Galerkin, o resíduo se torna
+    $$ R_N(x) = \sum_{j = 1}^Nc_jB_j''(x_i) - 3\sum_{j = 1}^Nc_jB_j(x_i) - 10\left(\sum_{j = 1}^Nc_jB_j(x_i)\right)^3 - x_i^2 $$
+
+    Portanto, a equação diferencial se reduz ao sistema não linear
+    $$ \begin{bmatrix}
+        1 & 0 & 0 & \cdots & 0 \\
+        \frac{1}{h}+\frac{h}{2} & -\frac{2}{h} + 2h & \frac{1}{h}+\frac{h}{2} & \cdots & 0 \\
+        0 & \frac{1}{h}+\frac{h}{2} & -\frac{2}{h} + 2h & \cdots & 0 \\
+        \vdots & \vdots & \vdots & \ddots & \vdots \\
+        0 & 0 & 0 & \cdots & \frac{1}{h}+\frac{h}{2} \\
+        0 & 0 & 0 & \cdots & 1 \\
+    \end{bmatrix}\begin{bmatrix}
+        c_1 \\ c_2 \\ c_3 \\ \vdots \\ c_{N-1} \\ c_N \\
+    \end{bmatrix} = \begin{bmatrix}
+        0 \\ x_2^2 + \frac{h^2}{12} \\ x_3^2 + \frac{h^2}{12} \\ \vdots \\ x_{N - 1}^2 + \frac{h^2}{12} \\ 0 \\
+    \end{bmatrix} + \begin{bmatrix}
+        0 \\ \left\langle - 10\left(\sum_{j = 1}^Nc_jB_j(x_2)\right)^3, B_2 \right\rangle \\
+        \left\langle - 10\left(\sum_{j = 1}^Nc_jB_j(x_3)\right)^3, B_3 \right\rangle \\ \vdots \\
+        \left\langle - 10\left(\sum_{j = 1}^Nc_jB_j(x_{N-1})\right)^3, B_{N-1} \right\rangle \\ 0
+    \end{bmatrix}$$
+\end{document}
+

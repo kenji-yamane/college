@@ -1,0 +1,8 @@
+set(CORE_DIR ../core)
+
+include_directories(${CORE_DIR})
+add_executable(Robot2DLocalizer_ComponentTest Robot2DLocalizer_ComponentTest.cpp)
+target_link_libraries(Robot2DLocalizer_ComponentTest core)
+
+add_executable(BallTracker_ComponentTest BallTracker_ComponentTest.cpp)
+target_link_libraries(BallTracker_ComponentTest core)

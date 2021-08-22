@@ -1,0 +1,283 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+
+\title{Trabalho bimestral 1}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{Espectro de \textit{Lyapunov}}
+	O sistema cujo espectro de \textit{Lyapunov} ser\'a calculado consiste nas equa\c{c}\~oes
+	de \textit{Lorentz}, definidas a seguir:
+	\begin{equation}
+		\begin{array}{l}
+			\dot{x} = \sigma (y - x)\\
+			\dot{y} = rx - y - xz\\
+			\dot{z} = -bz + xy
+		\end{array}
+		\nonumber
+	\end{equation}
+	Desta forma, pode-se determinar o A(\textbf{x}) da correspondente equa\c{c}\~ao variacional:
+	\begin{equation}
+		A = \left[\begin{array}{ccc}
+			\frac{\partial [\sigma (y - x)]}{\partial x} &
+			\frac{\partial [\sigma (y - x)]}{\partial y} &
+			\frac{\partial [\sigma (y - x)]}{\partial z} \\
+			\frac{\partial [rx - y - xz]}{\partial x} &
+			\frac{\partial [rx - y - xz]}{\partial y} &
+			\frac{\partial [rx - y - xz]}{\partial z} \\
+			\frac{\partial [-bz + xy]}{\partial x} &
+			\frac{\partial [-bz + xy]}{\partial y} &
+			\frac{\partial [-bz + xy]}{\partial z}
+		\end{array}\right] =
+		\left[\begin{array}{ccc}
+			-\sigma & \sigma & 0 \\
+			r - z & -1 & -x \\
+			y & x & -b \\
+		\end{array}\right]
+		\nonumber
+	\end{equation}
+	Desta forma, a equa\c{c}\~ao variacional \'e:
+	\begin{equation}
+		\left[\begin{array}{ccc}
+			\dot{J}_{11} & \dot{J}_{12} & \dot{J}_{13}\\
+			\dot{J}_{21} & \dot{J}_{22} & \dot{J}_{23}\\
+			\dot{J}_{31} & \dot{J}_{32} & \dot{J}_{33}
+		\end{array}\right] =
+		\left[\begin{array}{ccc}
+			-\sigma & \sigma & 0 \\
+			r - z & -1 & -x \\
+			y & x & -b \\
+		\end{array}\right]
+		\left[\begin{array}{ccc}
+			J_{11} & J_{12} & J_{13}\\
+			J_{21} & J_{22} & J_{23}\\
+			J_{31} & J_{32} & J_{33}
+		\end{array}\right]
+		\nonumber
+	\end{equation}
+	De tal forma que, em formato de vetor:
+	\begin{equation}
+		\begin{array}{l}
+			\dot{x} = \sigma (y - x)\\
+			\dot{y} = rx - y - xz\\
+			\dot{z} = -bz + xy\\
+			\dot{J}_{11} = \sigma (J_{21} - J_{11})\\
+			\dot{J}_{12} = \sigma (J_{22} - J_{12})\\
+			\dot{J}_{13} = \sigma (J_{23} - J_{13})\\
+			\dot{J}_{21} = (r - z)J_{11} - J_{21} - xJ_{31}\\
+			\dot{J}_{22} = (r - z)J_{12} - J_{22} - xJ_{32}\\
+			\dot{J}_{23} = (r - z)J_{13} - J_{23} - xJ_{33}\\
+			\dot{J}_{31} = yJ_{11} + xJ_{21} - bJ_{31}\\
+			\dot{J}_{32} = yJ_{12} + xJ_{22} - bJ_{32}\\
+			\dot{J}_{33} = yJ_{13} + xJ_{23} - bJ_{33}\\
+		\end{array}
+		\nonumber
+	\end{equation}
+	Com esta equa\c{c}\~ao, pode-se integr\'a-la no tempo e portanto pode-se utilizar o algoritmo
+	de determina\c{c}\~ao de todo o espectro de \textit{Lyapunov}. Para realiz\'a-lo, utilizou-se
+	a linguagem \textit{C++}, com o aux\'ilio do artigo de \textit{Wolf et. al.} Para
+	opera\c{c}\~oes entre vetores e matrizes utilizou-se a biblioteca \textit{Eigen}, e
+	contruiu-se do 0 o integrador de \textit{Runge Kutta} de quarta ordem, assim como o algoritmo
+	de ortonormaliza\c{c}\~ao de \textit{Gram-Schmidt}.
+
+	Utilizou-se como \textit{step} do integrador 0.01, e portanto realizava-se 100 \'orbitas
+	at\'e chegar no pr\'oximo ponto do mapa de tempo T. Descartaram-se os primeiros 1000 pontos
+	deste mapa, partindo-se do ponto (10, 1, 0), o mesmo do artigo. Al\'em disso, utilizaram-se
+	os valores de 16, 45.92 e 4 para $\sigma$, R e b, respectivamente. Dessa forma, todos os
+	par\^ametros s\~ao iguais ao do artigo e pode-se comparar com o resultado obtido por eles.
+	\begin{verbatim}
+#include <iostream>
+#include <vector>
+#include <Eigen/Dense>
+#include <cmath>
+
+
+#include "lib/RungeKutta.h"
+#include "lib/Lorentz.h"
+
+#define CONV 1000
+#define ORBIT_LEN 20000
+
+void orthogonalize(std::vector<Eigen::VectorXd> &dirs) {
+    for (int i = 0; i < (int)dirs.size(); i++) {
+        Eigen::VectorXd zi = dirs[i];
+        for (int j = 0; j < i; j++) {
+            dirs[i] -= zi.dot(dirs[j])/dirs[j].squaredNorm()*dirs[j];
+        }
+    }
+}
+
+int main() {
+    LorentzParams params = {
+        16,
+        45.92,
+        4
+    };
+    RungeKutta rungeKutta(0.01, [&, params](const Eigen::VectorXd &point) {
+        return lorentzVariational(point, params);
+    });
+    
+    Eigen::VectorXd orbitPoint(12);
+    orbitPoint << 10, 1, 0, 1, 0, 0,
+                            0, 1, 0,
+                            0, 0, 1;
+    	
+    for (int i = 0; i < CONV; i++) {
+        rungeKutta.fourthOrder(orbitPoint);
+    }
+    
+    Eigen::VectorXd w1(3), w2(3), w3(3);
+    w1 << 1, 0, 0;
+    w2 << 0, 1, 0;
+    w3 << 0, 0, 1;
+    std::vector<Eigen::VectorXd> ellipse = {w1, w2, w3};
+    std::vector<double> lyapunovExponents = {0, 0, 0};
+    
+    for (int i = 0; i < ORBIT_LEN; i++) {
+        for (int j = 0; j < 100; j++) rungeKutta.fourthOrder(orbitPoint);
+        
+        Eigen::MatrixXd jacobian(3, 3);
+        jacobian << orbitPoint(J11), orbitPoint(J12), orbitPoint(J13),
+        orbitPoint(J21), orbitPoint(J22), orbitPoint(J23),
+        orbitPoint(J31), orbitPoint(J32), orbitPoint(J33);
+        for (auto &c : ellipse) c = jacobian*c;
+        orthogonalize(ellipse);
+        for (int j = 0; j < (int)ellipse.size(); j++) {
+            lyapunovExponents[j] += std::log2(ellipse[j].norm());
+        }
+        for (auto &c : ellipse) c.normalize();
+        orbitPoint << orbitPoint(x), orbitPoint(y), orbitPoint(z),
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1;
+    }
+    for (auto &c : lyapunovExponents) c /= ORBIT_LEN;
+    for (const auto &c : lyapunovExponents) std::cout << c << std::endl;
+    
+    return 0;
+}
+
+	\end{verbatim}
+
+	Obteve-se inicialmente, assim, como resultado:
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{cc}
+			\hline
+			Dire\c{c}\~ao & Expoente de \textit{Lyapunov}\\
+			\hline
+			(1, 0, 0) &  1.5047\\
+			(0, 1, 0) & -0.0009\\
+			(0, 0, 1) & -22.5027\\
+			\hline
+		\end{tabular}
+		\caption{Resultado obtido para o espectro de \textit{Lyapunov}.}
+	\end{table}
+	Onde se pode ver claramente que eles s\~ao bem diferentes que o do artigo. Dessa forma,
+	estudando o artigo e o c\'odigo, percebe-se que o resultado deles \'e em \texttt{bits/s}.
+	Em outras palavras, eles extraem o expoente de \textit{Lyapunov} a partir de um logaritmo
+	na base 2, n\~ao a partir do logaritmo natural. Adaptando o c\'odigo desta forma, obt\'em-se:
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{cc}
+			\hline
+			Dire\c{c}\~ao & Expoente de \textit{Lyapunov}\\
+			\hline
+			(1, 0, 0) &  2.1659\\
+			(0, 1, 0) &  0.0001\\
+			(0, 0, 1) & -32.4606\\
+			\hline
+		\end{tabular}
+		\caption{Resultado obtido em \texttt{bits} para o espectro de \textit{Lyapunov}.}
+	\end{table}
+	Onde se observa agora sim como estes valores s\~ao praticamente iguais aos do artigo,
+	onde se comprova a funcionalidade do programa escrito.
+	\section{M\'aximo expoente de \textit{Lyapunov} por mapa}
+	Criou-se um programa com os mesmos utens\'ilios utilizados na se\c{c}\~ao anterior,
+	seguindo-se as instru\c{c}\~oes de \textit{Sprott}. Utilizaram-se 10000 itera\c{c}\~oes
+	em um mapa de tempo T = 1 segundo, feito a partir de 100 itera\c{c}\~oes de um passo de
+	\textit{Runge Kutta} de tamanho 0.01. Al\'em disso, utilizou-se um valor de D0 de $10^{-8}$,
+	como sugerido, e a mesma condi\c{c}\~ao inicial utilizada na se\c{c}\~ao passada.
+
+	Registrou-se a m\'edia em cada itera\c{c}\~ao como sugerido. O resultado est\'a mostrado
+	a seguir.
+	\begin{figure}[H]
+		\centering
+		\subfigure[Hist\'orico completo.]
+		{\includegraphics[width=5cm]{images/max_mean_conv.eps}}
+		\subfigure[\textit{Zoom} sobre os 300 primeiros.]
+		{\includegraphics[width=5cm]{images/max_mean_conv_zoom.eps}}
+		\caption{Converg\^encia da m\'edia no algoritmo de \textit{Sprott}.}
+	\end{figure}
+	Como se pode observar, certamente obteve-se a converg\^encia desejada, chegando at\'e a
+	muito mais do que o necess\'ario, benef\'icio proporcionado pela rapidez do \textit{C++}.
+	Ademais, o valor aonde se convergiu corresponde a 2.16421, exatamente o valor m\'aximo
+	do espectro obtido a partir da equa\c{c}\~ao variacional, pr\'oximo em duas casas
+	decimais.
+
+	Ademais, mesmo alterando-se o n\'umero de itera\c{c}\~oes para 1000, ou a condi\c{c}\~ao
+	inicial para (1, 1, 10), ou o pr\'oprio D0 para $10^{-9}$ e $10^{-7}$, obteve-se o mesmo
+	resultado, diferindo somente na segunda casa decimal (passando a ser 7 ao inv\'es de 6).
+
+	Esses resultados indicam que, apesar de aparentar ser menos robusto e s\'olido que o
+	algoritmo baseado na equa\c{c}\~ao variacional, o algoritmo de \textit{Sprott} \'e de fato
+	confi\'avel e bastante \'util.
+	\section{M\'aximo expoente de \textit{Lyapunov} por s\'erie temporal}
+	Reaproveitar-se-\'a a s\'erie temporal constru\'ida na lista 5, onde j\'a se conhece seus
+	par\^ametros ideais, para poder reconstruir e tamb\'em o tempo decorrido. Desta forma,
+	utilizou-se os par\^ametros 10, 28 e 8/3 para o $\sigma$, R e b, os mesmos do atrator de
+	\textit{Lorentz} da lista 5. Obteve-se o seguinte espectro de \textit{Lyapunov}:
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{cc}
+			\hline
+			Dire\c{c}\~ao & Expoente de \textit{Lyapunov}\\
+			\hline
+			(1, 0, 0) &  1.3054\\
+			(0, 1, 0) & -0.0001\\
+			(0, 0, 1) & -21.0238\\
+			\hline
+		\end{tabular}
+		\caption{Espectro de \textit{Lyapunov} para o atrator da lista 5.}
+	\end{table}
+	O algoritmo feito por mapa concordou, naturalmente, com o expoente m\'aximo, 1.3054, at\'e
+	a quarta casa decimal.
+
+	Como na lista 5, j\'a se construiu a s\'erie temporal para este atrator, utilizar-se-\'a
+	esta s\'erie para procurar se estimar o expoente m\'aximo de \textit{Lyapunov} pelo
+	terceiro m\'etodo.
+
+	Criou-se, assim um programa em \textit{C++} que utiliza das mesmas ferramentas usadas nas
+	outras se\c{c}\~oes. Utilizou-se como atraso um n\'umero 9 de espa\c{c}os no vetor que cont\'em
+	a s\'erie temporal. Esta, por sua vez, possui 80000 de tamanho, e a itera\c{c}\~ao era feita
+	de tal forma que o mapa correspondia ao de T = 1. Obteve-se, assim o seguinte hist\'orico de
+	m\'edia para o m\'aximo expoente de \textit{Lyapunov}:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=8cm]{images/ts_max_mean_conv.eps}
+		\caption{Converg\^encia da m\'edia no algoritmo de \textit{Wolf}.}
+	\end{figure}
+	Observa-se que houve converg\^encia com sucesso, e ela convergiu no valor 2.2773. Apesar
+	de n\~ao ser t\~ao bom quanto o outro, tendo em mente que isto veio de somente uma s\'erie
+	temporal, \'e algo impressionante. Comparando-se o atrator original e o atrator
+	reconstru\'ido, isso fica claro:
+	\begin{figure}[H]
+		\centering
+		\subfigure[Atrator de \textit{Lorentz} original.]
+		{\includegraphics[width=6cm]{images/attractor.eps}}
+		\subfigure[Atrator de \textit{Lorentz} reconstru\'ido.]
+		{\includegraphics[width=6cm]{images/reconstructed_lorentz.eps}}
+		\caption{Compara\c{c}\~ao entre o original e o reconstru\'ido.}
+	\end{figure}
+	O artigo conseguiu tamb\'em obter um resultado parecido somente at\'e com 10\% de erro.
+	Acredita-se portanto que o resultado obtido \'e satisfat\'orio.
+\end{document}
