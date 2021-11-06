@@ -1,0 +1,98 @@
+\documentclass{article}[twocolumn]
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{subfigure}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2cm,right=2cm,marginparwidth=1.5cm]{geometry}
+
+\title{Relat\'orio da pr\'atica 4}
+\author{Kenji Yamane}
+
+\begin{document}
+	\maketitle
+	\section{Quest\~oes de 1 a 8}
+	Segue em anexo os comandos realizados nestas quest\~oes:
+	\begin{verbatim}
+install.packages("RSQLite")
+install.packages("tidyverse")
+install.packages("RSQLite")
+install.packages("tidyverse")
+library(RSQLite)
+library(DBI)
+library(dbplyr)
+library(dplyr)
+library(rJava)
+library(rJava)
+library(rJava)
+install.packages("rJava")
+library(rJava)
+library(RJDBC)
+install.packages("RJDBC")
+library(RJDBC)
+library(lubridate)
+library(sparklyr)
+install.packages("sparklyr")
+library(sparklyr)
+conn = dbConnect(dbDriver("SQLite"))
+dbExecute(conn, "CREATE TABLE employee (employee_id INTEGER PRIMARY KEY NOT NULL,
+first_name STRING, last_name STRING, email STRING, phone_number STRING, hire_date
+DATE, job_id INTEGER, salary DECIMAL (8, 2), commission_pct DECIMAL (3, 2),
+2
+manager_id INTEGER REFERENCES employee (employee_id), department_id INTEGER
+REFERENCES department (department_id))")
+dbExecute(conn, "CREATE TABLE employee (employee_id INTEGER PRIMARY KEY NOT NULL, first_name STRING, last_name STRING, email STRING, phone_number STRING, hire_date DATE, job_id INTEGER, salary DECIMAL (8, 2), commission_pct DECIMAL (3, 2), manager_id INTEGER REFERENCES employee(employee_id), department_id INTEGER REFERENCES department (department_id))")
+emp <-read.csv("employee.csv", header=TRUE, sep=";")
+emp <-read.csv("./Downloads/employee.csv", header=TRUE, sep=";")
+dbWriteTable(conn, name="employee", emp, append=TRUE)
+dbWriteTable(conn, name="employee", emp, append=TRUE)
+dbGetQuery(conn, "select * from employee")
+dbGetQuery(conn, "select * from employee")
+dbExecute(conn, "CREATE TABLE department (department_id
+INTEGER PRIMARY KEY NOT NULL, department_name STRING,
+manager_id INTEGER REFERENCES employee (employee_id), location_id INTEGER")
+dbExecute(conn, "CREATE TABLE department (department_id
+INTEGER PRIMARY KEY NOT NULL, department_name STRING,
+manager_id INTEGER REFERENCES employee (employee_id), location_id INTEGER)")
+dbGetQuery(conn, "select * from department")
+emp <-read.csv("./Downloads/department.csv", header=TRUE, sep=";")
+dbWriteTable(conn, name="department", emp, append=TRUE)
+dbGetQuery(conn, "select * from department")
+savehistory("~/Documents/lab4ces30history.txt")
+	\end{verbatim}
+	\section{Quest\~ao 9}
+	\subsection{Item 1}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{question1.png}
+	\end{figure}
+	\subsection{Item 2}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{question2.png}
+	\end{figure}
+	\subsection{Item 3}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{question3.png}
+	\end{figure}
+	\subsection{Item 4}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{question4.png}
+	\end{figure}
+	\subsection{Item 5}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{question5.png}
+	\end{figure}
+	\subsection{Item 6}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{question6.png}
+	\end{figure}
+\end{document}
