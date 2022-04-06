@@ -8,3 +8,4 @@ def bsc_canal(x, p):
     if error_occurs(p):
         return 1 - x
     return x
+

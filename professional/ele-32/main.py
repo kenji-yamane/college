@@ -1,7 +1,7 @@
 import random
 import numpy as np
-from bsc_canal import *
-from hamming import *
+from bsc_canal import bsc_canal
+from hamming import hamming_encoder
 
 p = 0.7
 
