@@ -38,7 +38,6 @@ H = np.array([
 	[0, 0, 1, 0],
 	[0, 0, 0, 1]
 ])
-
 def get_syndrome(u):
 	temp = u*H
 
@@ -49,6 +48,7 @@ def get_syndrome(u):
 	return syndrome
 
 syndrome2err = [
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
 	[0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -70,5 +70,6 @@ def hamming3d_decoder(u):
 
 	syndrome_idx = 8*syndrome[0] + 4*syndrome[1] + 2*syndrome[2] + syndrome[3]
 
-	return syndrome2err[syndrome_idx]
+	err = np.array(syndrome2err[syndrome_idx])
+	return 1*np.logical_xor(np.transpose(u)[0], err)
 
