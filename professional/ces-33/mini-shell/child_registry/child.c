@@ -1,5 +1,5 @@
 #include <stdlib.h> // malloc
-#include <string.h> // strcat | strlen | strcpy
+#include "../strings/strings.h" // prepend
 
 #include <sys/types.h> // pid_t
 #include <unistd.h> // fork | execv
@@ -23,16 +23,10 @@ childp childp_create(char *program) {
 
 	// past execv means program doesn't exist
 	// so, now we try with prefix /bin/
-	char bin_folder[] = "/bin/";
-	char *bin_program = (char*)malloc(strlen(bin_folder)*sizeof(char));
-	strcpy(bin_program, bin_folder);
-	bin_program = (char*)realloc(bin_program, (strlen(bin_program)+strlen(program)-1)*sizeof(char));
-	strcat(bin_program, program);
-
+	char *bin_program = prepend("/bin/", program);
 	argv[0] = bin_program;
 	execve(bin_program, argv, envp);
 	syscall_error(program);
 	exit(EXIT_FAILURE);
-	return (childp){-1};
 }
 

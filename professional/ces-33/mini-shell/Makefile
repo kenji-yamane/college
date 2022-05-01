@@ -5,9 +5,10 @@ BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
 APP_DIR  := $(BUILD)
 
-IO_SRC    := io/input.c io/output.c
-CHILD_SRC := child_registry/child.c
-SRC       := $(IO_SRC) $(CHILD_SRC) main.c
+STRINGS_SRC := strings/strings.c
+IO_SRC      := io/input.c io/output.c
+CHILD_SRC   := child_registry/child.c
+SRC         := $(STRINGS_SRC) $(IO_SRC) $(CHILD_SRC) main.c
 
 MINISHELL    := minishell
 OBJECTS      := $(SRC:%.c=$(OBJ_DIR)/%.o)
