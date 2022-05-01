@@ -16,10 +16,6 @@ void prompt() {
 	printf("$ ");
 }
 
-void echo(char c) {
-	putchar(c);
-}
-
 void syscall_error(char *program) {
 	fprintf(stderr, "%s failed. errno: %d", program, errno);
 }

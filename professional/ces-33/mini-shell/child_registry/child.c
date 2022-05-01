@@ -2,7 +2,6 @@
 #include <string.h> // strcat | strlen | strcpy
 
 #include <sys/types.h> // pid_t
-#include <sys/wait.h> // waitpid
 #include <unistd.h> // fork | execv
 
 #include "../io/output.h" // syscall_error
@@ -15,8 +14,7 @@ childp childp_create(char *program) {
 		exit(EXIT_FAILURE);
 	}
 	if (id != 0) { // success on parent
-		//waitpid(id, NULL, 0);
-		return (childp){pid: id};
+		return (childp){id};
 	}
 
 	char *argv[] = {program, NULL};
@@ -35,6 +33,6 @@ childp childp_create(char *program) {
 	execve(bin_program, argv, envp);
 	syscall_error(program);
 	exit(EXIT_FAILURE);
-	return (childp){};
+	return (childp){-1};
 }
 
