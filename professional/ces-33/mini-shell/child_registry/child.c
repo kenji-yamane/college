@@ -23,6 +23,8 @@ childp new_child() {
 	strcpy(p.input_file, "");
 	p.output_file = (char*)malloc(sizeof(char));
 	strcpy(p.output_file, "");
+	p.pipe_in = -1;
+	p.pipe_out = -1;
 
 	return p;
 }
@@ -54,6 +56,12 @@ pid_t childp_create(childp p) {
 		return id;
 	}
 
+	if (p.pipe_out != -1) {
+		dup2(p.pipe_out, STDOUT_FILENO);
+	}
+	if (p.pipe_in != -1) {
+		dup2(p.pipe_in, STDIN_FILENO);
+	}
   	if (strcmp(p.input_file, "") != 0) {
 		int fd = open(p.input_file, O_RDONLY);
 		dup2(fd, STDIN_FILENO);

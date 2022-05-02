@@ -12,8 +12,8 @@ typedef struct {
 	char **envp;
 	char *input_file;
 	char *output_file;
-	int *pipe_in;
-	int *pipe_out;
+	int pipe_in;
+	int pipe_out;
 } childp;
 
 // creates empty child,
