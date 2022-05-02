@@ -17,6 +17,6 @@ void prompt() {
 }
 
 void syscall_error(char *program) {
-	fprintf(stderr, "%s failed. errno: %d", program, errno);
+	fprintf(stderr, "%s failed. errno: %d\n", program, errno);
 }
 

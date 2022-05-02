@@ -8,7 +8,8 @@ APP_DIR  := $(BUILD)
 STRINGS_SRC := strings/strings.c
 IO_SRC      := io/input.c io/output.c
 CHILD_SRC   := child_registry/child.c
-SRC         := $(STRINGS_SRC) $(IO_SRC) $(CHILD_SRC) main.c
+PARSER_SRC  := parser.c
+SRC         := $(STRINGS_SRC) $(IO_SRC) $(CHILD_SRC) $(PARSER_SRC) main.c
 
 MINISHELL    := minishell
 OBJECTS      := $(SRC:%.c=$(OBJ_DIR)/%.o)
