@@ -3,4 +3,5 @@ function v = encoder(u,g)
     g = flip(g,2);
 
     v = flip(conv(u,g),2);
+    v = mod(v,2);
 end

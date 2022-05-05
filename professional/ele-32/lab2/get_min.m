@@ -13,13 +13,14 @@ function [min, index] = get_min(code_generator, u)
         for u_i = 1:u_size
             g = flip(code_generator(i,:),2);
             x = conv(g,u(u_i,:));
+            x = mod(x,2);
             
             if norm(x,1) < min(i)
                min(i) = norm(x,1);
             end
         end
     end
-    
+   
    max_min = max(min);
    
    for i = 1:code_size
