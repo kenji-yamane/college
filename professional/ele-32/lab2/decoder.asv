@@ -1,9 +1,9 @@
-function u = decoder(r,g, fp_syndromes)
+function decoder(r,g, fp_syndromes)
     syndromeCycles = 0;
     wordCycles = 0;
     
     syndrome = get_syndrome(r, g);
-    while syndrome ~= zeros(length(syndrome))
+    while syndrome ~= zeros(len(syndrome))
         if ismember(bi2de(syndrome), fp_syndromes)
             r(1) = r(1) + 1;
             r = mod(r, 2);
@@ -24,7 +24,6 @@ function u = decoder(r,g, fp_syndromes)
         r = cycleWord(r);
         wordCycles = mod(wordCycles + 1, length(r));
     end
-    u = get_information(r, g);
 end
 
 function word = cycleWord(w)
