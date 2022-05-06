@@ -5,11 +5,11 @@ BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
 APP_DIR  := $(BUILD)
 
-STRINGS_SRC := strings/strings.c
-IO_SRC      := io/input.c io/output.c
-CHILD_SRC   := processes/child.c
-PARSER_SRC  := parser.c
-SRC         := $(STRINGS_SRC) $(IO_SRC) $(CHILD_SRC) $(PARSER_SRC) main.c
+STRINGS_SRC   := strings/strings.c
+IO_SRC        := io/input.c io/output.c
+PROCESSES_SRC := processes/child.c processes/manager.c
+PARSER_SRC    := parser.c
+SRC           := $(STRINGS_SRC) $(IO_SRC) $(PROCESSES_SRC) $(PARSER_SRC) main.c
 
 MINISHELL    := minishell
 OBJECTS      := $(SRC:%.c=$(OBJ_DIR)/%.o)
@@ -27,7 +27,7 @@ $(OBJ_DIR)/%.o: %.c
 
 -include $(DEPENDENCIES)
 
-.PHONY: all build clean debug release info
+.PHONY: all build clear clean debug release info
 
 build:
 	@mkdir -p $(APP_DIR)
@@ -42,6 +42,8 @@ release: all
 clean:
 	-@rm -rvf $(OBJ_DIR)/*
 	-@rm -rvf $(APP_DIR)/*
+
+clear: clean
 
 info:
 	@echo "[*] Application dir: ${APP_DIR}     "

@@ -32,15 +32,6 @@ void set_input_file(childp p, char *in);
 // sets output_file
 void set_output_file(childp p, char *out);
 
-/*
- * creates a new process by forking and executing
- *
- * at first it attempts to execute a program locally
- * if it is not found locally, it tries on the /bin folder
- * if none is found, it terminates itself
- */
-pid_t childp_create(childp p);
-
 // frees every field from childp
 // dynamically allocated
 void free_child(childp p);
