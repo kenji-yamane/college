@@ -5,7 +5,6 @@
 
 // represents a single child process
 typedef struct {
-	pid_t pid;
 	int num_arg;
 	char **argv;
 	int num_env;

@@ -12,7 +12,6 @@
 childp new_child() {
 	childp p;
 
-	p.pid = -1;
 	p.num_arg = 0;
 	p.argv = (char**)malloc(sizeof(char*));
 	p.argv[0] = NULL;
