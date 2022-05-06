@@ -42,6 +42,7 @@ int main() {
 		for (int i = 0; i < num_children; i++) {
 			free_child(p[i]);
 		}
+		free(p);
 	}
 	return 0;
 }
