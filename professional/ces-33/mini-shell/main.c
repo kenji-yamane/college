@@ -8,6 +8,8 @@
 #include "processes/child.h" // childp_create
 #include "parser.h" // parse
 
+typedef int pair[2];
+
 int main() {
 	welcome_message();
 	while (1) {
@@ -21,8 +23,7 @@ int main() {
 			continue;
 		}
 
-		// TODO: replace VLA with pointers
-		int pipes[num_children][2];
+		pair *pipes = (pair*)malloc(num_children*sizeof(pair));
 		for (int i = 1; i < num_children; i++) {
 			pipe(pipes[i]);
 			p[i - 1].pipe_out = pipes[i][1];
@@ -36,6 +37,7 @@ int main() {
 				close(pipes[i + 1][1]);
 			}
 		}
+		free(pipes);
 		free(str);
 		for (int i = 0; i < num_children; i++) {
 			free_child(p[i]);
