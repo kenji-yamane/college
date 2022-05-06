@@ -5,7 +5,7 @@
 
 #include "io/output.h" // welcome_message | prompt
 #include "io/input.h" // read_line
-#include "child_registry/child.h" // childp_create
+#include "processes/child.h" // childp_create
 #include "parser.h" // parse
 
 int main() {
@@ -15,7 +15,7 @@ int main() {
 
 		char *str = read_line();
 		int num_children;
-		// TODO: create processor master in child_registry/
+		// TODO: create processor master in processes/
 		childp *p = parse(str, &num_children);
 		if (num_children == 0) {
 			continue;

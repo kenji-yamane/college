@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h> // strcmp
 
-#include "child_registry/child.h" // new_child | add_argument | setters
+#include "processes/child.h" // new_child | add_argument | setters
 #include "strings/strings.h" // extract_words
 
 #include "parser.h"
