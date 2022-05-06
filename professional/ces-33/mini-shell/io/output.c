@@ -1,4 +1,5 @@
 #include <stdio.h> // printf
+#include <stdlib.h> // error
 #include <unistd.h> // getcwd
 #include <errno.h> // errno
 
@@ -18,5 +19,10 @@ void prompt() {
 
 void syscall_error(char *program) {
 	fprintf(stderr, "%s failed. errno: %d\n", program, errno);
+}
+
+void developer_error(char *message) {
+	fprintf(stderr, "incorrect usage of internal function: %s\n", message);
+	exit(-1);
 }
 

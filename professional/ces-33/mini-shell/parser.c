@@ -1,6 +1,7 @@
-#include <stdlib.h>
+#include <stdlib.h> // malloc | realloc
 #include <string.h> // strcmp
 
+#include "io/output.h" // developer_error
 #include "processes/child.h" // new_child | add_argument | setters
 #include "strings/strings.h" // extract_words
 
@@ -60,21 +61,33 @@ WORD *translate(char **words) {
 		} else if (strcmp(words[i], ">") == 0) {
 			translated[i] = GREATER;
 		} else {
-			translated[i] = ARGUMENT;
-			if (translated[i - 1] == PIPE) {
-				translated[i] = PROGRAM;
-			}
-			if (translated[i - 1] == LESS) {
-				translated[i] = INPUT_FILE;
-			}
-			if (translated[i - 1] == GREATER) {
-				translated[i] = OUTPUT_FILE;
-			}
+			translated[i] = filetype_from_operator(translated[i - 1]);
 		}
 	}
 	translated = (WORD*)realloc(translated, (i + 1)*sizeof(WORD));
 	translated[i] = END;
 
 	return translated;
+}
+
+WORD filetype_from_operator(WORD w) {
+	switch (w) {
+	case PIPE:
+		return PROGRAM;
+	case LESS:
+		return INPUT_FILE;
+	case GREATER:
+		return OUTPUT_FILE;
+	case PROGRAM:
+	case ARGUMENT:
+	case INPUT_FILE:
+	case OUTPUT_FILE:
+		return ARGUMENT;
+	case END:
+		developer_error("filetype_from_operator does not accept END label");
+	default:
+		developer_error("filetype_from_operator expects a valid WORD");
+	}
+	return END;
 }
 

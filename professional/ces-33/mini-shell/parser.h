@@ -18,5 +18,7 @@ childp *parse(char *str, int *num_children);
 
 WORD *translate(char **words);
 
+WORD filetype_from_operator(WORD w);
+
 #endif
 

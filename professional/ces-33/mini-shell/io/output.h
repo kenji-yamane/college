@@ -10,5 +10,9 @@ void prompt();
 // generic error message for a syscall
 void syscall_error(char *program);
 
+// error of a function being used incorrectly
+// by another part of code
+void developer_error(char *message);
+
 #endif
 
