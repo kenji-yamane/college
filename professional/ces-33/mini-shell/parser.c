@@ -85,6 +85,7 @@ WORD filetype_from_operator(WORD w) {
 		return ARGUMENT;
 	case END:
 		developer_error("filetype_from_operator does not accept END label");
+		return END;
 	default:
 		developer_error("filetype_from_operator expects a valid WORD");
 	}
