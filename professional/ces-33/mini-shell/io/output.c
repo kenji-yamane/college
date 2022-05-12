@@ -26,3 +26,7 @@ void developer_error(char *message) {
 	exit(-1);
 }
 
+void syntax_error(char *message) {
+	fprintf(stderr, "syntax error: %s\n", message);
+}
+

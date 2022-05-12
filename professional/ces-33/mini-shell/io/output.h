@@ -14,5 +14,8 @@ void syscall_error(char *program);
 // by another part of code
 void developer_error(char *message);
 
+// error on parsing, due to user confusion
+void syntax_error(char *message);
+
 #endif
 

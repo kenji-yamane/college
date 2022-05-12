@@ -1,14 +1,23 @@
 #include <stdlib.h> // malloc | realloc
 #include <string.h> // strcmp
 
-#include "io/output.h" // developer_error
+#include "io/output.h" // developer_error | syntax_error
 #include "processes/child.h" // new_child | add_argument | setters
-#include "strings/strings.h" // extract_words
+#include "strings/strings.h" // count_words | extract_words
 
 #include "parser.h"
 
 childp *parse(char *str, int *num_children) {
+	if (count_words(str) == 0) {
+		*num_children = 0;
+		return NULL;
+	}
 	char **words = extract_words(str);
+	if (!syntax_check(words)) {
+		*num_children = 0;
+		free(words);
+		return NULL;
+	}
 	WORD *translation = translate(words);
 
 	int numc = 1;
@@ -47,20 +56,38 @@ childp *parse(char *str, int *num_children) {
 	return children;
 }
 
+int syntax_check(char **words) {
+	if (translate_operator(words[0]) != END) {
+		syntax_error("first command cannot be an operator (<, > or |)");
+		return 0;
+	}
+
+	for (int i = 1; words[i] != NULL; i++) {
+		WORD prev, curr;
+		prev = translate_operator(words[i - 1]);
+		curr = translate_operator(words[i]);
+		if (prev != END && curr != END) {
+			syntax_error("consecutive operators");
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
 WORD *translate(char **words) {
 	WORD *translated = (WORD*)malloc(sizeof(WORD));
 	translated[0] = PROGRAM;
+	if (translate_operator(words[0]) != END) {
+		translated[0] = END;
+		return translated;
+	}
 
 	int i;
 	for (i = 1; words[i] != NULL; i++) {
 		translated = (WORD*)realloc(translated, (i + 1)*sizeof(WORD));
-		if (strcmp(words[i], "|") == 0) {
-			translated[i] = PIPE;
-		} else if (strcmp(words[i], "<") == 0) {
-			translated[i] = LESS;
-		} else if (strcmp(words[i], ">") == 0) {
-			translated[i] = GREATER;
-		} else {
+		translated[i] = translate_operator(words[i]);
+		if (translated[i] == END) {
 			translated[i] = filetype_from_operator(translated[i - 1]);
 		}
 	}
@@ -68,6 +95,18 @@ WORD *translate(char **words) {
 	translated[i] = END;
 
 	return translated;
+}
+
+WORD translate_operator(char *w) {
+	if (strcmp(w, "|") == 0) {
+		return PIPE;
+	} else if (strcmp(w, "<") == 0) {
+		return LESS;
+	} else if (strcmp(w, ">") == 0) {
+		return GREATER;
+	} else {
+		return END;
+	}
 }
 
 WORD filetype_from_operator(WORD w) {
