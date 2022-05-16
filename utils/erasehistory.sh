@@ -1,5 +1,12 @@
 #!/bin/bash
 
+read -p "Are you sure? " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    exit 1
+fi
+
 PRINCIPAL_BRANCH_NAME=main
 ALL_BRANCHES=$(git branch -a)
 NOT_MAIN_BRANCHES=$(echo "$ALL_BRANCHES" | grep -v \\* | grep -v origin/$PRINCIPAL_BRANCH_NAME\$)
