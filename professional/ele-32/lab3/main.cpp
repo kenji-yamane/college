@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <bitset>
 #include <vector>
 #include <string>
@@ -7,15 +8,6 @@
 #include "bsc_canal.h"
 #include "trellis.h"
 #include "encoder.h"
-
-void printPythonArray(std::string descriptor, std::vector<double> arr) {
-	std::cout << descriptor << " = [" << arr[0];
-	for (int i = 1; i < arr.size(); i++) {
-		std::cout << ", " << arr[i];
-	}
-	std::cout << "]";
-	std::cout << std::endl;
-}
 
 int main() {
 	Random *r = new Random();
@@ -71,10 +63,14 @@ int main() {
 		std::cout << std::endl;
 	}
 
-	printPythonArray("p", probabilities);
-	printPythonArray("e3", encoderP[0]);
-	printPythonArray("e4", encoderP[1]);
-	printPythonArray("e6", encoderP[2]);
+	std::ofstream f("data.csv");
+	for (int i = 0; i < probabilities.size(); i++) {
+		f << probabilities[i];
+		for (int j = 0; j < 3; j++) {
+			f << "," << encoderP[j][i];
+		}
+		f << std::endl;
+	}
 
 	delete r;
 
