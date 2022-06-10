@@ -20,8 +20,16 @@ void printPythonArray(std::string descriptor, std::vector<double> arr) {
 int main() {
 	Random *r = new Random();
 
-	std::vector<double> probabilities{0.5, 0.49, 0.48, 0.47, 0.46, 0.45,
-	0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1, 0.05, 0.02, 0.01, 0.005};
+	std::vector<double> probabilities;
+	for (double p = 0.5; p > 0.151; p -= 0.01) {
+		probabilities.push_back(p);
+	}
+	for (double p = 0.15; p > 0.049; p -= 0.005) {
+		probabilities.push_back(p);
+	}
+	probabilities.push_back(0.02);
+	probabilities.push_back(0.01);
+	probabilities.push_back(0.005);
 	std::vector<double> encoderP[3];
 	for (const auto &p : probabilities) {
 		BscCanal canal(p, r);
