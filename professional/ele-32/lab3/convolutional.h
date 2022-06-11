@@ -1,7 +1,8 @@
-#ifndef ENCODER_H
-#define ENCODER_H
+#ifndef CONVOlUTIONAL_H
+#define CONVOLUTIONAL_H
 
 #include "trellis.h"
+#include "binary.h"
 
 struct Node {
 	int parent;
@@ -9,16 +10,17 @@ struct Node {
 	int input;
 };
 
-class Encoder {
+class Convolutional {
 public:
-	Encoder(int numStates, std::vector<int> g);
-	int encode(int input);
-	void decode(int output);
+	Convolutional(int, std::vector<int>, Binary*);
+	int encode(int);
+	void decode(int);
 	std::vector<int> getSequence();
 
 private:
 	int stateArray;
 	Trellis t;
+	Binary *bin;
 	
 	std::vector<std::vector<Node> > stateSequence;
 };

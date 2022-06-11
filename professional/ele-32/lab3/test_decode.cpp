@@ -5,12 +5,13 @@
 #include "random.h"
 #include "bsc_canal.h"
 #include "trellis.h"
-#include "encoder.h"
+#include "convolutional.h"
 
 int main() {
+	Binary *bin = new Binary(7);
 	Random *r = new Random();
 
-	Encoder sixState(6, std::vector<int>{0117, 0127, 0155});
+	Convolutional sixState(6, std::vector<int>{0117, 0127, 0155}, bin);
 	std::vector<int> info;
 	for (int i = 0; i < 10000; i++) {
 		info.push_back(r->coinFlip());
@@ -27,6 +28,7 @@ int main() {
 		}
 	}
 
+	delete bin;
 	delete r;
 
 	return 0;

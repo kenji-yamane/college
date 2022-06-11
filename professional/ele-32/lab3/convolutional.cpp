@@ -1,8 +1,9 @@
-#include "encoder.h"
+#include "convolutional.h"
 
 #include <stack>
 
-Encoder::Encoder(int numStates, std::vector<int> g) : t(numStates, g) {
+Convolutional::Convolutional(int numStates, std::vector<int> g, Binary *b) :
+	t(numStates, g, b), bin(b) {
 	this->stateArray = 0;
 	this->stateSequence.resize((1 << numStates), std::vector<Node>{Node{-1, 0, -1}});
 	for (int i = 1; i < (1 << numStates); i++) {
@@ -10,19 +11,19 @@ Encoder::Encoder(int numStates, std::vector<int> g) : t(numStates, g) {
 	}
 }
 
-int Encoder::encode(int input) {
-	std::vector<Edge> edges = this->t.getTransitions(this->stateArray);
-	this->stateArray = edges[input].end;
-	return edges[input].output;
+int Convolutional::encode(int input) {
+	Edge e = this->t.getTransition(this->stateArray, input);
+	this->stateArray = e.end;
+	return e.output;
 }
 
-void Encoder::decode(int output) {
+void Convolutional::decode(int output) {
 	std::vector<Node> nextStates(this->stateSequence.size(), Node{-1, (int)1e8, -1});
 	for (int i = 0; i < this->stateSequence.size(); i++) {
 		std::vector<Edge> edges = this->t.getTransitions(i);
 		for (const auto &e : edges) {
 			int cost = this->stateSequence[i].back().cost;
-			cost += this->t.getNumberOfOnes(output ^ e.output);
+			cost += this->bin->hammingDistance(output, e.output);
 
 			if (cost < nextStates[e.end].cost) {
 				nextStates[e.end] = Node{i, cost, e.input};
@@ -35,7 +36,7 @@ void Encoder::decode(int output) {
 	}
 }
 
-std::vector<int> Encoder::getSequence() {
+std::vector<int> Convolutional::getSequence() {
 	int minState = 0;
 	for (int i = 0; i < this->stateSequence.size(); i++) {
 		if (this->stateSequence[i].back().cost < this->stateSequence[minState].back().cost) {

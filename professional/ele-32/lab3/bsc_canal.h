@@ -5,8 +5,8 @@
 
 class BscCanal {
 public:
-	BscCanal(double p, Random *r);
-	int transmit(int x);
+	BscCanal(double, Random);
+	int transmit(int);
 
 private:
 	double p;

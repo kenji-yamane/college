@@ -9,6 +9,7 @@ e3 = []
 e4 = []
 e6 = []
 for row in csvreader:
+	#if float(row[0]) > 0.14:
 	p.append(float(row[0]))
 	e3.append(float(row[1]))
 	e4.append(float(row[2]))

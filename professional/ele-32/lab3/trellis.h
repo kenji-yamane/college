@@ -1,7 +1,8 @@
-#ifndef TRELLIS
-#define TRELLIS
+#ifndef TRELLIS_H
+#define TRELLIS_H
 
 #include <vector>
+#include "binary.h"
 
 struct Edge {
 	int begin;
@@ -12,16 +13,14 @@ struct Edge {
 
 class Trellis {
 public:
-	Trellis(int numStates, std::vector<int> g);
-	std::vector<Edge> getTransitions(int stateArray);
-	int getNumberOfOnes(int n);
+	Trellis(int, std::vector<int>, Binary*);
+	std::vector<Edge> getTransitions(int);
+	Edge getTransition(int, int);
 
 private:
-	int numberOfOnes[128];
 	int numStates;
 	std::vector<int> g;
-
-	int countSetBits(int n);
+	Binary *bin;
 };
 
 #endif

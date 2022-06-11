@@ -7,31 +7,33 @@
 #include "random.h"
 #include "bsc_canal.h"
 #include "trellis.h"
-#include "encoder.h"
+#include "convolutional.h"
 
 int main() {
 	Random *r = new Random();
+	Binary *bin = new Binary(7);
 
 	std::vector<double> probabilities;
 	for (double p = 0.5; p > 0.151; p -= 0.01) {
 		probabilities.push_back(p);
 	}
-	for (double p = 0.15; p > 0.049; p -= 0.005) {
+	for (double p = 0.15; p > 0.004; p -= 0.005) {
 		probabilities.push_back(p);
 	}
-	probabilities.push_back(0.02);
-	probabilities.push_back(0.01);
-	probabilities.push_back(0.005);
 	std::vector<double> encoderP[3];
 	for (const auto &p : probabilities) {
 		double mean[3] = {};
-		for (int i = 0; i < 20; i++) {
+		int iterations = 10;
+		if (p < 0.1) {
+			iterations = 200;
+		}
+		for (int i = 0; i < iterations; i++) {
 			BscCanal canal(p, r);
 		
-			std::vector<Encoder> encoders{
-				Encoder(3, std::vector<int>{013, 015, 017}),
-			    Encoder(4, std::vector<int>{025, 033, 037}),
-				Encoder(6, std::vector<int>{0117, 0127, 0155})
+			std::vector<Convolutional> codes{
+				Convolutional(3, std::vector<int>{013, 015, 017}, bin),
+			    Convolutional(4, std::vector<int>{025, 033, 037}, bin),
+				Convolutional(6, std::vector<int>{0117, 0127, 0155}, bin)
 			};
 	
 			std::vector<int> info;
@@ -39,7 +41,7 @@ int main() {
 				info.push_back(r->coinFlip());
 			}
 	
-			for (auto &e : encoders) {
+			for (auto &e : codes) {
 				for (int i = 0; i < info.size(); i++) {
 					int output = e.encode(info[i]);
 					std::bitset<3> encoded(output);
@@ -52,8 +54,8 @@ int main() {
 				}
 			}
 	
-			for (int i = 0; i < encoders.size(); i++) {
-				std::vector<int> received = encoders[i].getSequence();
+			for (int i = 0; i < codes.size(); i++) {
+				std::vector<int> received = codes[i].getSequence();
 				int errors = 0;
 				for (int j = 0; j < info.size(); j++) {
 					errors += (info[j] ^ received[j]);
@@ -64,8 +66,8 @@ int main() {
 
 		std::cout << "p " << p << ": ";
 		for (int i = 0; i < 3; i++) {
-			std::cout << mean[i]/5 << " ";
-			encoderP[i].push_back(mean[i]/5);
+			std::cout << mean[i]/iterations << " ";
+			encoderP[i].push_back(mean[i]/iterations);
 		}
 		std::cout << std::endl;
 	}
@@ -79,6 +81,7 @@ int main() {
 		f << std::endl;
 	}
 
+	delete bin;
 	delete r;
 
 	return 0;
