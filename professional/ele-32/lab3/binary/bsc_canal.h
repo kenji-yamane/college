@@ -1,11 +1,11 @@
 #ifndef BSC_CANAL_H
 #define BSC_CANAL_H
 
-#include "random.h"
+#include "../random/random.h"
 
 class BscCanal {
 public:
-	BscCanal(double, Random);
+	BscCanal(double, Random*);
 	int transmit(int);
 
 private:

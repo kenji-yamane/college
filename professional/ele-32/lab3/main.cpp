@@ -4,10 +4,10 @@
 #include <vector>
 #include <string>
 
-#include "random.h"
-#include "bsc_canal.h"
-#include "trellis.h"
-#include "convolutional.h"
+#include "random/random.h"
+#include "binary/bsc_canal.h"
+#include "convolutional/trellis.h"
+#include "convolutional/convolutional.h"
 
 int main() {
 	Random *r = new Random();
@@ -25,7 +25,7 @@ int main() {
 		double mean[3] = {};
 		int iterations = 10;
 		if (p < 0.1) {
-			iterations = 200;
+			iterations = 1000;
 		}
 		for (int i = 0; i < iterations; i++) {
 			BscCanal canal(p, r);
@@ -42,7 +42,7 @@ int main() {
 			}
 	
 			for (auto &e : codes) {
-				for (int i = 0; i < info.size(); i++) {
+				for (int i = 0; i < (int)info.size(); i++) {
 					int output = e.encode(info[i]);
 					std::bitset<3> encoded(output);
 					int receivedOutput = 0;
@@ -54,10 +54,10 @@ int main() {
 				}
 			}
 	
-			for (int i = 0; i < codes.size(); i++) {
+			for (int i = 0; i < (int)codes.size(); i++) {
 				std::vector<int> received = codes[i].getSequence();
 				int errors = 0;
-				for (int j = 0; j < info.size(); j++) {
+				for (int j = 0; j < (int)info.size(); j++) {
 					errors += (info[j] ^ received[j]);
 				}
 				mean[i] += (double)errors/info.size();
@@ -73,7 +73,7 @@ int main() {
 	}
 
 	std::ofstream f("data.csv");
-	for (int i = 0; i < probabilities.size(); i++) {
+	for (int i = 0; i < (int)probabilities.size(); i++) {
 		f << probabilities[i];
 		for (int j = 0; j < 3; j++) {
 			f << "," << encoderP[j][i];

@@ -2,10 +2,10 @@
 #include <bitset>
 #include <vector>
 
-#include "random.h"
-#include "bsc_canal.h"
-#include "trellis.h"
-#include "convolutional.h"
+#include "random/random.h"
+#include "binary/bsc_canal.h"
+#include "convolutional/trellis.h"
+#include "convolutional/convolutional.h"
 
 int main() {
 	Binary *bin = new Binary(7);
@@ -17,12 +17,12 @@ int main() {
 		info.push_back(r->coinFlip());
 	}
 
-	for (int i = 0; i < info.size(); i++) {
+	for (int i = 0; i < (int)info.size(); i++) {
 		int output = sixState.encode(info[i]);
 		sixState.decode(output);
 	}
 	std::vector<int> recoveredInfo = sixState.getSequence();
-	for (int i = 0; i < recoveredInfo.size(); i++) {
+	for (int i = 0; i < (int)recoveredInfo.size(); i++) {
 		if (recoveredInfo[i] != info[i]) {
 			std::cout << "error found!" << std::endl;
 		}

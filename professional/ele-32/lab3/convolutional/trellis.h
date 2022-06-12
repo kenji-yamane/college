@@ -2,7 +2,7 @@
 #define TRELLIS_H
 
 #include <vector>
-#include "binary.h"
+#include "../binary/binary.h"
 
 struct Edge {
 	int begin;

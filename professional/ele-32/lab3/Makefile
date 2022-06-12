@@ -1,11 +1,90 @@
+CC       := g++
+CFLAGS   := -Werror -Wall -Wextra -pedantic -std=c++17
+LDFLAGS  := -lrt
+BUILD    := ./build
+OBJ_DIR  := $(BUILD)/objects
+APP_DIR  := $(BUILD)
+
+RANDOM_SRC         := random/random.cpp
+BINARY_SRC         := binary/binary.cpp binary/bsc_canal.cpp
+CONVOLUTIONAL_SRC  := convolutional/convolutional.cpp convolutional/trellis.cpp
+
+COMMON_SRC         := $(RANDOM_SRC) $(BINARY_SRC) $(CONVOLUTIONAL_SRC)
+ERRORS_SRC         := main.cpp $(COMMON_SRC)
+ESTIMATE_TIMES_SRC := estimate_times.cpp $(COMMON_SRC)
+TEST_ENCODE_SRC    := test_encode.cpp $(COMMON_SRC)
+TEST_DECODE_SRC    := test_decode.cpp $(COMMON_SRC)
+
+ERRORS      := errors
+ERRORS_OBJS := $(ERRORS_SRC:%.cpp=$(OBJ_DIR)/%.o)
+ERRORS_DEPS := $(ERRORS_OBJS:.o=.d)
+
+ESTIMATE_TIMES      := estimate-times
+ESTIMATE_TIMES_OBJS := $(ESTIMATE_TIMES_SRC:%.cpp=$(OBJ_DIR)/%.o)
+ESTIMATE_TIMES_DEPS := $(ESTIMATE_TIMES_OBJS:.o=.d)
+
+TEST_ENCODE      := test-encode
+TEST_ENCODE_OBJS := $(TEST_ENCODE_SRC:%.cpp=$(OBJ_DIR)/%.o)
+TEST_ENCODE_DEPS := $(TEST_ENCODE_OBJS:.o=.d)
+
+TEST_DECODE      := test-decode
+TEST_DECODE_OBJS := $(TEST_DECODE_SRC:%.cpp=$(OBJ_DIR)/%.o)
+TEST_DECODE_DEPS := $(TEST_DECODE_OBJS:.o=.d)
+
+SRC          := main.cpp estimate_times.cpp test_encode.cpp test_decode.cpp $(COMMON_SRC)
+OBJECTS      := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
+DEPENDENCIES := $(OBJECTS):.o=.d)
+
+all: build $(APP_DIR)/$(ERRORS) $(APP_DIR)/$(ESTIMATE_TIMES) $(APP_DIR)/$(TEST_ENCODE) $(APP_DIR)/$(TEST_DECODE)
+
+$(OBJ_DIR)/%.o: %.cpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -MMD -o $@
+
+$(APP_DIR)/$(ERRORS): $(ERRORS_OBJS)
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -o $(APP_DIR)/$(ERRORS) $^ $(LDFLAGS)
+
+$(APP_DIR)/$(ESTIMATE_TIMES): $(ESTIMATE_TIMES_OBJS)
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -o $(APP_DIR)/$(ESTIMATE_TIMES) $^ $(LDFLAGS)
+
+$(APP_DIR)/$(TEST_ENCODE): $(TEST_ENCODE_OBJS)
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -o $(APP_DIR)/$(TEST_ENCODE) $^ $(LDFLAGS)
+
+$(APP_DIR)/$(TEST_DECODE): $(TEST_DECODE_OBJS)
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -o $(APP_DIR)/$(TEST_DECODE) $^ $(LDFLAGS)
+
+$(OBJ_DIR)/%.o: %.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -MMD -o $@
+
+-include $(ERRORS_DEPS) $(ESTIMATE_TIMES_DEPS) $(TEST_ENCODE_DEPS) $(TEST_DECODE_DEPS)
+
+.PHONY: all build clear clean debug release info
+
 build:
-	g++ main.cpp binary.cpp random.cpp bsc_canal.cpp trellis.cpp convolutional.cpp
+	@mkdir -p $(APP_DIR)
+	@mkdir -p $(OBJ_DIR)
 
-test-encode:
-	g++ test_encode.cpp binary.cpp random.cpp bsc_canal.cpp trellis.cpp convolutional.cpp
+debug: CFLAGS += -DDEBUG -g
+debug: all
 
-test-decode:
-	g++ test_decode.cpp binary.cpp random.cpp bsc_canal.cpp trellis.cpp convolutional.cpp
+release: CFLAGS += -O2
+release: all
 
-estimate-times:
-	g++ estimate_times.cpp binary.cpp random.cpp bsc_canal.cpp trellis.cpp convolutional.cpp
+clean:
+	-@rm -rvf $(OBJ_DIR)/*
+	-@rm -rvf $(APP_DIR)/*
+
+clear: clean
+
+info:
+	@echo "[*] Application dir: ${APP_DIR}     "
+	@echo "[*] Object dir:      ${OBJ_DIR}     "
+	@echo "[*] Sources:         ${SRC}         "
+	@echo "[*] Objects:         ${OBJECTS}     "
+	@echo "[*] Dependencies:    ${DEPENDENCIES}"
+

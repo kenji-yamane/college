@@ -3,10 +3,10 @@
 #include <vector>
 #include <chrono>
 
-#include "random.h"
-#include "bsc_canal.h"
-#include "trellis.h"
-#include "convolutional.h"
+#include "random/random.h"
+#include "binary/bsc_canal.h"
+#include "convolutional/trellis.h"
+#include "convolutional/convolutional.h"
 
 int main() {
 	Random *r = new Random();
@@ -26,8 +26,8 @@ int main() {
 	}
 
 	int output;
-	for (int i = 0; i < info.size(); i++) {
-		for (int j = 0; j < codes.size(); j++) {
+	for (int i = 0; i < (int)info.size(); i++) {
+		for (int j = 0; j < (int)codes.size(); j++) {
 			auto start = std::chrono::steady_clock::now();
 			output = codes[j].encode(info[i]);
 			auto end = std::chrono::steady_clock::now();
@@ -40,17 +40,17 @@ int main() {
 	}
 	
 	std::cout << "encode" << std::endl;
-	for (int i = 0; i < codes.size(); i++) {
+	for (int i = 0; i < (int)codes.size(); i++) {
 		double mean = 0;
-		for (int j = 0; j < encodeTimes[i].size(); j++) {
+		for (int j = 0; j < (int)encodeTimes[i].size(); j++) {
 			mean += encodeTimes[i][j];
 		}
 		std::cout << mean/encodeTimes[i].size() << std::endl;
 	}
 	std::cout << "decode" << std::endl;
-	for (int i = 0; i < codes.size(); i++) {
+	for (int i = 0; i < (int)codes.size(); i++) {
 		double mean = 0;
-		for (int j = 0; j < decodeTimes[i].size(); j++) {
+		for (int j = 0; j < (int)decodeTimes[i].size(); j++) {
 			mean += decodeTimes[i][j];
 		}
 		std::cout << mean/decodeTimes[i].size() << std::endl;

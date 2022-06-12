@@ -2,10 +2,10 @@
 #include <bitset>
 #include <vector>
 
-#include "random.h"
-#include "bsc_canal.h"
-#include "trellis.h"
-#include "convolutional.h"
+#include "random/random.h"
+#include "binary/bsc_canal.h"
+#include "convolutional/trellis.h"
+#include "convolutional/convolutional.h"
 
 int main() {
 	Random *r = new Random();

@@ -2,7 +2,7 @@
 #define CONVOLUTIONAL_H
 
 #include "trellis.h"
-#include "binary.h"
+#include "../binary/binary.h"
 
 struct Node {
 	int parent;

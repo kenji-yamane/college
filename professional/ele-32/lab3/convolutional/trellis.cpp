@@ -21,21 +21,22 @@ Edge Trellis::getTransition(int stateArray, int input) {
 	switch (input) {
 		case 0:
 			transition.end = a;
-			for (int i = 0; i < g.size(); i++) {
+			for (int i = 0; i < (int)g.size(); i++) {
 				int shift = g.size() - i - 1;
 				int bitOut = this->bin->countSetBits(stateArray & g[i])%2;
 				transition.output += (bitOut << shift);
 			}
-			return transition;
+			break;
 		case 1:
 			transition.end = (1 << (this->numStates - 1)) + a;
 			int stateArrayWithPrependedOne = (1 << this->numStates) + stateArray;
-			for (int i = 0; i < g.size(); i++) {
+			for (int i = 0; i < (int)g.size(); i++) {
 				int shift = g.size() - i - 1;
 				int bitOut = this->bin->countSetBits(stateArrayWithPrependedOne & g[i])%2;
 				transition.output += (bitOut << shift);
 			}
-			return transition;
+			break;
 	}
+	return transition;
 }
 

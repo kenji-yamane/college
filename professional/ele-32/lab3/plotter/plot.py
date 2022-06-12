@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import csv
 
-f = open('data.csv')
+f = open('../build/data.csv')
 csvreader = csv.reader(f)
 
 p = []
