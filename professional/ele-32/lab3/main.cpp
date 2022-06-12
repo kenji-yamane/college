@@ -14,12 +14,13 @@ int main() {
 	Binary *bin = new Binary(7);
 
 	std::vector<double> probabilities;
-	for (double p = 0.5; p > 0.151; p -= 0.01) {
-		probabilities.push_back(p);
-	}
-	for (double p = 0.15; p > 0.004; p -= 0.005) {
-		probabilities.push_back(p);
-	}
+	//for (double p = 0.5; p > 0.151; p -= 0.01) {
+		//probabilities.push_back(p);
+	//}
+	//for (double p = 0.15; p > 0.004; p -= 0.005) {
+		//probabilities.push_back(p);
+	//}
+	probabilities.push_back(0.015);
 	std::vector<double> encoderP[3];
 	for (const auto &p : probabilities) {
 		double mean[3] = {};
@@ -71,6 +72,7 @@ int main() {
 		}
 		std::cout << std::endl;
 	}
+	return 0;
 
 	std::ofstream f("data.csv");
 	for (int i = 0; i < (int)probabilities.size(); i++) {
