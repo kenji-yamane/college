@@ -5,7 +5,7 @@ OBJ_DIR  := $(BUILD)/objects
 APP_DIR  := $(BUILD)
 
 RANDOM_SRC         := random/random.cpp
-BSC_SRC         := binary/binary.cpp binary/bsc_canal.cpp
+BSC_SRC            := binary/binary.cpp binary/bsc_canal.cpp
 AWGN_SRC           := binary/awgn_canal.cpp
 CONVOLUTIONAL_SRC  := convolutional/convolutional.cpp convolutional/trellis.cpp
 
@@ -13,6 +13,7 @@ COMMON_SRC         := $(RANDOM_SRC) $(BSC_SRC) $(CONVOLUTIONAL_SRC)
 ERRORS_SRC         := main.cpp $(COMMON_SRC)
 LOGPROB_SRC        := logprob.cpp $(COMMON_SRC)
 EUCLIDIAN_SRC      := euclidian.cpp $(COMMON_SRC) $(AWGN_SRC)
+TEST_EUCLIDIAN_SRC := test_euclidian.cpp $(COMMON_SRC) $(AWGN_SRC)
 ESTIMATE_TIMES_SRC := estimate_times.cpp $(COMMON_SRC)
 TEST_ENCODE_SRC    := test_encode.cpp $(COMMON_SRC)
 TEST_DECODE_SRC    := test_decode.cpp $(COMMON_SRC)
@@ -29,6 +30,10 @@ EUCLIDIAN      := euclidian
 EUCLIDIAN_OBJS := $(EUCLIDIAN_SRC:%.cpp=$(OBJ_DIR)/%.o)
 EUCLIDIAN_DEPS := $(EUCLIDIAN_OBJS:.o=.d)
 
+TEST_EUCLIDIAN      := test-euclidian
+TEST_EUCLIDIAN_OBJS := $(TEST_EUCLIDIAN_SRC:%.cpp=$(OBJ_DIR)/%.o)
+TEST_EUCLIDIAN_DEPS := $(TEST_EUCLIDIAN_OBJS:.o=.d)
+
 ESTIMATE_TIMES      := estimate-times
 ESTIMATE_TIMES_OBJS := $(ESTIMATE_TIMES_SRC:%.cpp=$(OBJ_DIR)/%.o)
 ESTIMATE_TIMES_DEPS := $(ESTIMATE_TIMES_OBJS:.o=.d)
@@ -41,11 +46,11 @@ TEST_DECODE      := test-decode
 TEST_DECODE_OBJS := $(TEST_DECODE_SRC:%.cpp=$(OBJ_DIR)/%.o)
 TEST_DECODE_DEPS := $(TEST_DECODE_OBJS:.o=.d)
 
-SRC          := main.cpp estimate_times.cpp test_encode.cpp test_decode.cpp euclidian.cpp logprob.cpp $(COMMON_SRC) $(AWGN_SRC)
+SRC          := main.cpp estimate_times.cpp test_encode.cpp test_decode.cpp test_euclidian.cpp euclidian.cpp logprob.cpp $(COMMON_SRC) $(AWGN_SRC)
 OBJECTS      := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 DEPENDENCIES := $(OBJECTS):.o=.d)
 
-all: build $(APP_DIR)/$(ERRORS) $(APP_DIR)/$(LOGPROB) $(APP_DIR)/$(EUCLIDIAN) $(APP_DIR)/$(ESTIMATE_TIMES) $(APP_DIR)/$(TEST_ENCODE) $(APP_DIR)/$(TEST_DECODE)
+all: build $(APP_DIR)/$(ERRORS) $(APP_DIR)/$(LOGPROB) $(APP_DIR)/$(TEST_EUCLIDIAN) $(APP_DIR)/$(EUCLIDIAN) $(APP_DIR)/$(ESTIMATE_TIMES) $(APP_DIR)/$(TEST_ENCODE) $(APP_DIR)/$(TEST_DECODE)
 
 $(OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(@D)
@@ -63,6 +68,10 @@ $(APP_DIR)/$(EUCLIDIAN): $(EUCLIDIAN_OBJS)
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -o $(APP_DIR)/$(EUCLIDIAN) $^
 
+$(APP_DIR)/$(TEST_EUCLIDIAN): $(TEST_EUCLIDIAN_OBJS)
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -o $(APP_DIR)/$(TEST_EUCLIDIAN) $^
+
 $(APP_DIR)/$(ESTIMATE_TIMES): $(ESTIMATE_TIMES_OBJS)
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -o $(APP_DIR)/$(ESTIMATE_TIMES) $^
@@ -79,7 +88,7 @@ $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -MMD -o $@
 
--include $(ERRORS_DEPS) $(LOGPROB_DEPS) $(EUCLIDIAN_DEPS) $(ESTIMATE_TIMES_DEPS) $(TEST_ENCODE_DEPS) $(TEST_DECODE_DEPS)
+-include $(ERRORS_DEPS) $(LOGPROB_DEPS) $(EUCLIDIAN_DEPS) $(ESTIMATE_TIMES_DEPS) $(TEST_ENCODE_DEPS) $(TEST_DECODE_DEPS) $(TEST_EUCLIDIAN_DEPS)
 
 .PHONY: all build clear clean debug release info
 
