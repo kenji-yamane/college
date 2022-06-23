@@ -6,7 +6,7 @@
 
 struct Node {
 	int parent;
-	int cost;
+	double cost;
 	int input;
 };
 
@@ -15,6 +15,7 @@ public:
 	Convolutional(int, std::vector<int>, Binary*);
 	int encode(int);
 	void decode(int);
+	void decode(std::vector<double>&);
 	std::vector<int> getSequence();
 
 private:

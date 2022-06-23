@@ -8,6 +8,11 @@ Random::Random() {
 	this->gen = std::mt19937(rd());
 	this->uniformReal = std::uniform_real_distribution<double>(0, 1);
 	this->uniformDiscrete = std::uniform_int_distribution<int>(0, 1);
+	this->normalReal = std::normal_distribution<double>(0, 1);
+}
+
+void Random::setNormal(double mean, double stddev) {
+	this->normalReal = std::normal_distribution<double>(mean, stddev);
 }
 
 double Random::uniformZeroOne() {
@@ -16,5 +21,9 @@ double Random::uniformZeroOne() {
 
 int Random::coinFlip() {
 	return this->uniformDiscrete(this->gen);
+}
+
+double Random::normal() {
+	return this->normalReal(this->gen);
 }
 

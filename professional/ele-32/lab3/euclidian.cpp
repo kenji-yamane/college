@@ -5,7 +5,7 @@
 #include <string>
 
 #include "random/random.h"
-#include "binary/bsc_canal.h"
+#include "binary/awgn_canal.h"
 #include "convolutional/trellis.h"
 #include "convolutional/convolutional.h"
 
@@ -14,7 +14,7 @@ int main() {
 	Binary *bin = new Binary(7);
 
 	std::vector<double> probabilities;
-	for (double p = 0.5; p > 0.004; p /= 2) {
+	for (double p = 0.15; p > 0.004; p /= 2) {
 		probabilities.push_back(p);
 	}
 	std::vector<double> encoderP[3];
@@ -22,10 +22,10 @@ int main() {
 		double mean[3] = {};
 		int iterations = 10;
 		if (p < 0.1) {
-			iterations = 100;
+			iterations = 1000;
 		}
 		for (int i = 0; i < iterations; i++) {
-			BscCanal canal(p, r);
+			AwgnCanal canal(p, r);
 		
 			std::vector<Convolutional> codes{
 				Convolutional(3, std::vector<int>{013, 015, 017}, bin),
@@ -41,13 +41,12 @@ int main() {
 			for (auto &e : codes) {
 				for (int i = 0; i < (int)info.size(); i++) {
 					int output = e.encode(info[i]);
-					std::bitset<3> encoded(output);
-					int receivedOutput = 0;
-					for (int i = 0; i < 3; i++) {
-						int bitOutput = canal.transmit(encoded[i]);
-						receivedOutput += (bitOutput << i);
+					std::vector<double> toTransmit = bin->binary3ToBPSK(output);
+					for (int i = 0; i < (int)toTransmit.size(); i++) {
+						toTransmit[i] = canal.transmit(toTransmit[i]);
+						std::cout << toTransmit[i] << std::endl;
 					}
-					e.decode(receivedOutput);
+					e.decode(toTransmit);
 				}
 			}
 	
