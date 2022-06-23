@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <bitset>
+#include <cmath>
 
 Binary::Binary(int n) : maxNumBits(n) {
 	this->numberOfOnes = std::vector<int>(1 << this->maxNumBits, 0);
@@ -44,10 +45,28 @@ double Binary::quadraticDistance(std::vector<double> &v1, std::vector<double> &v
 	return dist;
 }
 
+void Binary::populateLogprob(double p) {
+	this->logprobDistance.clear();
+	for (int i = 0; i < (1 << 6); i++) {
+		int upperHalf = (i >> 3);
+		int lowHalf = i - upperHalf;
+		this->logprobDistance.push_back(this->inefficientLogprob(lowHalf, upperHalf, p));
+	}
+}
+
+double Binary::logprob(int b1, int b2) {
+	return this->logprobDistance[(b1 << 3) + b2];
+}
+
 int Binary::inefficientCountSetBits(int n) {
 	if (n == 0) {
 		return 0;
 	}
 	return 1 + inefficientCountSetBits(n & (n - 1));
+}
+
+double Binary::inefficientLogprob(int b1, int b2, double p) {
+	int hamm = this->hammingDistance(b1, b2);
+	return (3 - hamm)*std::log(1 - p) + hamm*std::log(p);
 }
 

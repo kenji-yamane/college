@@ -56,6 +56,25 @@ void Convolutional::decode(std::vector<double> &output) {
 	}
 }
 
+void Convolutional::decodeLogprob(int output) {
+	std::vector<Node> nextStates(this->stateSequence.size(), Node{-1, 1e12, -1});
+	for (int i = 0; i < (int)this->stateSequence.size(); i++) {
+		std::vector<Edge> edges = this->t.getTransitions(i);
+		for (const auto &e : edges) {
+			double cost = this->stateSequence[i].back().cost;
+			cost += this->bin->logprob(output, e.output);
+
+			if (cost < nextStates[e.end].cost) {
+				nextStates[e.end] = Node{i, cost, e.input};
+			}
+		}
+	}
+
+	for (int i = 0; i < (int)this->stateSequence.size(); i++) {
+		this->stateSequence[i].push_back(nextStates[i]);
+	}
+}
+
 std::vector<int> Convolutional::getSequence() {
 	int minState = 0;
 	for (int i = 0; i < (int)this->stateSequence.size(); i++) {

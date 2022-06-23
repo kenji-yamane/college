@@ -16,6 +16,7 @@ public:
 	int encode(int);
 	void decode(int);
 	void decode(std::vector<double>&);
+	void decodeLogprob(int);
 	std::vector<int> getSequence();
 
 private:
