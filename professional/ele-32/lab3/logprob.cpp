@@ -13,10 +13,7 @@ int main() {
 	Random *r = new Random();
 	Binary *bin = new Binary(7);
 
-	std::vector<double> probabilities;
-	for (double p = 0.5; p > 0.004; p /= 2) {
-		probabilities.push_back(p);
-	}
+	std::vector<double> probabilities = {0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005};
 	std::vector<double> encoderP[3];
 	for (const auto &p : probabilities) {
 		bin->populateLogprob(p);
@@ -48,7 +45,7 @@ int main() {
 						int bitOutput = canal.transmit(encoded[i]);
 						receivedOutput += (bitOutput << i);
 					}
-					e.decode(receivedOutput);
+					e.decodeLogprob(receivedOutput);
 				}
 			}
 	
