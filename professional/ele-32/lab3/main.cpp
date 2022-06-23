@@ -66,7 +66,7 @@ int main() {
 		std::cout << std::endl;
 	}
 
-	std::ofstream f("data.csv");
+	std::ofstream f("plotter/viterbi-hamming.csv");
 	for (int i = 0; i < (int)probabilities.size(); i++) {
 		f << probabilities[i];
 		for (int j = 0; j < 3; j++) {

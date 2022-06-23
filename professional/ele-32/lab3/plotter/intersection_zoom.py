@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from math import isclose
-from data_grabber import grab_data
+from data_grabber import grab_space_comparation_data
 
-data = grab_data()
+data = grab_space_comparation_data()
 p, e3, e4, e6 = data['p'], data['e3'], data['e4'], data['e6']
 
 lastBeforeIntersection = 0

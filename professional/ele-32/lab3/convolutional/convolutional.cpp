@@ -38,7 +38,7 @@ void Convolutional::decode(int output) {
 }
 
 void Convolutional::decode(std::vector<double> &output) {
-	std::vector<Node> nextStates(this->stateSequence.size(), Node{-1, 1e12, -1});
+	std::vector<Node> nextStates(this->stateSequence.size(), Node{-1, 1e14, -1});
 	for (int i = 0; i < (int)this->stateSequence.size(); i++) {
 		std::vector<Edge> edges = this->t.getTransitions(i);
 		for (const auto &e : edges) {

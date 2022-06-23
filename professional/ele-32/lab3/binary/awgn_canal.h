@@ -7,12 +7,11 @@
 // assumes BPSK modulation
 class AwgnCanal {
 public:
-	AwgnCanal(double, Random*);
+	AwgnCanal(double);
 	double transmit(double);
 
 private:
 	double stddev;
-	Random *r;
 	std::mt19937 gen;
 	std::normal_distribution<double> normalReal;
 	std::uniform_real_distribution<double> normalInfinite;

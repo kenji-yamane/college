@@ -1,4 +1,4 @@
-#ifndef CONVOlUTIONAL_H
+#ifndef CONVOLUTIONAL_H
 #define CONVOLUTIONAL_H
 
 #include "trellis.h"

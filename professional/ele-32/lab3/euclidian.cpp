@@ -25,7 +25,7 @@ int main() {
 			iterations = 100;
 		}
 		for (int i = 0; i < iterations; i++) {
-			AwgnCanal canal(snr[ke], r);
+			AwgnCanal canal(snr[ke]);
 		
 			std::vector<Convolutional> codes{
 				Convolutional(3, std::vector<int>{013, 015, 017}, bin),
@@ -67,7 +67,7 @@ int main() {
 		std::cout << std::endl;
 	}
 
-	std::ofstream f("data.csv");
+	std::ofstream f("plotter/viterbi-euclidian.csv");
 	for (int i = 0; i < (int)probabilities.size(); i++) {
 		f << probabilities[i];
 		for (int j = 0; j < 3; j++) {

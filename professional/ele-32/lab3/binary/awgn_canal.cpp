@@ -3,7 +3,7 @@
 #include <cmath>
 #include <iostream>
 
-AwgnCanal::AwgnCanal(double snr, Random *r) : r(r) {
+AwgnCanal::AwgnCanal(double snr) {
 	std::random_device rd;
 	this->gen = std::mt19937(rd());
 

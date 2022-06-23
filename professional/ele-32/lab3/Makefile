@@ -1,6 +1,5 @@
 CC       := g++
 CFLAGS   := -Werror -Wall -Wextra -pedantic -std=c++17
-LDFLAGS  := -lrt
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
 APP_DIR  := $(BUILD)
@@ -54,27 +53,27 @@ $(OBJ_DIR)/%.o: %.cpp
 
 $(APP_DIR)/$(ERRORS): $(ERRORS_OBJS)
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -o $(APP_DIR)/$(ERRORS) $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(APP_DIR)/$(ERRORS) $^
 
 $(APP_DIR)/$(LOGPROB): $(LOGPROB_OBJS)
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -o $(APP_DIR)/$(LOGPROB) $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(APP_DIR)/$(LOGPROB) $^
 
 $(APP_DIR)/$(EUCLIDIAN): $(EUCLIDIAN_OBJS)
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -o $(APP_DIR)/$(EUCLIDIAN) $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(APP_DIR)/$(EUCLIDIAN) $^
 
 $(APP_DIR)/$(ESTIMATE_TIMES): $(ESTIMATE_TIMES_OBJS)
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -o $(APP_DIR)/$(ESTIMATE_TIMES) $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(APP_DIR)/$(ESTIMATE_TIMES) $^
 
 $(APP_DIR)/$(TEST_ENCODE): $(TEST_ENCODE_OBJS)
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -o $(APP_DIR)/$(TEST_ENCODE) $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(APP_DIR)/$(TEST_ENCODE) $^
 
 $(APP_DIR)/$(TEST_DECODE): $(TEST_DECODE_OBJS)
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -o $(APP_DIR)/$(TEST_DECODE) $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(APP_DIR)/$(TEST_DECODE) $^
 
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(@D)
