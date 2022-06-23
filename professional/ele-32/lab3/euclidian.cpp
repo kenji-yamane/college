@@ -15,9 +15,6 @@ int main() {
 
 	std::vector<double> probabilities = {0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005};
 	std::vector<double> snr = {0., 0.3542, 0.8212, 1.35277, 2.1089, 2.706, 3.3174, 4.142, 4.775};
-	for (double p = 0.5; p > 0.004; p /= 2) {
-		probabilities.push_back(p);
-	}
 	std::vector<double> encoderP[3];
 	int ke = -1;
 	for (const auto &p : probabilities) {
