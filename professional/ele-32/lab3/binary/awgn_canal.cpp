@@ -11,7 +11,7 @@ AwgnCanal::AwgnCanal(double snr) {
 		this->stddev = -1;
 		this->normalInfinite = std::uniform_real_distribution<double>(-1e3, 1e3);
 	} else {
-		this->stddev = 1/std::sqrt(snr);
+		this->stddev = 1/std::sqrt(2*snr);
 		this->normalReal = std::normal_distribution<double>(0, this->stddev);
 	}
 }
