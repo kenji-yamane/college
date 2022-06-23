@@ -15,6 +15,7 @@ private:
 	Random *r;
 	std::mt19937 gen;
 	std::normal_distribution<double> normalReal;
+	std::uniform_real_distribution<double> normalInfinite;
 };
 
 #endif

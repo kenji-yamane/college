@@ -13,19 +13,22 @@ int main() {
 	Random *r = new Random();
 	Binary *bin = new Binary(7);
 
-	std::vector<double> probabilities;
+	std::vector<double> probabilities = {0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005};
+	std::vector<double> snr = {0., 0.3542, 0.8212, 1.35277, 2.1089, 2.706, 3.3174, 4.142, 4.775};
 	for (double p = 0.5; p > 0.004; p /= 2) {
 		probabilities.push_back(p);
 	}
 	std::vector<double> encoderP[3];
+	int ke = -1;
 	for (const auto &p : probabilities) {
+		ke++;
 		double mean[3] = {};
 		int iterations = 10;
 		if (p < 0.1) {
-			iterations = 1000;
+			iterations = 100;
 		}
 		for (int i = 0; i < iterations; i++) {
-			AwgnCanal canal(p, r);
+			AwgnCanal canal(snr[ke], r);
 		
 			std::vector<Convolutional> codes{
 				Convolutional(3, std::vector<int>{013, 015, 017}, bin),
