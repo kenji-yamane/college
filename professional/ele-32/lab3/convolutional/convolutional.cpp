@@ -1,6 +1,7 @@
 #include "convolutional.h"
 
 #include <stack>
+#include <cmath>
 
 Convolutional::Convolutional(int numStates, std::vector<int> g, Binary *b) :
 	t(numStates, g, b), bin(b) {
@@ -57,12 +58,12 @@ void Convolutional::decode(std::vector<double> &output) {
 }
 
 void Convolutional::decodeLogprob(int output) {
-	std::vector<Node> nextStates(this->stateSequence.size(), Node{-1, 1e12, -1});
+	std::vector<Node> nextStates(this->stateSequence.size(), Node{-1, 1e14, -1});
 	for (int i = 0; i < (int)this->stateSequence.size(); i++) {
 		std::vector<Edge> edges = this->t.getTransitions(i);
 		for (const auto &e : edges) {
 			double cost = this->stateSequence[i].back().cost;
-			cost += this->bin->logprob(output, e.output);
+			cost += std::fabs(this->bin->logprob(output, e.output));
 
 			if (cost < nextStates[e.end].cost) {
 				nextStates[e.end] = Node{i, cost, e.input};

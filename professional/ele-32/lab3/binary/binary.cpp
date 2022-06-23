@@ -49,7 +49,7 @@ void Binary::populateLogprob(double p) {
 	this->logprobDistance.clear();
 	for (int i = 0; i < (1 << 6); i++) {
 		int upperHalf = (i >> 3);
-		int lowHalf = i - upperHalf;
+		int lowHalf = i - (upperHalf << 3);
 		this->logprobDistance.push_back(this->inefficientLogprob(lowHalf, upperHalf, p));
 	}
 }
