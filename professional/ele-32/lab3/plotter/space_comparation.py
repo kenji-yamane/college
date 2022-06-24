@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from data_grabber import grab_space_comparation_data
 
-data = grab_space_comparation_data('hamming')
+data = grab_space_comparation_data('logprob')
 p, e3, e4, e6 = data['p'], data['e3'], data['e4'], data['e6']
 
 plt.figure()
