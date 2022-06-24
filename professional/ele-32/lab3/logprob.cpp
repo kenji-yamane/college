@@ -13,7 +13,17 @@ int main() {
 	Random *r = new Random();
 	Binary *bin = new Binary(7);
 
-	std::vector<double> probabilities = {0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005};
+	std::ifstream in_f("plotter/p_rsn.csv");
+    std::string dummyStr;
+    char dummyChar;
+    double p, rsn;
+    in_f >> dummyStr;
+    std::vector<double> probabilities;
+    while (in_f >> p) {
+        in_f >> dummyChar >> rsn;
+        probabilities.push_back(p);
+    }	
+
 	std::vector<double> encoderP[3];
 	for (const auto &p : probabilities) {
 		bin->populateLogprob(p);
