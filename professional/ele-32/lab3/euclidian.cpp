@@ -31,8 +31,17 @@ int main() {
 		ke++;
 		double mean[3] = {};
 		int iterations = 10;
+		if (p < 0.15) {
+			iterations = 200;
+		}
 		if (p < 0.1) {
-			iterations = 100;
+			iterations = 400;
+		}
+		if (p < 0.05) {
+			iterations = 600;
+		}
+		if (p < 0.02) {
+			iterations = 1000;
 		}
 		for (int i = 0; i < iterations; i++) {
 			AwgnCanal canal(snr[ke]);
