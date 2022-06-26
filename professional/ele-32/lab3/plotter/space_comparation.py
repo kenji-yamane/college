@@ -10,7 +10,6 @@ plt.loglog(p, e3)
 plt.loglog(p, e4)
 plt.loglog(p, e6)
 plt.legend(['p', 'e3', 'e4', 'e6'])
-plt.show()
 plt.gca().invert_xaxis()
 plt.savefig('perror.png')
 

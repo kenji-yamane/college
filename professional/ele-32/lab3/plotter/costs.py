@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from data_grabber import grab_cost_comparation_data
 
-space = 'e6'
+space = 'e3'
 data = grab_cost_comparation_data()
 p_hamming, e_hamming = data['hamming']['p'], data['hamming'][space]
 p_euclidian, e_euclidian = data['euclidian']['p'], data['euclidian'][space]
