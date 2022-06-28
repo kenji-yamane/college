@@ -1,0 +1,33 @@
+
+Neste caso, a parte mais dif\'icil de implementa\c{c}\~ao foi a implementa\c{c}\~ao do canal AWGN equivalente a
+um canal BSC de probabilidade de erro de bit p. Implementou-se o canal AWGN como um gerador gaussiano de n\'umeros aleat\'orios de m\'edia 0 e inicialmente com vari\^ancia $\sqrt{\frac{N_0}{E_t}}$, com a divis\~ao por $E_t$ ocorrendo
+para poder localizar os s\'imbolos em 1 e -1 na decodifica\c{c}\~ao posterior. Desta forma, sabendo da f\'ormula:
+\begin{equation}
+    p(\frac{E_t}{N_0}) = Q(\sqrt{\frac{2E_0}{N_0}}),
+    \label{eq:bpsk-pe}
+\end{equation}
+pode-se encontrar uma dada rela\c{c}\~ao sinal ru\'ido a partir de uma probabilidade de erro de bit atrav\'es da inversa
+desta equa\c{c}\~ao. E, assim, o canal gaussiano pode ser simulado com $\frac{1}{\sqrt{rsn}}$.
+
+Implementou-se uma forma de verificar se essa implementa\c{c}\~ao estava certa: simular a probabilidade de erro de bit sobre um canal AWGN com uma determinada rela\c{c}\~ao sinal-ru\'ido utilizando a modula\c{c}\~ao BPSK, sem c\'odigo de corre\c{c}\~ao de erro deveria resultar na probabilidade de erro correspondente ao do canal BSC. Realizando a simula\c{c}\~ao de forma parecida com o que se faz com c\'odigos corretores de erro, obteve-se a seguinte imagem:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = \linewidth]{test-results-way-before.png}
+    \caption{Probabilidade de erro do canal AWGN com modula\c{c}\~ao BPSK.}
+    \label{fig:awgn-first-try}
+\end{figure}
+Na legenda, p \'e a reta identidade, correspondente ao canal BSC, e ``e'' corresponde \`a probabilidade de erro de bit do canal AWGN equivalente. Observa-se como n\~ao s\~ao iguais e neste caso que se percebeu que havia algo de errado na implementa\c{c}\~ao. Imaginou-se que deveria incluir a taxa dos algoritmos convolucionais de alguma forma. Ent\~ao, mudou-se a vari\^ancia do canal AWGN para $\sqrt{\frac{N_0}{3E_t}}$, resultando na seguinte figura.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = \linewidth]{test-results-before.png}
+    \caption{Probabilidade de erro do canal AWGN com modula\c{c}\~ao BPSK ap\'os mudan\c{c}a.}
+    \label{fig:awgn-second-try}
+\end{figure}
+Como o erro tendeu para o outro lado, percebeu-se que na verdade a vari\^ancia correta \'e $\frac{1}{\sqrt{2rsn}}$,
+pois se considerou que a vari\^ancia \'e $N_0$, sendo que na verdade \'e $\frac{N_0}{2}$. A implementa\c{c}\~ao do canal AWGN com esta vari\^ancia resultou na reta identidade igual ao do canal BSC, e assim se confirmou que a implementa\c{c}\~ao do canal AWGN estava correta. Houve ainda problemas em representar o canal AWGN equivalente
+a probabilidades de erro pr\'oximas de 0.5, pois a rela\c{c}\~ao sinal ru\'ido divergia para o infinito. Assim, realizou-se a aproxima\c{c}\~ao por uma uniforme entre $-3\sigma$ e $3\sigma$, quando a rela\c{c}\~ao sinal ru\'ido equivalente era menor que 0,001. Isso se baseia no fato de que 99,7\% dos valores mais provav\'eis de uma gaussiana
+est\~ao entre $-3\sigma$ e $3\sigma$. Para a probabilidade de erro de 0.5, aproximou-se por uma uniforme entre -1000 e
+1000.
+
+N\~ao houve pr\'e-processamento da dist\^ancia euclidiana pois neste
+caso, diferente do custo por probabilidades do canal BSC, se est\'a trabalhando no espa\c{c}o cont\'inuo, e n\~ao discreto.
