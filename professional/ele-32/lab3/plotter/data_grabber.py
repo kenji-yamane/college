@@ -18,7 +18,9 @@ def grab_space_comparation_data(viterbi='hamming'):
 	file_dict = {
 		'hamming': 'viterbi-hamming.csv',
 		'euclidian': 'viterbi-euclidian.csv',
-		'logprob': 'viterbi-logprob.csv'
+		'logprob': 'viterbi-logprob.csv',
+		'alt-hamming': 'alt-viterbi-hamming.csv',
+		'alt-logprob': 'alt-viterbi-logprob.csv'
 	}
 	f = open(file_dict[viterbi])
 	csvreader = csv.reader(f)
