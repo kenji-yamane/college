@@ -8,7 +8,7 @@
 typedef int pair[2];
 
 /*
- * manager bundles an array of child
+ * job bundles an array of child
  * structures and instantiates
  * processes from each one of the
  * children. It binds consecutive
@@ -20,20 +20,20 @@ typedef struct {
 	pair *pipes;
 	int *children_status;
 	int *children_pid;
-} pmanager;
+} job;
 
-// instantiates a manager structure, allocating space for
+// instantiates a job structure, allocating space for
 // the arrays that will contain metadata relative to
 // the created processes
-pmanager create_pmanager(int num_processes, childp *children);
+job create_job(int num_processes, childp *children);
 
 // pipes ith child's output to its successor's input
-void connect_children(pmanager m);
+void connect_children(job m);
 
 // instantiates each child sequentially, waiting
 // for the end of the ith child to close its
 // output and then instantiate the successor
-void execute_children(pmanager m);
+void execute_children(job m);
 
 /*
  * creates a new process by forking and executing
@@ -44,9 +44,9 @@ void execute_children(pmanager m);
  */
 pid_t instantiate(childp p);
 
-// frees every dynamically allocated field from manager
+// frees every dynamically allocated field from job
 // including children, which was instantiated externally
-void free_manager(pmanager m);
+void free_job(job m);
 
 #endif // child
 

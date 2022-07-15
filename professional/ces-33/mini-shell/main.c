@@ -3,7 +3,7 @@
 #include "io/output.h" // welcome_message | prompt
 #include "io/input.h" // read_line
 #include "parser.h" // parse
-#include "processes/manager.h" // create_manager | connect_children | execute_children | free_manager
+#include "processes/job.h" // create_job | connect_children | execute_children | free_job
 
 int main() {
 	welcome_message();
@@ -17,11 +17,11 @@ int main() {
 			continue;
 		}
 
-		pmanager m = create_pmanager(num_children, children);
+		job m = create_job(num_children, children);
 		connect_children(m);
 		execute_children(m);
 
-		free_manager(m);
+		free_job(m);
 		free(str);
 	}
 	return 0;

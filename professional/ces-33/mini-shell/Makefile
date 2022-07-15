@@ -7,7 +7,7 @@ APP_DIR  := $(BUILD)
 
 STRINGS_SRC   := strings/strings.c
 IO_SRC        := io/input.c io/output.c
-PROCESSES_SRC := processes/child.c processes/manager.c
+PROCESSES_SRC := processes/child.c processes/job.c
 PARSER_SRC    := parser.c
 SRC           := $(STRINGS_SRC) $(IO_SRC) $(PROCESSES_SRC) $(PARSER_SRC) main.c
 

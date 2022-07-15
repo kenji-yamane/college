@@ -8,33 +8,33 @@
 
 #include "../strings/strings.h" // prepend
 #include "../io/output.h" // syscall_error
-#include "manager.h"
+#include "job.h"
 
-pmanager create_pmanager(int num_processes, childp *children) {
-	pmanager m;
-	m.num_processes = num_processes;
-	m.children = children;
-	m.pipes = (pair*)malloc(num_processes*sizeof(pair));
-	m.children_status = (int*)malloc(num_processes*sizeof(int));
-	m.children_pid = (int*)malloc(num_processes*sizeof(int));
-	return m;
+job create_job(int num_processes, childp *children) {
+	job j;
+	j.num_processes = num_processes;
+	j.children = children;
+	j.pipes = (pair*)malloc(num_processes*sizeof(pair));
+	j.children_status = (int*)malloc(num_processes*sizeof(int));
+	j.children_pid = (int*)malloc(num_processes*sizeof(int));
+	return j;
 }
 
-void connect_children(pmanager m) {
-	for (int i = 1; i < m.num_processes; i++) {
-		pipe(m.pipes[i]);
-		m.children[i - 1].pipe_out = m.pipes[i][1];
-		m.children[i].pipe_in = m.pipes[i][0];
+void connect_children(job j) {
+	for (int i = 1; i < j.num_processes; i++) {
+		pipe(j.pipes[i]);
+		j.children[i - 1].pipe_out = j.pipes[i][1];
+		j.children[i].pipe_in = j.pipes[i][0];
 	}
 }
 
-void execute_children(pmanager m) {
-	for (int i = 0; i < m.num_processes; i++) {
-		pid_t pid = instantiate(m.children[i]);
-		m.children_pid[i] = pid;
-		waitpid(pid, m.children_status + i, 0);
-		if (i < m.num_processes - 1) {
-			close(m.pipes[i + 1][1]);
+void execute_children(job j) {
+	for (int i = 0; i < j.num_processes; i++) {
+		pid_t pid = instantiate(j.children[i]);
+		j.children_pid[i] = pid;
+		waitpid(pid, j.children_status + i, 0);
+		if (i < j.num_processes - 1) {
+			close(j.pipes[i + 1][1]);
 		}
 	}
 }
@@ -76,13 +76,13 @@ pid_t instantiate(childp p) {
 	exit(EXIT_FAILURE);
 }
 
-void free_manager(pmanager m) {
-	free(m.children_pid);
-	free(m.children_status);
-	free(m.pipes);
-	for (int i = 0; i < m.num_processes; i++) {
-		free_child(m.children[i]);
+void free_job(job j) {
+	free(j.children_pid);
+	free(j.children_status);
+	free(j.pipes);
+	for (int i = 0; i < j.num_processes; i++) {
+		free_child(j.children[i]);
 	}
-	free(m.children);
+	free(j.children);
 }
 
