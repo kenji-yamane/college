@@ -24,5 +24,8 @@ void usage_error(char *message);
 // unexpectedly
 void process_terminated(int pid, int signal);
 
+// prints information about job
+void job_info(long pgid, char *status_name, char *command);
+
 #endif
 

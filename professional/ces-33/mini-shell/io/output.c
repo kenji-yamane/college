@@ -38,3 +38,7 @@ void process_terminated(int pid, int signal) {
 	fprintf(stderr, "%d: Terminated by signal %d\n", pid, signal);
 }
 
+void job_info(long pgid, char *status_name, char *command) {
+	fprintf(stderr, "%ld (%s): %s\n", pgid, status_name, command);
+}
+

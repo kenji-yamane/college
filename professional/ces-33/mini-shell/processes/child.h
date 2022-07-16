@@ -41,6 +41,14 @@ void set_output_file(childp p, char *out);
 // sets status and interprets it
 childp set_status(childp p, int status);
 
+// duplicates if possible pipes and input
+// and output files
+void define_ends(childp p);
+
+// handles job control signals and sets
+// its own group in foreground if it is the case
+void position_itself(childp p, pid_t pgid, bool foreground);
+
 /*
  * creates a new process by forking and executing
  *
@@ -48,7 +56,7 @@ childp set_status(childp p, int status);
  * if it is not found locally, it tries on the /bin folder
  * if none is found, it terminates itself
  */
-pid_t instantiate(childp p);
+pid_t instantiate(childp p, pid_t pgid, bool foreground);
 
 // frees every field from childp
 // dynamically allocated

@@ -10,10 +10,11 @@
 #include "../io/output.h" // syscall_error
 #include "job.h"
 
-job create_job(int num_processes, childp *children) {
+job create_job(int num_processes, childp *children, char *command) {
 	job j;
 	j.num_processes = num_processes;
 	j.children = children;
+	j.command = command;
 	j.pipes = (pair*)malloc(num_processes*sizeof(pair));
 	j.pgid = 0;
 	return j;
@@ -62,19 +63,32 @@ void connect_children(job j) {
 	}
 }
 
-void execute_children(job j) {
+void execute_children(shell s, job j, bool foreground) {
 	for (int i = 0; i < j.num_processes; i++) {
-		pid_t pid = instantiate(j.children[i]);
+		pid_t pid = instantiate(j.children[i], j.pgid, foreground);
+		if (i == 0) {
+			j.pgid = pid;
+		}
+		setpgid(pid, j.pgid);
 		j.children[i].pid = pid;
 		if (i < j.num_processes - 1) {
 			close(j.pipes[i + 1][1]);
 		}
 	}
-	wait_job(j);
+	if (foreground) {
+		j = put_in_foreground(s, j, false);
+	} else {
+		put_in_background(j, false);
+	}
+}
+
+void print_job_info(job j, char *status_name) {
+	job_info(j.pgid, status_name, j.command);
 }
 
 void free_job(job j) {
 	free(j.pipes);
+	free(j.command);
 	for (int i = 0; i < j.num_processes; i++) {
 		free_child(j.children[i]);
 	}

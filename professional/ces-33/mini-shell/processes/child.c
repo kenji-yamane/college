@@ -1,6 +1,7 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include <stdlib.h> // malloc | realloc | NULL
 #include <string.h> // strcpy | strlen
@@ -62,16 +63,7 @@ childp set_status(childp p, int status) {
 	return p;
 }
 
-pid_t instantiate(childp p) {
-    pid_t id = fork();
-    if (id == -1) {
-        syscall_error("fork");
-        exit(EXIT_FAILURE);
-    }
-    if (id != 0) { // success on parent
-        return id;
-    }
-
+void define_ends(childp p) {
     if (p.pipe_out != -1) {
         dup2(p.pipe_out, STDOUT_FILENO);
     }
@@ -86,6 +78,39 @@ pid_t instantiate(childp p) {
         int fd = open(p.output_file, O_CREAT | O_WRONLY, 0777);
         dup2(fd, STDOUT_FILENO);
     }
+}
+
+void position_itself(childp p, pid_t pgid, bool foreground) {
+	if (pgid == 0) {
+		pgid = p.pid;
+	}
+	setpgid(p.pid, pgid);
+	if (foreground) {
+		tcsetpgrp(STDIN_FILENO, pgid);
+	}
+
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	signal(SIGTSTP, SIG_DFL);
+	signal(SIGTTIN, SIG_DFL);
+	signal(SIGTTOU, SIG_DFL);
+	signal(SIGCHLD, SIG_DFL);
+}
+
+pid_t instantiate(childp p, pid_t pgid, bool foreground) {
+    pid_t id = fork();
+    if (id == -1) {
+        syscall_error("fork");
+        exit(EXIT_FAILURE);
+    }
+    if (id != 0) { // success on parent
+        return id;
+    }
+
+	p.pid = id;
+	position_itself(p, pgid, foreground);
+	define_ends(p);
+
     char *program = p.argv[0];
     execve(program, p.argv, p.envp);
 

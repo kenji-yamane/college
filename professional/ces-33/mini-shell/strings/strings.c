@@ -44,3 +44,10 @@ char **extract_words(char *str) {
 	return words;
 }
 
+char *copy_str(char *str) {
+	int needed_space = strlen(str) + 1;
+	char *str2 = (char*)malloc(needed_space*strlen(str));
+	strcpy(str2, str);
+	return str2;
+}
+

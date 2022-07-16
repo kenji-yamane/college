@@ -22,6 +22,7 @@ typedef struct {
 	int num_processes;
 	childp *children;
 	pair *pipes;
+	char *command;
 	int pgid;
 	struct termios tmodes;
 	int id;
@@ -30,7 +31,7 @@ typedef struct {
 // instantiates a job structure, allocating space for
 // the arrays that will contain metadata relative to
 // the created processes
-job create_job(int num_processes, childp *children);
+job create_job(int num_processes, childp *children, char *command);
 
 // puts job in foreground, letting it assume the terminal
 job put_in_foreground(shell s, job j, bool cont);
@@ -42,12 +43,16 @@ void put_in_background(job j, bool cont);
 void wait_job(job j);
 
 // pipes ith child's output to its successor's input
-void connect_children(job m);
+void connect_children(job j);
 
 // instantiates each child sequentially, waiting
 // for the end of the ith child to close its
 // output and then instantiate the successor
-void execute_children(job m);
+void execute_children(shell s, job j, bool foreground);
+
+// prints job's status with descriptive messages
+// and references
+void print_job_info(job j, char *status_name);
 
 // frees every dynamically allocated field from job
 // including children, which was instantiated externally

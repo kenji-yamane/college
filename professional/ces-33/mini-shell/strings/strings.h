@@ -14,5 +14,9 @@ int count_words(char *str);
 // of the pointer of pointers to signal end
 char **extract_words(char *str);
 
+// copies the given string allocating
+// the necessary memory
+char *copy_str(char *str);
+
 #endif
 
