@@ -7,7 +7,8 @@
 
 #include "io/output.h" // welcome_message | prompt
 #include "io/input.h" // read_line
-#include "parser.h" // parse
+#include "parser/parser.h" // parse
+#include "parser/builtin_parser.h"
 #include "processes/job.h" // create_job | connect_children | execute_children | free_job
 
 // awaits for the job to be on foreground, and then ignores all

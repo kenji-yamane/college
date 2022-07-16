@@ -1,7 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include "processes/child.h"
+#include "../processes/child.h"
 
 typedef enum{
 	PROGRAM,
@@ -13,18 +13,6 @@ typedef enum{
 	OUTPUT_FILE,
 	END
 } WORD;
-
-typedef enum{
-	EXIT,
-	UNDEFINED
-} BUILTIN;
-
-// parses a line command into one of minishell's builtin commands
-// if none fits, returns UNDEFINED
-BUILTIN parse_builtin(char *str);
-
-// executes a given builtin
-void execute_builtin(BUILTIN b);
 
 // parses a line command into a sequence of children to be instantiated as processes
 childp *parse(char *str, int *num_children);
@@ -45,7 +33,6 @@ WORD translate_operator(char *w);
 // preceded by LESS: INPUT_FILE
 // preceded by GREATER: OUTPUT_FILE
 WORD filetype_from_operator(WORD w);
-
 
 #endif
 

@@ -1,30 +1,11 @@
 #include <stdlib.h> // malloc | realloc
 #include <string.h> // strcmp
 
-#include "io/output.h" // developer_error | syntax_error
-#include "processes/child.h" // new_child | add_argument | setters
-#include "processes/builtin.h" // minishell_exit
-#include "strings/strings.h" // count_words | extract_words
+#include "../io/output.h" // developer_error | syntax_error
+#include "../processes/child.h" // new_child | add_argument | setters
+#include "../strings/strings.h" // count_words | extract_words
 
 #include "parser.h"
-
-BUILTIN parse_builtin(char *str) {
-	if (strcmp(str, "exit") == 0) {
-		return EXIT;
-	}
-	return UNDEFINED;
-}
-
-void execute_builtin(BUILTIN b) {
-	switch (b) {
-	case EXIT:
-		minishell_exit();
-		break;
-	case UNDEFINED:
-		developer_error("UNDEFINED does not match a builtin");
-		break;
-	}
-}
 
 childp *parse(char *str, int *num_children) {
 	if (count_words(str) == 0) {
