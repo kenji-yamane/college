@@ -1,7 +1,10 @@
-#ifndef MANAGER_H
-#define MANAGER_H
+#ifndef JOB_H
+#define JOB_H
 
 #include <sys/types.h> // pid_t
+#include <termios.h>
+
+#include <stdbool.h>
 
 #include "child.h"
 
@@ -18,14 +21,21 @@ typedef struct {
 	int num_processes;
 	childp *children;
 	pair *pipes;
-	int *children_status;
-	int *children_pid;
+	int pgid;
+	struct termios tmodes;
+	int id;
 } job;
 
 // instantiates a job structure, allocating space for
 // the arrays that will contain metadata relative to
 // the created processes
 job create_job(int num_processes, childp *children);
+
+// puts job in foreground, letting it assume the terminal
+void put_in_foreground(job j, bool cont);
+
+// waits for all job's processes
+void wait_job(job j);
 
 // pipes ith child's output to its successor's input
 void connect_children(job m);
@@ -48,5 +58,5 @@ pid_t instantiate(childp p);
 // including children, which was instantiated externally
 void free_job(job m);
 
-#endif // child
+#endif // job
 

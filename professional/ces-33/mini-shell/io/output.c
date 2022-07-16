@@ -34,3 +34,7 @@ void usage_error(char *message) {
 	fprintf(stderr, "incorrect usage: %s\n", message);
 }
 
+void process_terminated(int pid, int signal) {
+	fprintf(stderr, "%d: Terminated by signal %d\n", pid, signal);
+}
+

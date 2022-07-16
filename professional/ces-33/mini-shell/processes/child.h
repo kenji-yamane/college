@@ -3,6 +3,8 @@
 
 #include <sys/types.h> // pid_t
 
+#include <stdbool.h>
+
 // represents a single child process
 typedef struct {
 	int num_arg;
@@ -13,6 +15,10 @@ typedef struct {
 	char *output_file;
 	int pipe_in;
 	int pipe_out;
+	int status;
+	int pid;
+	bool stopped;
+	bool completed;
 } childp;
 
 // creates empty child,
@@ -31,6 +37,9 @@ void set_input_file(childp p, char *in);
 
 // sets output_file
 void set_output_file(childp p, char *out);
+
+// sets status and interprets it
+childp set_status(childp p, int status);
 
 // frees every field from childp
 // dynamically allocated

@@ -20,5 +20,9 @@ void syntax_error(char *message);
 // error by the user
 void usage_error(char *message);
 
+// error to be printed when a process has been terminated
+// unexpectedly
+void process_terminated(int pid, int signal);
+
 #endif
 
