@@ -33,7 +33,7 @@ int main() {
 
 		job j = create_job(num_children, children, backup_str);
 		connect_children(j);
-		execute_children(s, j, true);
+		j = execute_children(s, j, true);
 		m = insert_job(m, j);
 
 		free(str);

@@ -64,7 +64,7 @@ void connect_children(job j) {
 	}
 }
 
-void execute_children(shell s, job j, bool foreground) {
+job execute_children(shell s, job j, bool foreground) {
 	for (int i = 0; i < j.num_processes; i++) {
 		pid_t pid = instantiate(j.children[i], j.pgid, foreground);
 		if (i == 0) {
@@ -81,6 +81,7 @@ void execute_children(shell s, job j, bool foreground) {
 	} else {
 		put_in_background(j, false);
 	}
+	return j;
 }
 
 void print_job_info(job j, char *status_name) {

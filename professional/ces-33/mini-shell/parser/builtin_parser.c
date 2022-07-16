@@ -8,7 +8,7 @@
 BUILTIN parse_builtin(char *str) {
 	if (strcmp(str, "exit") == 0) {
 		return EXIT;
-	} else if (strcmp(str, "ps") == 0) {
+	} else if (strcmp(str, "jobs") == 0) {
 		return DEBRIEF;
 	}
 	return UNDEFINED;

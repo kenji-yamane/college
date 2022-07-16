@@ -49,7 +49,7 @@ void connect_children(job j);
 // instantiates each child sequentially, waiting
 // for the end of the ith child to close its
 // output and then instantiate the successor
-void execute_children(shell s, job j, bool foreground);
+job execute_children(shell s, job j, bool foreground);
 
 // prints job's status with descriptive messages
 // and references
