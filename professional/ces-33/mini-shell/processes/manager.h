@@ -18,7 +18,7 @@ typedef struct {
 
 // instantiates a manager structure, setting
 // its initial id to zero
-manager init_jobs();
+manager init_manager();
 
 // inserts an executed job in manager structure,
 // so that we can track it
@@ -40,6 +40,10 @@ void update_all_processes(manager m);
 // given pid and parses its status. It returns -1 if it
 // doesn't find a corresponding child, and 0 on success
 int mark_process_status(manager m, pid_t pid, int status);
+
+// frees every dynamically allocated field from manager
+// including jobs, which was instantiated externally
+void free_manager(manager m);
 
 #endif // manager
 

@@ -8,18 +8,24 @@
 BUILTIN parse_builtin(char *str) {
 	if (strcmp(str, "exit") == 0) {
 		return EXIT;
+	} else if (strcmp(str, "ps") == 0) {
+		return DEBRIEF;
 	}
 	return UNDEFINED;
 }
 
-void execute_builtin(BUILTIN b) {
+manager execute_builtin(manager m, BUILTIN b) {
 	switch (b) {
 	case EXIT:
 		minishell_exit();
+		break;
+	case DEBRIEF:
+		m = minishell_process_info(m);
 		break;
 	case UNDEFINED:
 		developer_error("UNDEFINED does not match a builtin");
 		break;
 	}
+	return m;
 }
 

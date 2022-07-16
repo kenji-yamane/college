@@ -71,7 +71,7 @@ bool job_completed(job j);
 
 // frees every dynamically allocated field from job
 // including children, which was instantiated externally
-void free_job(job m);
+void free_job(job j);
 
 #endif // job
 

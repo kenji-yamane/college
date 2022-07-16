@@ -1,8 +1,11 @@
 #ifndef BUILTIN_PARSER_H
 #define BUILTIN_PARSER_H
 
+#include "../processes/manager.h" // manager
+
 typedef enum{
 	EXIT,
+	DEBRIEF,
 	UNDEFINED
 } BUILTIN;
 
@@ -11,7 +14,7 @@ typedef enum{
 BUILTIN parse_builtin(char *str);
 
 // executes a given builtin
-void execute_builtin(BUILTIN b);
+manager execute_builtin(manager m, BUILTIN b);
 
 #endif
 

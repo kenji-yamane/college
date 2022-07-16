@@ -5,12 +5,13 @@
 #include "parser/parser.h" // parse
 #include "parser/builtin_parser.h"
 #include "processes/job.h" // create_job | connect_children | execute_children | free_job
+#include "processes/manager.h"
 #include "shell.h" // init_shell
 #include "strings/strings.h" // copy_str
 
 int main() {
-	shell s;
-	s = init_shell(s);
+	shell s = init_shell(s);
+	manager m = init_manager();
 
 	welcome_message();
 	while (1) {
@@ -21,7 +22,7 @@ int main() {
 		BUILTIN b = parse_builtin(str);
 		if (b != UNDEFINED) {
 			free(str);
-			execute_builtin(b);
+			m = execute_builtin(m, b);
 			continue;
 		}
 		int num_children;
@@ -33,10 +34,12 @@ int main() {
 		job j = create_job(num_children, children, backup_str);
 		connect_children(j);
 		execute_children(s, j, true);
+		m = insert_job(m, j);
 
-		free_job(j);
 		free(str);
 	}
+
+	free_manager(m);
 	return 0;
 }
 

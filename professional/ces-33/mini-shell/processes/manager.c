@@ -1,10 +1,14 @@
 #include <errno.h>
+#include <stdlib.h>
+
+#include <sys/wait.h>
+#include <sys/types.h>
 
 #include "../io/output.h"
 
 #include "manager.h"
 
-manager init_jobs() {
+manager init_manager() {
 	manager m;
 	m.jobs = NULL;
 	m.sequential = 0;
@@ -44,7 +48,7 @@ manager jobs_debrief(manager m) {
 			m = remove_job(m, i);
 			i--;
 		} else if (job_stopped(m.jobs[i])) {
-			m.jobs[i] = notify_stopped(m.jobs[i]);
+			m.jobs[i] = notify_stopped_job(m.jobs[i]);
 		}
 	}
 	return m;
@@ -55,7 +59,7 @@ void update_all_processes(manager m) {
 	pid_t pid;
 
 	do {
-		pid = waitpid(WAIT_ANY, &status, WUNTRACED|WNOHANG);
+		pid = waitpid(-1, &status, WUNTRACED|WNOHANG);
 	} while (!mark_process_status(m, pid, status));
 }
 
@@ -63,7 +67,7 @@ int mark_process_status(manager m, pid_t pid, int status) {
 	if (pid < 0) {
 		return -1;
 	}
-	if (pid == 0 || errno = ECHILD) {
+	if (pid == 0 || errno == ECHILD) {
 		return -1;
 	}
 	for (int i = 0; i < m.num_jobs; i++) {
@@ -75,5 +79,12 @@ int mark_process_status(manager m, pid_t pid, int status) {
 		}
 	}
 	return -1;
+}
+
+void free_manager(manager m) {
+	for (int i = 0; i < m.num_jobs; i++) {
+		free_job(m.jobs[i]);
+	}
+	free(m.jobs);
 }
 
