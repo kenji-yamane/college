@@ -30,3 +30,7 @@ void syntax_error(char *message) {
 	fprintf(stderr, "syntax error: %s\n", message);
 }
 
+void usage_error(char *message) {
+	fprintf(stderr, "incorrect usage: %s\n", message);
+}
+

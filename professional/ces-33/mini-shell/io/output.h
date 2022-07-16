@@ -17,5 +17,8 @@ void developer_error(char *message);
 // error on parsing, due to user confusion
 void syntax_error(char *message);
 
+// error by the user
+void usage_error(char *message);
+
 #endif
 

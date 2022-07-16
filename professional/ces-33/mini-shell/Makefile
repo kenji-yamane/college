@@ -1,5 +1,5 @@
 CC       := gcc
-CFLAGS   := -Werror -Wall -Wextra -pedantic -std=c11
+CFLAGS   := -Werror -Wall -Wextra -pedantic -D_POSIX_C_SOURCE -std=c11
 LDFLAGS  := -lrt
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
