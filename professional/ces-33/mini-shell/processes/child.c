@@ -120,6 +120,12 @@ pid_t instantiate(childp p, pid_t pgid, bool foreground) {
     p.argv[0] = bin_program;
     execve(bin_program, p.argv, p.envp);
 
+	// if /bin/ did not work
+	// we try now with prefix /usr/bin/
+	char *usr_bin_program = prepend("/usr/bin/", p.argv[0]);
+	p.argv[0] = usr_bin_program;
+	execve(usr_bin_program, p.argv, p.envp);
+
     syscall_error(program);
     exit(EXIT_FAILURE);
 }
