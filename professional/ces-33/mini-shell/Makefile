@@ -9,7 +9,8 @@ STRINGS_SRC   := strings/strings.c
 IO_SRC        := io/input.c io/output.c
 PROCESSES_SRC := processes/child.c processes/job.c processes/builtin.c
 PARSER_SRC    := parser/parser.c parser/builtin_parser.c
-SRC           := $(STRINGS_SRC) $(IO_SRC) $(PROCESSES_SRC) $(PARSER_SRC) main.c
+SHELL_SRC     := shell.c
+SRC           := $(STRINGS_SRC) $(IO_SRC) $(PROCESSES_SRC) $(PARSER_SRC) $(SHELL_SRC) main.c
 
 MINISHELL    := minishell
 OBJECTS      := $(SRC:%.c=$(OBJ_DIR)/%.o)
