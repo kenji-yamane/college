@@ -14,7 +14,7 @@
 // job control signals, proceeding to set itself as its own
 // process group and take control of the terminal, saving
 // the terminal modes
-void init_shell(pid_t*, struct termios*);
+void init_shell(pid_t *pid, struct termios *tmodes);
 
 int main() {
 	pid_t shell_pgid;
@@ -26,6 +26,12 @@ int main() {
 		prompt();
 
 		char *str = read_line();
+		BUILTIN b = parse_builtin(str);
+		if (b != UNDEFINED) {
+			free(str);
+			execute_builtin(b);
+			continue;
+		}
 		int num_children;
 		childp *children = parse(str, &num_children);
 		if (num_children == 0) {
