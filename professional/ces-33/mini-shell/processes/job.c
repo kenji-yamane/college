@@ -20,11 +20,25 @@ job create_job(int num_processes, childp *children) {
 	return j;
 }
 
-void put_in_foreground(job j, bool cont) {
+job put_in_foreground(shell s, job j, bool cont) {
 	tcsetpgrp(STDIN_FILENO, j.pgid);
-
 	if (cont) {
 		tcsetattr(STDIN_FILENO, TCSADRAIN, &j.tmodes);
+		if (kill(-j.pgid, SIGCONT) < 0) {
+			syscall_error("kill");
+		}
+	}
+	wait_job(j);
+
+	tcsetpgrp(STDIN_FILENO, s.pid);
+	tcgetattr(STDIN_FILENO, &j.tmodes);
+	tcsetattr(STDIN_FILENO, TCSADRAIN, &s.tmodes);
+
+	return j;
+}
+
+void put_in_background(job j, bool cont) {
+	if (cont) {
 		if (kill(-j.pgid, SIGCONT) < 0) {
 			syscall_error("kill");
 		}

@@ -7,6 +7,7 @@
 #include <stdbool.h>
 
 #include "child.h"
+#include "../shell.h"
 
 typedef int pair[2];
 
@@ -32,7 +33,10 @@ typedef struct {
 job create_job(int num_processes, childp *children);
 
 // puts job in foreground, letting it assume the terminal
-void put_in_foreground(job j, bool cont);
+job put_in_foreground(shell s, job j, bool cont);
+
+// puts job in background, removing it from the terminal
+void put_in_background(job j, bool cont);
 
 // waits for all job's processes
 void wait_job(job j);
