@@ -28,6 +28,14 @@ manager insert_job(manager m, job j);
 // from the data structure
 manager remove_job(manager m, int idx);
 
+// notifies jobs that have either stopped or completed
+// deleting from its structure those that have completed
+manager jobs_debrief(manager m);
+
+// updates status on all processes of all jobs the manager
+// holds
+void update_all_processes(manager m);
+
 // given a pid and a status, it searches for a process with this
 // given pid and parses its status. It returns -1 if it
 // doesn't find a corresponding child, and 0 on success

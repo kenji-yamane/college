@@ -35,6 +35,30 @@ manager remove_job(manager m, int idx) {
 	return m;
 }
 
+manager jobs_debrief(manager m) {
+	update_all_processes(m);
+
+	for (int i = 0; i < m.num_jobs; i++) {
+		if (job_completed(m.jobs[i])) {
+			notify_completed_job(m.jobs[i]);
+			m = remove_job(m, i);
+			i--;
+		} else if (job_stopped(m.jobs[i])) {
+			m.jobs[i] = notify_stopped(m.jobs[i]);
+		}
+	}
+	return m;
+}
+
+void update_all_processes(manager m) {
+	int status;
+	pid_t pid;
+
+	do {
+		pid = waitpid(WAIT_ANY, &status, WUNTRACED|WNOHANG);
+	} while (!mark_process_status(m, pid, status));
+}
+
 int mark_process_status(manager m, pid_t pid, int status) {
 	if (pid < 0) {
 		return -1;

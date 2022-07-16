@@ -100,6 +100,24 @@ job notify_stopped_job(job j) {
 	return j;
 }
 
+bool job_stopped(job j) {
+	for (int i = 0; i < j.num_processes; i++) {
+		if (!(j.children[i].stopped || j.children[i].completed)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool job_completed(job j) {
+	for (int i = 0; i < j.num_processes; i++) {
+		if (!j.children[i].completed) {
+			return false;
+		}
+	}
+	return true;
+}
+
 void free_job(job j) {
 	free(j.pipes);
 	free(j.command);
