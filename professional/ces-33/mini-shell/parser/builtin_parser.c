@@ -17,7 +17,7 @@ BUILTIN parse_builtin(char *str) {
 manager execute_builtin(manager m, BUILTIN b) {
 	switch (b) {
 	case EXIT:
-		minishell_exit();
+		minishell_exit(m);
 		break;
 	case DEBRIEF:
 		m = minishell_process_info(m);

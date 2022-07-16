@@ -2,7 +2,8 @@
 
 #include "builtin.h"
 
-void minishell_exit() {
+void minishell_exit(manager m) {
+	free_manager(m);
 	raise(SIGKILL);
 }
 
