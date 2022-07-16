@@ -17,6 +17,7 @@ job create_job(int num_processes, childp *children, char *command) {
 	j.command = command;
 	j.pipes = (pair*)malloc(num_processes*sizeof(pair));
 	j.pgid = 0;
+	j.notified = false;
 	return j;
 }
 
@@ -84,6 +85,19 @@ void execute_children(shell s, job j, bool foreground) {
 
 void print_job_info(job j, char *status_name) {
 	job_info(j.pgid, status_name, j.command);
+}
+
+void notify_completed_job(job j) {
+	print_job_info(j, "completed");
+}
+
+job notify_stopped_job(job j) {
+	if (j.notified) {
+		return j;
+	}
+	print_job_info(j, "stopped");
+	j.notified = true;
+	return j;
 }
 
 void free_job(job j) {

@@ -26,6 +26,7 @@ typedef struct {
 	int pgid;
 	struct termios tmodes;
 	int id;
+	bool notified;
 } job;
 
 // instantiates a job structure, allocating space for
@@ -53,6 +54,12 @@ void execute_children(shell s, job j, bool foreground);
 // prints job's status with descriptive messages
 // and references
 void print_job_info(job j, char *status_name);
+
+// uses print_job_info with status completed
+void notify_completed_job(job j);
+
+// uses print_job_info with status stopped
+job notify_stopped_job(job j);
 
 // frees every dynamically allocated field from job
 // including children, which was instantiated externally
