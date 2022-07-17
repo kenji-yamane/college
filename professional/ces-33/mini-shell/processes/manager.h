@@ -29,7 +29,7 @@ manager insert_job(manager m, job j);
 int get_job_idx_from_id(manager m, int id);
 
 // frees a job given its index, and then removes it
-// from the data structure
+// from the data structure, using the unshift algorithm
 manager remove_job(manager m, int idx);
 
 // notifies jobs that have either stopped or completed
