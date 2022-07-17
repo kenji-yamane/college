@@ -25,7 +25,7 @@ void usage_error(char *message);
 void process_terminated(int pid, int signal);
 
 // prints information about job
-void job_info(long pgid, char *status_name, char *command);
+void job_info(int id, long pgid, char *status_name, char *command);
 
 #endif
 

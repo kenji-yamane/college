@@ -85,7 +85,7 @@ job execute_children(shell s, job j, bool foreground) {
 }
 
 void print_job_info(job j, char *status_name) {
-	job_info(j.pgid, status_name, j.command);
+	job_info(j.id, j.pgid, status_name, j.command);
 }
 
 void notify_completed_job(job j) {
