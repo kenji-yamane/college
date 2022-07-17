@@ -32,7 +32,7 @@ manager insert_job(manager m, job j) {
 int get_job_idx_from_id(manager m, int id) {
 	int ini = 0, fin = m.num_jobs;
 
-	while (ini < fin) {
+	while (ini <= fin) {
 		int middle = (ini + fin)/2;
 		if (id < m.jobs[middle].id) {
 			fin = middle - 1;
