@@ -10,7 +10,7 @@
 #include "strings/strings.h" // copy_str
 
 int main() {
-	shell s = init_shell(s);
+	shell s = init_shell();
 	manager m = init_manager();
 
 	welcome_message();

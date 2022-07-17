@@ -13,7 +13,7 @@ typedef struct {
 // job control signals, proceeding to set itself as its own
 // process group and take control of the terminal, saving
 // the terminal modes
-shell init_shell(shell s);
+shell init_shell();
 
 #endif
 

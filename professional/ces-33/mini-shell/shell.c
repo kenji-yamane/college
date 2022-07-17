@@ -7,7 +7,8 @@
 
 #include "shell.h"
 
-shell init_shell(shell s) {
+shell init_shell() {
+	shell s;
     if (!isatty(STDIN_FILENO)) {
         usage_error("minishell does not support non interactive mode");
     }
