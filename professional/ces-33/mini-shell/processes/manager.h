@@ -34,6 +34,9 @@ manager remove_job(manager m, int idx);
 
 // notifies jobs that have either stopped or completed
 // deleting from its structure those that have completed
+manager notify_job_events(manager m);
+
+// notifies every job, with its current status
 manager jobs_debrief(manager m);
 
 // updates status on all processes of all jobs the manager

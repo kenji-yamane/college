@@ -15,6 +15,7 @@ int main() {
 
 	welcome_message();
 	while (1) {
+		m = notify_job_events(m);
 		prompt();
 
 		char *str = read_line();

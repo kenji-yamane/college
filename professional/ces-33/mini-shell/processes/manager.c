@@ -59,7 +59,7 @@ manager remove_job(manager m, int idx) {
 	return m;
 }
 
-manager jobs_debrief(manager m) {
+manager notify_job_events(manager m) {
 	update_all_processes(m);
 
 	int *ids_to_remove = (int*)malloc(m.num_jobs*sizeof(int)), num_to_remove = 0;
@@ -70,6 +70,30 @@ manager jobs_debrief(manager m) {
 			ids_to_remove[num_to_remove++] = m.jobs[i].id;
 		} else if (stopped) {
 			m.jobs[i] = notify_stopped_job(m.jobs[i]);
+		}
+	}
+	for (int i = 0; i < num_to_remove; i++) {
+		int idx = get_job_idx_from_id(m, ids_to_remove[i]);
+		m = remove_job(m, idx);
+	}
+	free(ids_to_remove);
+
+	return m;
+}
+
+manager jobs_debrief(manager m) {
+	update_all_processes(m);
+
+	int *ids_to_remove = (int*)malloc(m.num_jobs*sizeof(int)), num_to_remove = 0;
+	for (int i = 0; i < m.num_jobs; i++) {
+		bool completed = job_completed(m.jobs[i]), stopped = job_stopped(m.jobs[i]);
+		if (completed) {
+			print_job_info(m.jobs[i], "completed");
+			ids_to_remove[num_to_remove++] = m.jobs[i].id;
+		} else if (stopped) {
+			print_job_info(m.jobs[i], "stopped");
+		} else {
+			print_job_info(m.jobs[i], "running");
 		}
 	}
 	for (int i = 0; i < num_to_remove; i++) {
