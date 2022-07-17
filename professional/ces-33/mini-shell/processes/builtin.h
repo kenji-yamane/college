@@ -10,5 +10,9 @@ void minishell_exit(manager m);
 // builtin command to notify about jobs
 manager minishell_process_info(manager m);
 
+// builtin command to bring a background process
+// to the foreground
+void minishell_foreground(shell s, manager m, int id);
+
 #endif
 

@@ -6,6 +6,7 @@
 typedef enum{
 	EXIT,
 	DEBRIEF,
+	FOREGROUND,
 	UNDEFINED
 } BUILTIN;
 
@@ -14,7 +15,7 @@ typedef enum{
 BUILTIN parse_builtin(char *str);
 
 // executes a given builtin
-manager execute_builtin(manager m, BUILTIN b);
+manager execute_builtin(shell s, manager m, char *str, BUILTIN b);
 
 #endif
 

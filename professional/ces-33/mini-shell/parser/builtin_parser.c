@@ -1,4 +1,5 @@
 #include <string.h> // strcmp
+#include <stdio.h>
 
 #include "../io/output.h" // developer_error
 #include "../processes/builtin.h" // minishell_exit
@@ -10,17 +11,27 @@ BUILTIN parse_builtin(char *str) {
 		return EXIT;
 	} else if (strcmp(str, "jobs") == 0) {
 		return DEBRIEF;
+	} else if (str[0] == 'f' && str[1] == 'g') {
+		return FOREGROUND;
 	}
 	return UNDEFINED;
 }
 
-manager execute_builtin(manager m, BUILTIN b) {
+manager execute_builtin(shell s, manager m, char *str, BUILTIN b) {
+	int job_id;
 	switch (b) {
 	case EXIT:
 		minishell_exit(m);
 		break;
 	case DEBRIEF:
 		m = minishell_process_info(m);
+		break;
+	case FOREGROUND:
+		if (!sscanf(str, "fg %%%d", &job_id)) {
+			syntax_error("fg accepts only one integer argument preceded by %%");
+			break;
+		}
+		minishell_foreground(s, m, job_id);
 		break;
 	case UNDEFINED:
 		developer_error("UNDEFINED does not match a builtin");

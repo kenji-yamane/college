@@ -22,8 +22,9 @@ int main() {
 		char *backup_str = copy_str(str);
 		BUILTIN b = parse_builtin(str);
 		if (b != UNDEFINED) {
+			m = execute_builtin(s, m, str, b);
 			free(str);
-			m = execute_builtin(m, b);
+			free(backup_str);
 			continue;
 		}
 		int num_children;

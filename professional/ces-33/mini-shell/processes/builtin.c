@@ -12,3 +12,8 @@ manager minishell_process_info(manager m) {
 	return m;
 }
 
+void minishell_foreground(shell s, manager m, int id) {
+	int idx = get_job_idx_from_id(m, id);
+	m.jobs[idx] = put_in_foreground(s, m.jobs[idx], true);
+}
+
