@@ -51,3 +51,24 @@ char *copy_str(char *str) {
 	return str2;
 }
 
+char *trim_begin(char *str) {
+	int i;
+	for (i = 0; str[i] != '\0' && isspace(str[i]); i++);
+	return str + i;
+}
+
+char *trim_end(char *str) {
+	int i;
+	for (i = strlen(str) - 1; i > 0 && isspace(str[i]); i--);
+	str[i + 1] = '\0';
+	return str;
+}
+
+bool is_number(char *str) {
+	bool number = true;
+	for (int i = 0, len = strlen(str); i < len; i++) {
+		number = (number && isdigit(str[i]));
+	}
+	return number;
+}
+

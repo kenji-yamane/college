@@ -46,6 +46,20 @@ void put_in_background(job j, bool cont) {
 	}
 }
 
+job continue_job(shell s, job j, bool foreground) {
+	for (int i = 0; i < j.num_processes; i++) {
+		j.children[i].stopped = false;
+	}
+	j.notified = false;
+
+	if (foreground) {
+		j = put_in_foreground(s, j, true);
+	} else {
+		put_in_background(j, true);
+	}
+	return j;
+}
+
 void wait_job(job j) {
 	int status;
 	for (int i = 0; i < j.num_processes; i++) {

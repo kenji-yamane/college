@@ -30,6 +30,9 @@ manager insert_job(manager m, job j) {
 }
 
 int get_job_idx_from_id(manager m, int id) {
+	if (m.num_jobs == 0) {
+		return -1;
+	}
 	int ini = 0, fin = m.num_jobs;
 
 	while (ini <= fin) {
@@ -43,7 +46,6 @@ int get_job_idx_from_id(manager m, int id) {
 		}
 	}
 
-	developer_error("job with given id does not exist currently");
 	return -1;
 }
 
@@ -98,6 +100,9 @@ manager jobs_debrief(manager m) {
 	}
 	for (int i = 0; i < num_to_remove; i++) {
 		int idx = get_job_idx_from_id(m, ids_to_remove[i]);
+		if (idx == -1) {
+			developer_error("job with given id does not exist currently");
+		}
 		m = remove_job(m, idx);
 	}
 	free(ids_to_remove);

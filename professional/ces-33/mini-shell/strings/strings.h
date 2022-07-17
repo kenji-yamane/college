@@ -1,6 +1,8 @@
 #ifndef STRINGS_H
 #define STRINGS_H
 
+#include <stdbool.h>
+
 // attaches prefix to the beginning of str
 char *prepend(char *prefix, char *str);
 
@@ -17,6 +19,17 @@ char **extract_words(char *str);
 // copies the given string allocating
 // the necessary memory
 char *copy_str(char *str);
+
+// returns a pointer to the first non-space character,
+// without allocating new memory
+char *trim_begin(char *str);
+
+// finds the last non-space character and puts an
+// end of string right after it
+char *trim_end(char *str);
+
+// checks if string is numeric
+bool is_number(char *str);
 
 #endif
 

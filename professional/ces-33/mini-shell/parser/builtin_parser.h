@@ -18,5 +18,13 @@ BUILTIN parse_builtin(char *str);
 // executes a given builtin
 manager execute_builtin(shell s, manager m, char *str, BUILTIN b);
 
+// returns a pointer to the first non-space character,
+// without allocating new memory
+char *trim_begin(char *str);
+
+// gets job_id from a job control argument
+// returns -1 if scan failed
+int scan_job_id(char *str);
+
 #endif
 
