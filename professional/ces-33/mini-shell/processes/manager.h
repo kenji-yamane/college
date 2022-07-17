@@ -24,6 +24,10 @@ manager init_manager();
 // so that we can track it
 manager insert_job(manager m, job j);
 
+// gets the job index on the manager structure
+// given its id using binary search
+int get_job_idx_from_id(manager m, int id);
+
 // frees a job given its index, and then removes it
 // from the data structure
 manager remove_job(manager m, int idx);

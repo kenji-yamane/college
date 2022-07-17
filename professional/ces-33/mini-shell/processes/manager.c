@@ -29,6 +29,24 @@ manager insert_job(manager m, job j) {
 	return m;
 }
 
+int get_job_idx_from_id(manager m, int id) {
+	int ini = 0, fin = m.num_jobs;
+
+	while (ini < fin) {
+		int middle = (ini + fin)/2;
+		if (id < m.jobs[middle].id) {
+			fin = middle - 1;
+		} else if (m.jobs[middle].id < id) {
+			ini = middle + 1;
+		} else {
+			return middle;
+		}
+	}
+
+	developer_error("job with given id does not exist currently");
+	return -1;
+}
+
 manager remove_job(manager m, int idx) {
 	if (idx >= m.num_jobs) {
 		developer_error("attempt to remove out of border index on manager");
