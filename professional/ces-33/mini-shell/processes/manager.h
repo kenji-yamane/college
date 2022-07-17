@@ -20,6 +20,22 @@ typedef struct {
 // its initial id to zero
 manager init_manager();
 
+// puts job in foreground, letting it assume the terminal
+void put_in_foreground(shell s, manager m, int idx, bool cont);
+
+// puts job in background, removing it from the terminal
+void put_in_background(manager m, int idx, bool cont);
+
+// resets notified flag and children's stopped flags to false
+// and then continues the job on the background or the foreground
+// accordingly
+void continue_job(shell s, manager m, int idx, bool foregroud);
+
+// instantiates each child sequentially, waiting
+// for the end of the ith child to close its
+// output and then instantiate the successor
+void execute_children(shell s, manager m, int idx, bool foreground);
+
 // inserts an executed job in manager structure,
 // so that we can track it
 manager insert_job(manager m, job j);

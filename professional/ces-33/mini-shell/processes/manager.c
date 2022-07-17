@@ -3,6 +3,8 @@
 
 #include <sys/wait.h>
 #include <sys/types.h>
+#include <unistd.h>
+#include <signal.h>
 
 #include "../io/output.h"
 
@@ -15,6 +17,61 @@ manager init_manager() {
 	m.num_jobs = 0;
 	m.num_allocated = 0;
 	return m;
+}
+
+void put_in_foreground(shell s, manager m, int idx, bool cont) {
+    tcsetpgrp(STDIN_FILENO, m.jobs[idx].pgid);
+    if (cont) {
+        tcsetattr(STDIN_FILENO, TCSADRAIN, &m.jobs[idx].tmodes);
+        if (kill(-m.jobs[idx].pgid, SIGCONT) < 0) {
+            syscall_error("kill");
+        }
+    }
+    wait_job(m.jobs[idx]);
+
+    tcsetpgrp(STDIN_FILENO, s.pid);
+    tcgetattr(STDIN_FILENO, &m.jobs[idx].tmodes);
+    tcsetattr(STDIN_FILENO, TCSADRAIN, &s.tmodes);
+}
+
+void put_in_background(manager m, int idx, bool cont) {
+    if (cont) {
+        if (kill(-m.jobs[idx].pgid, SIGCONT) < 0) {
+            syscall_error("kill");
+        }
+    }
+}
+
+void continue_job(shell s, manager m, int idx, bool foreground) {
+    for (int i = 0; i < m.jobs[idx].num_processes; i++) {
+        m.jobs[idx].children[i].stopped = false;
+    }
+    m.jobs[idx].notified = false;
+
+    if (foreground) {
+        put_in_foreground(s, m, idx, true);
+    } else {
+        put_in_background(m, idx, true);
+    }
+}
+
+void execute_children(shell s, manager m, int idx, bool foreground) {
+    for (int i = 0; i < m.jobs[idx].num_processes; i++) {
+        pid_t pid = instantiate(m.jobs[idx].children[i], m.jobs[idx].pgid, foreground);
+        if (i == 0) {
+            m.jobs[idx].pgid = pid;
+        }
+        setpgid(pid, m.jobs[idx].pgid);
+        m.jobs[idx].children[i].pid = pid;
+        if (i < m.jobs[idx].num_processes - 1) {
+            close(m.jobs[idx].pipes[i + 1][1]);
+        }
+    }
+    if (foreground) {
+        put_in_foreground(s, m, idx, false);
+    } else {
+        put_in_background(m, idx, false);
+    }
 }
 
 manager insert_job(manager m, job j) {

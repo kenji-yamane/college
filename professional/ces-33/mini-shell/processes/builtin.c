@@ -19,7 +19,7 @@ void minishell_foreground(shell s, manager m, int id) {
 		usage_error("no such job");
 		return;
 	}
-	m.jobs[idx] = continue_job(s, m.jobs[idx], true);
+	continue_job(s, m, idx, true);
 }
 
 void minishell_background(shell s, manager m, int id) {
@@ -28,6 +28,6 @@ void minishell_background(shell s, manager m, int id) {
 		usage_error("no such job");
 		return;
 	}
-	m.jobs[idx] = continue_job(s, m.jobs[idx], false);
+	continue_job(s, m, idx, false);
 }
 

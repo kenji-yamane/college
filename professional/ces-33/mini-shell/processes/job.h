@@ -34,27 +34,11 @@ typedef struct {
 // the created processes
 job create_job(int num_processes, childp *children, char *command);
 
-// puts job in foreground, letting it assume the terminal
-job put_in_foreground(shell s, job j, bool cont);
-
-// puts job in background, removing it from the terminal
-void put_in_background(job j, bool cont);
-
-// resets notified flag and children's stopped flags to false
-// and then continues the job on the background or the foreground
-// accordingly
-job continue_job(shell s, job j, bool foregroud);
-
 // waits for all job's processes
 void wait_job(job j);
 
 // pipes ith child's output to its successor's input
 void connect_children(job j);
-
-// instantiates each child sequentially, waiting
-// for the end of the ith child to close its
-// output and then instantiate the successor
-job execute_children(shell s, job j, bool foreground);
 
 // prints job's status with descriptive messages
 // and references
