@@ -58,6 +58,10 @@ manager remove_job(manager m, int idx) {
 	for (int i = idx; i < m.num_jobs; i++) {
         m.jobs[i] = m.jobs[i + 1];
     }
+	m.sequential = 0;
+	if (m.num_jobs > 0) {
+		m.sequential = m.jobs[m.num_jobs - 1].id;
+	}
 	return m;
 }
 
