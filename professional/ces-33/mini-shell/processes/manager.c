@@ -43,14 +43,18 @@ manager jobs_debrief(manager m) {
 	update_all_processes(m);
 
 	for (int i = 0; i < m.num_jobs; i++) {
-		if (job_completed(m.jobs[i])) {
+		bool completed = job_completed(m.jobs[i]), stopped = job_stopped(m.jobs[i]);
+		if (completed) {
 			notify_completed_job(m.jobs[i]);
 			m = remove_job(m, i);
 			i--;
-		} else if (job_stopped(m.jobs[i])) {
+			continue;
+		}
+		if (stopped) {
 			m.jobs[i] = notify_stopped_job(m.jobs[i]);
 		}
 	}
+
 	return m;
 }
 
