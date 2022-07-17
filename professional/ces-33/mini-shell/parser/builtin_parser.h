@@ -7,6 +7,7 @@ typedef enum{
 	EXIT,
 	DEBRIEF,
 	FOREGROUND,
+	BACKGROUND,
 	UNDEFINED
 } BUILTIN;
 

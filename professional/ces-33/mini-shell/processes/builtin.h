@@ -14,5 +14,9 @@ manager minishell_process_info(manager m);
 // to the foreground
 void minishell_foreground(shell s, manager m, int id);
 
+// builtin command to continue a stopped process
+// on the background
+void minishell_background(manager m, int id);
+
 #endif
 
