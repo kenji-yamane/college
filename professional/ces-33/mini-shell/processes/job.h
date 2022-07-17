@@ -61,6 +61,9 @@ void notify_completed_job(job j);
 // uses print_job_info with status stopped
 job notify_stopped_job(job j);
 
+// uses print_job_info with status running
+void notify_running_job(job j);
+
 // asserts whether all of the job's processes
 // have either stopped or completed
 bool job_stopped(job j);

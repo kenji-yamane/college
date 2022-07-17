@@ -101,6 +101,10 @@ job notify_stopped_job(job j) {
 	return j;
 }
 
+void notify_running_job(job j) {
+	print_job_info(j, "running");
+}
+
 bool job_stopped(job j) {
 	for (int i = 0; i < j.num_processes; i++) {
 		if (!(j.children[i].stopped || j.children[i].completed)) {
