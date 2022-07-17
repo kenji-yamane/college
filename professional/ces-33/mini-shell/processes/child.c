@@ -37,7 +37,7 @@ childp add_argument(childp p, char *arg) {
 	p.argv[p.num_arg] = (char*)malloc((strlen(arg)+1)*sizeof(char));
 	strcpy(p.argv[p.num_arg], arg);
 	p.num_arg++;
-	p.argv = (char**)realloc(p.argv, (p.num_arg + 1)*sizeof(char));
+	p.argv = (char**)realloc(p.argv, (p.num_arg + 1)*sizeof(char*));
 	p.argv[p.num_arg] = NULL;
 	return p;
 }

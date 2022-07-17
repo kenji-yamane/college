@@ -35,6 +35,7 @@ build:
 	@mkdir -p $(OBJ_DIR)
 
 debug: CFLAGS += -DDEBUG -g
+debug: CFLAGS += -fsanitize=address
 debug: all
 
 release: CFLAGS += -O2
