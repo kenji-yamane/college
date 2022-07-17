@@ -85,6 +85,8 @@ void free_manager(manager m) {
 	for (int i = 0; i < m.num_jobs; i++) {
 		free_job(m.jobs[i]);
 	}
-	free(m.jobs);
+	if (m.num_jobs > 0) {
+		free(m.jobs);
+	}
 }
 
