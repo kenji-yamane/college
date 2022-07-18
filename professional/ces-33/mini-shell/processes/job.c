@@ -21,16 +21,6 @@ job create_job(int num_processes, childp *children, char *command) {
 	return j;
 }
 
-void wait_job(job j) {
-	int status;
-	for (int i = 0; i < j.num_processes; i++) {
-		do {
-			waitpid(j.children[i].pid, &status, WUNTRACED);
-			j.children[i] = set_status(j.children[i], status);
-		} while (!j.children[i].stopped && !j.children[i].completed);
-	}
-}
-
 void connect_children(job j) {
 	for (int i = 1; i < j.num_processes; i++) {
 		pipe(j.pipes[i]);

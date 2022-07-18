@@ -34,9 +34,6 @@ typedef struct {
 // the created processes
 job create_job(int num_processes, childp *children, char *command);
 
-// waits for all job's processes
-void wait_job(job j);
-
 // pipes ith child's output to its successor's input
 void connect_children(job j);
 

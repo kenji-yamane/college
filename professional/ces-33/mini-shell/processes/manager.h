@@ -55,6 +55,10 @@ manager notify_job_events(manager m);
 // notifies every job, with its current status
 manager jobs_debrief(manager m);
 
+// waits for all processes from the job with index idx
+// to complete or stop
+void wait_job(manager m, int idx);
+
 // updates status on all processes of all jobs the manager
 // holds
 void update_all_processes(manager m);

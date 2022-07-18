@@ -22,16 +22,16 @@ manager init_manager() {
 void put_in_foreground(shell s, manager m, int idx, bool cont) {
     tcsetpgrp(STDIN_FILENO, m.jobs[idx].pgid);
     if (cont) {
-        tcsetattr(STDIN_FILENO, TCSADRAIN, &m.jobs[idx].tmodes);
+        tcsetattr(STDIN_FILENO, TCSADRAIN, &(m.jobs[idx].tmodes));
         if (kill(-m.jobs[idx].pgid, SIGCONT) < 0) {
             syscall_error("kill");
         }
     }
-    wait_job(m.jobs[idx]);
+    wait_job(m, idx);
 
     tcsetpgrp(STDIN_FILENO, s.pid);
-    tcgetattr(STDIN_FILENO, &m.jobs[idx].tmodes);
-    tcsetattr(STDIN_FILENO, TCSADRAIN, &s.tmodes);
+    tcgetattr(STDIN_FILENO, &(m.jobs[idx].tmodes));
+    tcsetattr(STDIN_FILENO, TCSADRAIN, &(s.tmodes));
 }
 
 void put_in_background(manager m, int idx, bool cont) {
@@ -171,6 +171,19 @@ manager jobs_debrief(manager m) {
 	return m;
 }
 
+void wait_job(manager m, int idx) {
+	int status;
+	pid_t pid;
+
+	do {
+		pid = waitpid(-1, &status, WUNTRACED);
+		process_terminated(pid, WIFSTOPPED(status));
+		if (mark_process_status(m, pid, status) == -1) {
+			break;
+		}
+	} while (!job_stopped(m.jobs[idx]) && !job_completed(m.jobs[idx]));
+}
+
 void update_all_processes(manager m) {
 	int status;
 	pid_t pid;
@@ -184,11 +197,12 @@ int mark_process_status(manager m, pid_t pid, int status) {
 	if (pid < 0) {
 		return -1;
 	}
-	if (pid == 0 || errno == ECHILD) {
+	if (pid == 0) {
 		return -1;
 	}
 	for (int i = 0; i < m.num_jobs; i++) {
 		for (int j = 0; j < m.jobs[i].num_processes; j++) {
+			process_terminated(m.jobs[i].children[j].pid, pid);
 			if (m.jobs[i].children[j].pid == pid) {
 				m.jobs[i].children[j] = set_status(m.jobs[i].children[j], status);
 				return 0;

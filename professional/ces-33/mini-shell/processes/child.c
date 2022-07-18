@@ -99,7 +99,7 @@ void position_itself(childp p, pid_t pgid, bool foreground) {
 
 pid_t instantiate(childp p, pid_t pgid, bool foreground) {
     pid_t id = fork();
-    if (id == -1) {
+    if (id < 0) {
         syscall_error("fork");
         exit(EXIT_FAILURE);
     }
