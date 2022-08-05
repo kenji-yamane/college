@@ -1,0 +1,62 @@
+# Modulo para leitura de arquivos yaml
+require 'yaml'
+
+# Leitura das configuracoes das VMs do arquivo YAML
+# machines vira vetor associativo com configuracoes
+machines = YAML.load_file(File.join(File.dirname(__FILE__), 'machines.yml'))
+
+Vagrant.configure("2") do |config|
+
+  # Update automatico consome muito tempo 
+  config.vm.box_check_update = false
+
+  # Disabilitar a pasta compartilhada, tudo sera feito por ansible
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+
+  # Loop em todas as entradas do arquivo machines
+  machines.each do |machine|
+
+    # Para cada machine, obtem as variaveis name, box, ip
+    config.vm.define machine["name"] do |box|
+      box.vm.box = machine["box"]
+      box.vm.box_version = machine["box_version"]
+      box.vm.hostname = machine["name"]
+      box.vm.network "private_network", ip: machine["ip"]
+
+      # Configuracoes especificas para VMs Virtualbox
+      box.vm.provider :virtualbox do |vb|
+        vb.name = machine["name"]
+        vb.memory = machine["ram"]
+        if machine["gui"] != nil
+        	vb.gui = false
+        end
+      end
+
+      # Se exitir uma configuracao de script shell
+      # executar esse script como parte da inicializacao
+      if machine["script"] != nil
+        box.vm.provision :shell, :path => machine["script"]
+      end
+
+      # Se existir uma configuracao ansible acionar
+      # o provisionador ansible do Vagrant (requer ansible)
+      if machine["ansible"] != nil
+        box.vm.provision "ansible" do |ansible|
+            ansible.playbook = machine["ansible"] 
+            ansible.extra_vars = {  
+                ansible_python_interpreter:"/usr/bin/python3"
+            }
+            ansible.verbose = "vv"
+        end
+      end
+
+    end # fim do bloco box
+  end # fim da lista de maquinas
+
+  # Em todas as VMs provisionar servicos nao-interativos de 
+  # resolução de nomes e descoberta de serviços dentro da rede local
+  config.vm.provision "shell", inline: <<-SHELL
+    DEBIAN_FRONTEND=noninteractive apt-get install -y avahi-daemon libnss-mdns
+  SHELL
+
+end # end of config

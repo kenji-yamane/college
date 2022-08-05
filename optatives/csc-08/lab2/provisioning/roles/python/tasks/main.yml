@@ -1,0 +1,9 @@
+---
+
+- name: Install base packages
+  apt:
+    name:
+      - build-essential
+      - git
+    update_cache: yes
+    state: present

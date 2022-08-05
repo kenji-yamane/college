@@ -1,0 +1,11 @@
+--- 
+- name: Install gitlab server 
+  hosts: all 
+  become: yes 
+
+  vars:
+    add_host_entries: true 
+
+  roles:
+  - common
+  - gitlab

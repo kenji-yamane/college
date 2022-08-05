@@ -1,0 +1,46 @@
+require 'yaml'
+
+machines = YAML.load_file(File.join(File.dirname(__FILE__), 'machines.yml'))
+
+Vagrant.configure("2") do |config|
+  config.vm.box_check_update = false
+  config.vm.synced_folder '.', '/vagrant', disabled:true
+
+  machines.each do |machine|
+    config.vm.define machine["name"] do |box|
+      box.vm.box = machine["box"]
+      box.vm.box_version = machine["box_version"]
+      box.vm.hostname = machine["name"]
+      box.vm.network "private_network", ip: machine["ip"]
+      
+	  box.vm.provider :virtualbox do |vb|
+        vb.name = machine["name"]
+		vb.memory = machine["ram"]
+		if machine["gui"] != nil
+          vb.gui = false
+        end
+      end
+
+	  if machine["script"] != nil
+	    box.vm.provision :shell, :path => machine["script"]
+	  end
+
+	  if machine["ansible"] != nil
+	    box.vm.provision "ansible" do |ansible|
+		  ansible.playbook = machine["ansible"]
+		  ansible.extra_vars = {
+            ansible_python_interpreter:"/usr/bin/python3"
+		  }
+		  ansible.verbose = "vv"
+		end
+	  end
+	
+	end # box
+  end # machine
+
+  config.vm.provision "shell", inline: <<-SHELL
+    DEBIAN_FRONTEND=noninteractive apt-get install -y avahi-daemon libnss-mdns
+  SHELL
+
+end # config
+

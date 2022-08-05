@@ -1,0 +1,20 @@
+---
+
+- name: Install tree package
+  apt:
+    name: tree
+    state: present
+
+- name: Generate SSH key of vagrant user
+  user:
+    name: vagrant
+    generate_ssh_key: "yes"
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+
+- name: Clone git repos of needed code
+  import_tasks: git_repos.yml
+
+- name: Clone git repos of needed code
+  import_tasks: docker.yml
+  when: docker_package_state == "present"

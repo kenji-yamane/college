@@ -1,0 +1,10 @@
+Vagrant.configure("2") do |config|
+	config.vm.define "inspec" do |inspec|
+
+		inspec.vm.box = "bento/ubuntu-20.04"
+		inspec.vm.hostname = "inspec"
+
+		inspec.vm.network :private_network, ip: "10.16.2.25"
+		inspec.vm.network "forwarded_port", guest: 22, host: 522
+	end
+end
