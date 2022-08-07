@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"fmt"
@@ -26,7 +26,7 @@ func closeConnections(connections []*net.UDPConn) {
 	}
 }
 
-func main() {
+func Execute() {
 	if len(os.Args) < 3 {
 		CheckError(fmt.Errorf("not enough ports given as arguments"))
 	}
