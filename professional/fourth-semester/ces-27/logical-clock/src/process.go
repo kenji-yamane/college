@@ -10,7 +10,6 @@ import (
 
 func initConnections() []*net.UDPConn {
 	connections := make([]*net.UDPConn, 0)
-	go serve(os.Args[1])
 	for _, port := range os.Args[2:len(os.Args)] {
 		conn, err := udpConnect(port)
 		CheckError(err)
