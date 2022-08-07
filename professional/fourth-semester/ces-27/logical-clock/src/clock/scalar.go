@@ -2,8 +2,9 @@ package clock
 
 import (
 	"fmt"
-	"github.com/kenji-yamane/College/professional/fourth-semester/ces-27/logical-clock/src/math"
 	"strconv"
+
+	"github.com/kenji-yamane/College/professional/fourth-semester/ces-27/logical-clock/src/math"
 )
 
 type ScalarClock struct {
@@ -21,8 +22,8 @@ func (c *ScalarClock) InternalEvent() {
 	c.echoClock()
 }
 
-func (c *ScalarClock) ExternalEvent(processID int, externalClock string) {
-	externalTicks, err := strconv.Atoi(externalClock)
+func (c *ScalarClock) ExternalEvent(externalClockStr string) {
+	externalTicks, err := strconv.Atoi(externalClockStr)
 	if err != nil {
 		fmt.Println("invalid clock string, ignoring...")
 		return

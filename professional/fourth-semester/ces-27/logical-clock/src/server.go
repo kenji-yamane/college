@@ -5,12 +5,7 @@ import (
 	"net"
 )
 
-type IncomingMessage struct {
-	Msg    string
-	Sender *net.UDPAddr
-}
-
-func serve(ch chan IncomingMessage, port string) {
+func serve(ch chan string, port string) {
 	/* Lets prepare a address at any address at port :port*/
 	ServerAddr, err := net.ResolveUDPAddr("udp", ":"+port)
 	CheckError(err)
@@ -32,9 +27,6 @@ func serve(ch chan IncomingMessage, port string) {
 		}
 		msg := string(buf[0:n])
 		fmt.Println("received ", msg, " from ", addr)
-		ch <- IncomingMessage{
-			Msg:    msg,
-			Sender: addr,
-		}
+		ch <- msg
 	}
 }

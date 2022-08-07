@@ -9,18 +9,16 @@ import (
 	"time"
 )
 
-func initConnections(myID int) (map[int]*net.UDPConn, map[string]int) {
+func initConnections(myID int, ports []string) map[int]*net.UDPConn {
 	connections := make(map[int]*net.UDPConn)
-	portResolve := make(map[string]int)
-	for idx, port := range os.Args[2:len(os.Args)] {
+	for idx, port := range ports {
 		if idx+1 == myID {
 			continue
 		}
-		conn, serverAddr := udpConnect(port)
+		conn := udpConnect(port)
 		connections[idx+1] = conn
-		portResolve[strconv.Itoa(serverAddr.Port)] = idx + 1
 	}
-	return connections, portResolve
+	return connections
 }
 
 func closeConnections(connections map[int]*net.UDPConn) {
@@ -42,17 +40,17 @@ func Execute() {
 	}
 	ports := os.Args[2:len(os.Args)]
 
-	connections, portResolve := initConnections(myID)
+	connections := initConnections(myID, ports)
 	defer closeConnections(connections)
 
 	terminalCh := make(chan string)
 	go readInput(terminalCh)
 
-	serverCh := make(chan IncomingMessage)
+	serverCh := make(chan string)
 	go serve(serverCh, ports[myID-1])
 
 	var logicalClock clock.LogicalClock
-	logicalClock = clock.NewScalarClock()
+	logicalClock = clock.NewVectorClock(myID, len(ports))
 	for {
 		select {
 		case command, valid := <-terminalCh:
@@ -72,16 +70,11 @@ func Execute() {
 			if id != myID {
 				udpSend(connections[id], logicalClock.GetClockStr())
 			}
-		case incomingMsg, valid := <-serverCh:
+		case msg, valid := <-serverCh:
 			if !valid {
 				break
 			}
-			incomingID, ok := portResolve[strconv.Itoa(incomingMsg.Sender.Port)]
-			if !ok {
-				//fmt.Println("unknown sender, ignoring...")
-				//break
-			}
-			logicalClock.ExternalEvent(incomingID, incomingMsg.Msg)
+			logicalClock.ExternalEvent(msg)
 		default:
 		}
 		time.Sleep(time.Second * 1)
