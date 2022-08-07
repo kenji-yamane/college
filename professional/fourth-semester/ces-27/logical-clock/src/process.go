@@ -33,13 +33,19 @@ func Execute() {
 	connections := initConnections()
 	defer closeConnections(connections)
 
+	ch := make(chan string)
+	go readInput(ch)
+
 	go serve(os.Args[1])
-	i := 0
 	for {
-		for _, conn := range connections {
-			go udpSend(conn, strconv.Itoa(i))
+		select {
+		case command := <-ch:
+			fmt.Println("Received command: ", command)
+			for _, conn := range connections {
+				go udpSend(conn, strconv.Itoa(100))
+			}
+		default:
 		}
 		time.Sleep(time.Second * 1)
-		i++
 	}
 }
