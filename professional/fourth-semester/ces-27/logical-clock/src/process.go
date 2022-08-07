@@ -3,6 +3,8 @@ package src
 import (
 	"fmt"
 	"github.com/kenji-yamane/College/professional/fourth-semester/ces-27/logical-clock/src/clock"
+	"github.com/kenji-yamane/College/professional/fourth-semester/ces-27/logical-clock/src/customerror"
+	"github.com/kenji-yamane/College/professional/fourth-semester/ces-27/logical-clock/src/network"
 	"net"
 	"os"
 	"strconv"
@@ -15,7 +17,7 @@ func initConnections(myID int, ports []string) map[int]*net.UDPConn {
 		if idx+1 == myID {
 			continue
 		}
-		conn := udpConnect(port)
+		conn := network.UdpConnect(port)
 		connections[idx+1] = conn
 	}
 	return connections
@@ -24,7 +26,7 @@ func initConnections(myID int, ports []string) map[int]*net.UDPConn {
 func closeConnections(connections map[int]*net.UDPConn) {
 	for _, conn := range connections {
 		err := conn.Close()
-		CheckError(err)
+		customerror.CheckError(err)
 	}
 }
 
@@ -32,11 +34,11 @@ func closeConnections(connections map[int]*net.UDPConn) {
 // executes accordingly
 func Execute() {
 	if len(os.Args) < 4 {
-		CheckError(fmt.Errorf("not enough ports given as arguments"))
+		customerror.CheckError(fmt.Errorf("not enough ports given as arguments"))
 	}
 	myID, err := strconv.Atoi(os.Args[1])
 	if err != nil {
-		CheckError(fmt.Errorf("first argument should be a number representing the sequential process ID"))
+		customerror.CheckError(fmt.Errorf("first argument should be a number representing the sequential process ID"))
 	}
 	ports := os.Args[2:len(os.Args)]
 
@@ -47,7 +49,7 @@ func Execute() {
 	go readInput(terminalCh)
 
 	serverCh := make(chan string)
-	go serve(serverCh, ports[myID-1])
+	go network.Serve(serverCh, ports[myID-1])
 
 	var logicalClock clock.LogicalClock
 	logicalClock = clock.NewVectorClock(myID, len(ports))
@@ -68,7 +70,7 @@ func Execute() {
 			}
 			logicalClock.InternalEvent()
 			if id != myID {
-				udpSend(connections[id], logicalClock.GetClockStr())
+				network.UdpSend(connections[id], logicalClock.GetClockStr())
 			}
 		case msg, valid := <-serverCh:
 			if !valid {

@@ -42,7 +42,7 @@ func (c *VectorClock) ExternalEvent(externalClockStr string) {
 func (c *VectorClock) GetClockStr() string {
 	clockStr, err := c.serialize()
 	if err != nil {
-		fmt.Println("error serializing clock")
+		fmt.Println("customerror serializing clock")
 	}
 	return clockStr
 }

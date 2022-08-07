@@ -1,11 +1,11 @@
-package src
+package customerror
 
 import (
 	"fmt"
 	"os"
 )
 
-// CheckError prints the error on the default output and exits code
+// CheckError prints the customerror on the default output and exits code
 func CheckError(err error) {
 	if err != nil {
 		fmt.Println("Error: ", err)

@@ -1,21 +1,22 @@
-package src
+package network
 
 import (
 	"fmt"
+	"github.com/kenji-yamane/College/professional/fourth-semester/ces-27/logical-clock/src/customerror"
 	"net"
 )
 
-func serve(ch chan string, port string) {
+func Serve(ch chan string, port string) {
 	/* Lets prepare a address at any address at port :port*/
 	ServerAddr, err := net.ResolveUDPAddr("udp", ":"+port)
-	CheckError(err)
+	customerror.CheckError(err)
 
 	/* Now listen at selected port */
 	ServerConn, err := net.ListenUDP("udp", ServerAddr)
-	CheckError(err)
+	customerror.CheckError(err)
 	defer func() {
 		connErr := ServerConn.Close()
-		CheckError(connErr)
+		customerror.CheckError(connErr)
 	}()
 
 	buf := make([]byte, 1024)
