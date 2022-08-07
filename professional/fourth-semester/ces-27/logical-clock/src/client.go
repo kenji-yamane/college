@@ -5,14 +5,17 @@ import (
 	"net"
 )
 
-func udpConnect(port string) (*net.UDPConn, error) {
-	ServerAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:"+port)
+func udpConnect(port string) (*net.UDPConn, *net.UDPAddr) {
+	serverAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:"+port)
 	CheckError(err)
 
-	LocalAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:0")
+	localAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:0")
 	CheckError(err)
 
-	return net.DialUDP("udp", LocalAddr, ServerAddr)
+	conn, err := net.DialUDP("udp", localAddr, serverAddr)
+	CheckError(err)
+
+	return conn, serverAddr
 }
 
 func udpSend(conn *net.UDPConn, msg string) {

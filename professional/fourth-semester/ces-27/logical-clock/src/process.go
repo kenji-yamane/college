@@ -2,23 +2,25 @@ package src
 
 import (
 	"fmt"
+	"github.com/kenji-yamane/College/professional/fourth-semester/ces-27/logical-clock/src/clock"
 	"net"
 	"os"
 	"strconv"
 	"time"
 )
 
-func initConnections(myID int) map[int]*net.UDPConn {
+func initConnections(myID int) (map[int]*net.UDPConn, map[string]int) {
 	connections := make(map[int]*net.UDPConn)
+	portResolve := make(map[string]int)
 	for idx, port := range os.Args[2:len(os.Args)] {
 		if idx+1 == myID {
 			continue
 		}
-		conn, err := udpConnect(port)
-		CheckError(err)
+		conn, serverAddr := udpConnect(port)
 		connections[idx+1] = conn
+		portResolve[strconv.Itoa(serverAddr.Port)] = idx + 1
 	}
-	return connections
+	return connections, portResolve
 }
 
 func closeConnections(connections map[int]*net.UDPConn) {
@@ -39,17 +41,24 @@ func Execute() {
 		CheckError(fmt.Errorf("first argument should be a number representing the sequential process ID"))
 	}
 	ports := os.Args[2:len(os.Args)]
-	connections := initConnections(myID)
+
+	connections, portResolve := initConnections(myID)
 	defer closeConnections(connections)
 
-	ch := make(chan string)
-	go readInput(ch)
+	terminalCh := make(chan string)
+	go readInput(terminalCh)
 
-	logicalClock := NewScalarClock()
-	go serve(ports[myID-1])
+	serverCh := make(chan IncomingMessage)
+	go serve(serverCh, ports[myID-1])
+
+	var logicalClock clock.LogicalClock
+	logicalClock = clock.NewScalarClock()
 	for {
 		select {
-		case command := <-ch:
+		case command, valid := <-terminalCh:
+			if !valid {
+				break
+			}
 			id, err := strconv.Atoi(command)
 			if err != nil {
 				fmt.Println("invalid command, ignoring...")
@@ -59,11 +68,20 @@ func Execute() {
 				fmt.Println("given id does not exist in context, ignoring...")
 				break
 			}
-			if id == myID {
-				logicalClock.InternalEvent()
-			} else {
-				logicalClock.SendMessage(connections[id])
+			logicalClock.InternalEvent()
+			if id != myID {
+				udpSend(connections[id], logicalClock.GetClockStr())
 			}
+		case incomingMsg, valid := <-serverCh:
+			if !valid {
+				break
+			}
+			incomingID, ok := portResolve[strconv.Itoa(incomingMsg.Sender.Port)]
+			if !ok {
+				//fmt.Println("unknown sender, ignoring...")
+				//break
+			}
+			logicalClock.ExternalEvent(incomingID, incomingMsg.Msg)
 		default:
 		}
 		time.Sleep(time.Second * 1)
