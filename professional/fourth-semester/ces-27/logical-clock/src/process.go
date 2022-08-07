@@ -8,41 +8,61 @@ import (
 	"time"
 )
 
-func initConnections() []*net.UDPConn {
-	connections := make([]*net.UDPConn, 0)
-	for _, port := range os.Args[2:len(os.Args)] {
+func initConnections(myID int) map[int]*net.UDPConn {
+	connections := make(map[int]*net.UDPConn)
+	for idx, port := range os.Args[2:len(os.Args)] {
+		if idx+1 == myID {
+			continue
+		}
 		conn, err := udpConnect(port)
 		CheckError(err)
-		connections = append(connections, conn)
+		connections[idx+1] = conn
 	}
 	return connections
 }
 
-func closeConnections(connections []*net.UDPConn) {
+func closeConnections(connections map[int]*net.UDPConn) {
 	for _, conn := range connections {
 		err := conn.Close()
 		CheckError(err)
 	}
 }
 
+// Execute parses arguments into process information and
+// executes accordingly
 func Execute() {
-	if len(os.Args) < 3 {
+	if len(os.Args) < 4 {
 		CheckError(fmt.Errorf("not enough ports given as arguments"))
 	}
-
-	connections := initConnections()
+	myID, err := strconv.Atoi(os.Args[1])
+	if err != nil {
+		CheckError(fmt.Errorf("first argument should be a number representing the sequential process ID"))
+	}
+	ports := os.Args[2:len(os.Args)]
+	connections := initConnections(myID)
 	defer closeConnections(connections)
 
 	ch := make(chan string)
 	go readInput(ch)
 
-	go serve(os.Args[1])
+	logicalClock := NewScalarClock()
+	go serve(ports[myID-1])
 	for {
 		select {
 		case command := <-ch:
-			fmt.Println("Received command: ", command)
-			for _, conn := range connections {
-				go udpSend(conn, strconv.Itoa(100))
+			id, err := strconv.Atoi(command)
+			if err != nil {
+				fmt.Println("invalid command, ignoring...")
+				break
+			}
+			if id < 1 || id > len(ports) {
+				fmt.Println("given id does not exist in context, ignoring...")
+				break
+			}
+			if id == myID {
+				logicalClock.InternalEvent()
+			} else {
+				logicalClock.SendMessage(connections[id])
 			}
 		default:
 		}
