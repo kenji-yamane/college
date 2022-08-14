@@ -17,10 +17,10 @@ echo "vim configured"
 
 echo "configuring bash..."
 
-echo "alias vss='cd /home/kenji/Desktop/itandroids-vss/binaries'" >> $HOME/.bashrc
-echo "alias lib='cd /home/kenji/Desktop/itandroids-lib'" >> $HOME/.bashrc
-echo "alias firasim='cd /home/kenji/Documents/FIRASim/bin'" >> $HOME/.bashrc
-echo "alias referee='cd /home/kenji/Documents/VSSReferee/bin'" >> $HOME/.bashrc
+echo "alias vss='cd /home/kenji/Documents/ITAndroids/itandroids-vss/binaries'" >> $HOME/.bashrc
+echo "alias lib='cd /home/kenji/Documents/ITAndroids/itandroids-lib'" >> $HOME/.bashrc
+echo "alias firasim='cd /home/kenji/Documents/ITAndroids/FIRASim/bin'" >> $HOME/.bashrc
+echo "alias referee='cd /home/kenji/Documents/ITAndroids/VSSReferee/bin'" >> $HOME/.bashrc
 
 echo "bash configured"
 
