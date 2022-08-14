@@ -21,6 +21,7 @@ echo "alias vss='cd /home/kenji/Documents/ITAndroids/itandroids-vss/binaries'" >
 echo "alias lib='cd /home/kenji/Documents/ITAndroids/itandroids-lib'" >> $HOME/.bashrc
 echo "alias firasim='cd /home/kenji/Documents/ITAndroids/FIRASim/bin'" >> $HOME/.bashrc
 echo "alias referee='cd /home/kenji/Documents/ITAndroids/VSSReferee/bin'" >> $HOME/.bashrc
+source $HOME/.bashrc
 
 echo "bash configured"
 
