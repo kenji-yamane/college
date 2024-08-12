@@ -25,5 +25,12 @@ source $HOME/.bashrc
 
 echo "bash configured"
 
+echo "installing zoxide"
+
+curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+eval "$(zoxide init bash)"
+
+echo "zoxide installed"
+
 sudo apt-get install gimp poppler-utils
 
